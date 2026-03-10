@@ -42,6 +42,10 @@ window.currentOccasion = null; // Stored on window to access easily from dom inl
 window.currentTheme = null;
 let compressedPhotoDataUrl = null;
 
+// -- Cloudinary Config --
+const CLOUDINARY_CLOUD_NAME = 'disurt4mx';
+const CLOUDINARY_UPLOAD_PRESET = 'gift photos';
+
 // -- Initialization --
 function init() {
     startHearts();
@@ -252,6 +256,25 @@ function compressImage(file, maxSizeKB) {
     });
 }
 
+async function uploadToCloudinary(base64Data) {
+    const formData = new FormData();
+    formData.append('file', base64Data);
+    formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+
+    const response = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`, {
+        method: 'POST',
+        body: formData
+    });
+
+    if (!response.ok) {
+        const err = await response.json();
+        throw new Error(err.error?.message || "Cloudinary Upload Failed");
+    }
+
+    const data = await response.json();
+    return data.secure_url;
+}
+
 // -- Form Logic --
 async function handleGiftSubmission(e) {
     e.preventDefault();
@@ -272,10 +295,11 @@ async function handleGiftSubmission(e) {
         const giftId = 'GIFT-' + Math.random().toString(36).substr(2, 6).toUpperCase();
         let photoUrl = "";
 
-        // 1. Store Photo directly in Firestore (Base64) to avoid Storage costs/rules
+        // 1. Upload to Cloudinary instead of storing Base64 in Firestore
         if (compressedPhotoDataUrl) {
-            console.log("Storing photo directly in Firestore document (Base64)...");
-            photoUrl = compressedPhotoDataUrl;
+            console.log("Uploading photo to Cloudinary...");
+            photoUrl = await uploadToCloudinary(compressedPhotoDataUrl);
+            console.log("Cloudinary Upload Success:", photoUrl);
         }
 
         // 2. Save Metadata to Firestore
