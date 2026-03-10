@@ -1,233 +1,296 @@
-// Debugging log
-console.log("Admin JS Loaded");
+// -- Configuration --
+const CLOUDINARY_CLOUD_NAME = 'disurt4mx';
+const CLOUDINARY_ASSET_PRESET = 'assets';
 
-document.addEventListener('DOMContentLoaded', () => {
-    console.log("DOM Ready");
+// -- State --
+let currentTab = 'activation';
+let allGifts = [];
 
-    const loginForm = document.getElementById('login-form');
-    const adminLoginView = document.getElementById('admin-login');
-    const adminDashboardView = document.getElementById('admin-dashboard');
-    const loginError = document.getElementById('login-error');
-    const logoutBtn = document.getElementById('logout-btn');
-    const dbStatus = document.getElementById('db-status');
+// -- DOM Elements --
+const loginOverlay = document.getElementById('admin-login');
+const dashboard = document.getElementById('admin-dashboard');
+const loginForm = document.getElementById('login-form');
+const loginError = document.getElementById('login-error');
+const logoutBtn = document.getElementById('logout-btn');
+const dbStatus = document.getElementById('db-status');
+const viewTitle = document.getElementById('view-title');
+const globalSearch = document.getElementById('global-search');
 
-    let unsubscribePending = null;
-    let unsubscribeActive = null;
+// Tabs
+const sidebarItems = document.querySelectorAll('.sidebar-item');
+const tabContents = document.querySelectorAll('.tab-content');
 
-    // Helper to toggle views
-    function showDashboard() {
-        console.log("Showing Dashboard...");
-        adminLoginView.classList.add('hidden');
-        adminDashboardView.classList.remove('hidden');
-        startRealtimeListeners();
-    }
+// Lists
+const activationList = document.getElementById('activation-list');
+const allGiftsList = document.getElementById('all-gifts-list');
+const assetsGallery = document.getElementById('assets-gallery');
+const noActivation = document.getElementById('no-activation');
 
-    function showLogin() {
-        console.log("Showing Login...");
-        stopRealtimeListeners();
-        adminDashboardView.classList.add('hidden');
-        adminLoginView.classList.remove('hidden');
-    }
+// Assets
+const dropZone = document.getElementById('drop-zone');
+const assetInput = document.getElementById('asset-input');
+const uploadStatusContainer = document.getElementById('upload-status-container');
 
-    // Check auth status
-    if (typeof auth !== 'undefined' && auth !== null) {
-        auth.onAuthStateChanged((user) => {
-            if (user) {
-                showDashboard();
-            } else {
-                showLogin();
-            }
-        });
+// -- Initialization --
+firebase.auth().onAuthStateChanged(user => {
+    if (user) {
+        loginOverlay.classList.add('hidden');
+        dashboard.classList.remove('hidden');
+        initDashboard();
     } else {
-        console.error("Firebase Auth not initialized");
-    }
-
-    // Handle Login
-    if (loginForm) {
-        loginForm.onsubmit = async (e) => {
-            e.preventDefault();
-            const email = document.getElementById('admin-email').value;
-            const pwd = document.getElementById('admin-password').value;
-            const btn = loginForm.querySelector('button');
-
-            btn.disabled = true;
-            btn.textContent = "Logging in...";
-            loginError.classList.add('hidden');
-
-            try {
-                await auth.signInWithEmailAndPassword(email, pwd);
-                console.log("Firebase Login Successful");
-            } catch (error) {
-                console.error("Login Error:", error.message);
-                loginError.textContent = error.message;
-                loginError.classList.remove('hidden');
-            } finally {
-                btn.disabled = false;
-                btn.textContent = "Login";
-            }
-        };
-    }
-
-    if (logoutBtn) {
-        logoutBtn.onclick = () => {
-            console.log("Logout clicked");
-            auth.signOut();
-        };
-    }
-
-    function startRealtimeListeners() {
-        if (!db) {
-            updateStatus("Database connection error", "error");
-            return;
-        }
-
-        updateStatus("Connected & Listening", "success");
-
-        // Listener for PENDING gifts
-        unsubscribePending = db.collection("gifts")
-            .where("status", "==", "pending")
-            .onSnapshot((snapshot) => {
-                const gifts = [];
-                snapshot.forEach(doc => gifts.push({ docId: doc.id, ...doc.data() }));
-                // Sort manually in case index isn't ready
-                gifts.sort((a,b) => (b.createdAt || 0) - (a.createdAt || 0));
-                renderGifts(gifts, 'pending-list');
-            }, (error) => {
-                console.error("Pending Listener Error:", error);
-                updateStatus("Sync Error (Check Rules/Index)", "error");
-            });
-
-        // Listener for ACTIVE gifts (limit to last 20)
-        unsubscribeActive = db.collection("gifts")
-            .where("status", "==", "active")
-            .onSnapshot((snapshot) => {
-                const gifts = [];
-                snapshot.forEach(doc => gifts.push({ docId: doc.id, ...doc.data() }));
-                gifts.sort((a,b) => (b.createdAt || 0) - (a.createdAt || 0));
-                renderGifts(gifts.slice(0, 20), 'active-list');
-            }, (error) => {
-                console.error("Active Listener Error:", error);
-            });
-    }
-
-    function stopRealtimeListeners() {
-        if (unsubscribePending) unsubscribePending();
-        if (unsubscribeActive) unsubscribeActive();
-        updateStatus("Disconnected", "idle");
-    }
-
-    function updateStatus(text, type) {
-        if (!dbStatus) return;
-        const dot = dbStatus.querySelector('span');
-        dbStatus.childNodes[2].textContent = text;
-        
-        dot.className = "w-2 h-2 rounded-full " + 
-            (type === 'success' ? 'bg-green-500' : 
-             type === 'error' ? 'bg-red-500' : 'bg-yellow-500');
-        
-        if (type === 'success') dot.classList.remove('animate-pulse');
-        else dot.classList.add('animate-pulse');
-    }
-
-    function renderGifts(gifts, containerId) {
-        const container = document.getElementById(containerId);
-        const noDataEl = document.getElementById(containerId === 'pending-list' ? 'no-pending' : 'no-active');
-        const isPending = containerId === 'pending-list';
-
-        if (gifts.length === 0) {
-            container.innerHTML = '';
-            noDataEl.classList.remove('hidden');
-            return;
-        }
-
-        noDataEl.classList.add('hidden');
-        container.innerHTML = gifts.map(gift => `
-            <tr>
-                <td><strong>${gift.id}</strong></td>
-                <td>${gift.sender}</td>
-                <td>${gift.receiver}</td>
-                <td>
-                    ${(gift.photoUrl || gift.photoURL)
-                        ? `<img src="${gift.photoUrl || gift.photoURL}" class="admin-thumbnail" onclick="window.open('${gift.photoUrl || gift.photoURL}', '_blank')" title="Click to view full size">`
-                        : `<span class="text-gray-600 text-xs italic">No Photo</span>`
-                    }
-                </td>
-                <td>${gift.template}</td>
-                <td>${new Date(gift.createdAt).toLocaleDateString()}</td>
-                <td>
-                    ${isPending 
-                        ? `<button class="secondary-btn" onclick="activateGift('${gift.docId || gift.id}')">Activate</button>`
-                        : `<span class="text-green-500 flex items-center gap-1"><i class="ph ph-check-circle"></i> Active</span>`
-                    }
-                </td>
-            </tr>
-        `).join('');
-    }
-
-    // Replace the old fetchPendingGifts calls with fetchGifts
-    function fetchPendingGifts() { fetchGifts(); }
-
-
-    // Global activation for simplicity
-    window.activateGift = async (docId) => {
-        if(!confirm("Activate this gift?")) return;
-        
-        try {
-            console.log("LIVE ACTIVATE: Updating document:", docId);
-            await db.collection("gifts").doc(docId).update({ status: "active" });
-            alert("Gift activated successfully!");
-        } catch (err) {
-            console.error("Activation error:", err);
-            alert("Error: " + err.message);
-        }
-    };
-
-    // Manual Activation Logic
-    const manualBtn = document.getElementById('manual-activate-btn');
-    const manualInput = document.getElementById('manual-gift-id');
-    const manualFeedback = document.getElementById('manual-feedback');
-
-    if (manualBtn) {
-        manualBtn.onclick = async () => {
-            const giftId = manualInput.value.trim().toUpperCase();
-            if (!giftId) {
-                showManualFeedback("Please enter a Gift ID", "error");
-                return;
-            }
-
-            console.log("Manual activation attempt for:", giftId);
-
-            manualBtn.disabled = true;
-            manualBtn.textContent = "Activating...";
-
-            try {
-                console.log("Searching for live gift:", giftId);
-                const snapshot = await db.collection("gifts").where("id", "==", giftId).get();
-                
-                if (snapshot.empty) {
-                    showManualFeedback(`Gift ID ${giftId} not found in database.`, "error");
-                } else {
-                    const docId = snapshot.docs[0].id;
-                    console.log("Found document:", docId, "Updating status...");
-                    await db.collection("gifts").doc(docId).update({ status: "active" });
-                    showManualFeedback(`Success! ${giftId} is now active.`, "success");
-                    manualInput.value = "";
-                }
-            } catch (err) {
-                console.error("Manual Activation Error:", err);
-                showManualFeedback("Error: " + err.message, "error");
-            } finally {
-                manualBtn.disabled = false;
-                manualBtn.textContent = "Activate Now";
-            }
-        };
-    }
-
-    function showManualFeedback(text, type) {
-        manualFeedback.textContent = text;
-        manualFeedback.className = `mt-3 text-sm ${type === 'success' ? 'text-green-400' : 'text-danger'}`;
-        manualFeedback.classList.remove('hidden');
-        setTimeout(() => manualFeedback.classList.add('hidden'), 5000);
+        loginOverlay.classList.remove('hidden');
+        dashboard.classList.add('hidden');
     }
 });
+
+// -- Login Logic --
+loginForm.onsubmit = async (e) => {
+    e.preventDefault();
+    const email = document.getElementById('admin-email').value;
+    const password = document.getElementById('admin-password').value;
+    const btn = loginForm.querySelector('button');
+    
+    btn.disabled = true;
+    btn.textContent = "Verifying...";
+    loginError.classList.add('hidden');
+    
+    try {
+        await firebase.auth().signInWithEmailAndPassword(email, password);
+    } catch (err) {
+        loginError.textContent = "Invalid credentials. Access denied.";
+        loginError.classList.remove('hidden');
+    } finally {
+        btn.disabled = false;
+        btn.textContent = "Login to Dashboard";
+    }
+};
+
+if (logoutBtn) logoutBtn.onclick = () => firebase.auth().signOut();
+
+// -- Tab Navigation --
+sidebarItems.forEach(item => {
+    item.onclick = () => {
+        const target = item.getAttribute('data-tab');
+        switchTab(target);
+    };
+});
+
+function switchTab(tabId) {
+    currentTab = tabId;
+    sidebarItems.forEach(i => i.classList.toggle('active', i.getAttribute('data-tab') === tabId));
+    tabContents.forEach(c => c.classList.toggle('active', c.id === `tab-${tabId}`));
+    
+    // Update Header
+    const titles = {
+        'activation': 'Activation Management',
+        'all-gifts': 'All Gifts Database',
+        'assets': 'Asset Hub'
+    };
+    viewTitle.textContent = titles[tabId];
+    renderCurrentTab();
+}
+
+// -- Dashboard Core --
+function initDashboard() {
+    dbStatus.innerHTML = '<span class="w-2 h-2 rounded-full bg-green-500"></span> Live Connection';
+    
+    // Listen to Gifts
+    db.collection('gifts').orderBy('createdAt', 'desc').onSnapshot(snapshot => {
+        allGifts = snapshot.docs.map(doc => ({ docId: doc.id, ...doc.data() }));
+        renderCurrentTab();
+        updateStats();
+    }, err => {
+        console.error("Firestore Listen Error:", err);
+        dbStatus.innerHTML = '<span class="w-2 h-2 rounded-full bg-red-500"></span> Sync Error';
+    });
+
+    initAssetUpload();
+}
+
+function updateStats() {
+    const pendingCount = allGifts.filter(g => g.status === 'pending').length;
+    const statPending = document.getElementById('stat-pending');
+    if (statPending) statPending.textContent = pendingCount;
+}
+
+globalSearch.oninput = () => renderCurrentTab();
+
+function renderCurrentTab() {
+    const query = globalSearch.value.toLowerCase();
+    const filtered = allGifts.filter(g => 
+        (g.id || "").toLowerCase().includes(query) || 
+        (g.recipientName || "").toLowerCase().includes(query) ||
+        (g.senderName || "").toLowerCase().includes(query)
+    );
+
+    if (currentTab === 'activation') renderActivation(filtered);
+    else if (currentTab === 'all-gifts') renderAllGifts(filtered);
+}
+
+// -- Render Functions --
+function renderActivation(gifts) {
+    const pending = gifts.filter(g => g.status === 'pending');
+    activationList.innerHTML = '';
+    
+    if (pending.length === 0) {
+        noActivation.classList.remove('hidden');
+        return;
+    }
+    noActivation.classList.add('hidden');
+
+    pending.forEach(gift => {
+        const row = document.createElement('tr');
+        row.className = 'border-b border-white/5 hover:bg-white/5 transition-colors group';
+        const date = gift.createdAt?.toDate ? gift.createdAt.toDate().toLocaleDateString() : 'N/A';
+        const photo = gift.photoUrl || gift.photoURL || 'https://via.placeholder.com/100';
+
+        row.innerHTML = `
+            <td class="p-4 font-mono text-brand-blue font-bold">${gift.id}</td>
+            <td class="p-4">
+                <p class="font-bold">${gift.recipientName || 'N/A'}</p>
+                <p class="text-[10px] text-gray-500">From: ${gift.senderName || 'Anonymous'}</p>
+            </td>
+            <td class="p-4">
+                <img src="${photo}" class="w-10 h-10 rounded-lg object-cover border border-white/10 cursor-pointer" onclick="window.open('${photo}')">
+            </td>
+            <td class="p-4 text-gray-500 text-xs">${date}</td>
+            <td class="p-4 text-right">
+                <label class="switch">
+                    <input type="checkbox" onchange="toggleGiftStatus('${gift.docId}', this.checked)" ${gift.status === 'active' ? 'checked' : ''}>
+                    <span class="slider"></span>
+                </label>
+            </td>
+        `;
+        activationList.appendChild(row);
+    });
+}
+
+function renderAllGifts(gifts) {
+    allGiftsList.innerHTML = '';
+    gifts.forEach(gift => {
+        const row = document.createElement('tr');
+        row.className = 'border-b border-white/5 hover:bg-white/5 transition-colors';
+        row.innerHTML = `
+            <td class="p-4 font-mono text-xs text-gray-400">${gift.id}</td>
+            <td class="p-4">
+                <p class="font-bold">${gift.recipientName || 'N/A'}</p>
+                <p class="text-[10px] text-gray-500">From: ${gift.senderName || 'Anonymous'}</p>
+            </td>
+            <td class="p-4">
+                <span class="px-2 py-1 rounded bg-white/5 text-[10px] uppercase font-bold text-gray-400">${gift.occasion || 'General'}</span>
+            </td>
+            <td class="p-4 text-right">
+                <label class="switch scale-75 origin-right">
+                    <input type="checkbox" onchange="toggleGiftStatus('${gift.docId}', this.checked)" ${gift.status === 'active' ? 'checked' : ''}>
+                    <span class="slider"></span>
+                </label>
+            </td>
+        `;
+        allGiftsList.appendChild(row);
+    });
+}
+
+// -- Actions --
+async function toggleGiftStatus(docId, isActive) {
+    const status = isActive ? 'active' : 'pending';
+    try {
+        await db.collection('gifts').doc(docId).update({ status });
+        showToast(`Gift ID updated to ${status.toUpperCase()}`);
+    } catch (err) {
+        console.error("Status Update Failed:", err);
+        showToast("Error updating status", "error");
+    }
+}
+
+// -- Asset Hub Logic --
+function initAssetUpload() {
+    if (!dropZone) return;
+    dropZone.onclick = () => assetInput.click();
+    dropZone.ondragover = (e) => { e.preventDefault(); dropZone.classList.add('bg-white/10'); };
+    dropZone.ondragleave = () => dropZone.classList.remove('bg-white/10');
+    dropZone.ondrop = (e) => {
+        e.preventDefault();
+        dropZone.classList.remove('bg-white/10');
+        handleAssetFiles(e.dataTransfer.files);
+    };
+    assetInput.onchange = (e) => handleAssetFiles(e.target.files);
+}
+
+async function handleAssetFiles(files) {
+    for (const file of files) {
+        await processAndUploadAsset(file);
+    }
+}
+
+async function processAndUploadAsset(file) {
+    const statusEl = document.createElement('div');
+    statusEl.className = 'glass-card p-3 rounded-xl flex items-center justify-between border-white/10 animate-pulse bg-white/5';
+    statusEl.innerHTML = `<span class="text-xs truncate w-32">${file.name}</span><span class="text-[10px] text-brand-blue font-bold">OPTIMIZING...</span>`;
+    uploadStatusContainer.appendChild(statusEl);
+
+    try {
+        const compressed = await compressAsset(file);
+        const url = await uploadToCloudinary(compressed);
+        statusEl.remove();
+        addAssetToGallery(file.name, url);
+        showToast("Asset ready!");
+    } catch (err) {
+        statusEl.innerHTML = `<span class="text-red-500 text-[10px]">FAILED: ${err.message}</span>`;
+        setTimeout(() => statusEl.remove(), 4000);
+    }
+}
+
+function addAssetToGallery(name, url) {
+    const card = document.createElement('div');
+    card.className = 'admin-glass p-2 rounded-xl group relative overflow-hidden transition-all hover:border-brand-blue/30';
+    card.innerHTML = `
+        <img src="${url}" class="w-full aspect-video object-cover rounded-lg mb-2">
+        <div class="flex items-center justify-between px-1">
+            <span class="text-[9px] text-gray-500 truncate w-24">${name}</span>
+            <button onclick="copyToClipboard('${url}')" class="text-brand-blue hover:text-white transition-colors">
+                <i class="ph ph-copy"></i>
+            </button>
+        </div>
+    `;
+    assetsGallery.prepend(card);
+}
+
+// -- Helpers --
+async function compressAsset(file) {
+    const MAX_WIDTH = 1920;
+    const img = await new Promise((res, rej) => {
+        const r = new FileReader();
+        r.onload = e => { const i = new Image(); i.onload = () => res(i); i.src = e.target.result; };
+        r.readAsDataURL(file);
+    });
+    let w = img.width; let h = img.height;
+    if (w > MAX_WIDTH) { h = Math.round((h * MAX_WIDTH) / w); w = MAX_WIDTH; }
+    const cvs = document.createElement('canvas');
+    cvs.width = w; cvs.height = h;
+    const ctx = cvs.getContext('2d');
+    ctx.drawImage(img, 0, 0, w, h);
+    return cvs.toDataURL('image/webp', 0.85);
+}
+
+async function uploadToCloudinary(base64) {
+    const formData = new FormData();
+    formData.append('file', base64);
+    formData.append('upload_preset', CLOUDINARY_ASSET_PRESET);
+    const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`, { method: 'POST', body: formData });
+    const data = await res.json();
+    return data.secure_url;
+}
+
+window.copyToClipboard = (text) => {
+    navigator.clipboard.writeText(text);
+    showToast("URL Copied!");
+};
+
+function showToast(msg, type = "success") {
+    const toast = document.getElementById('toast');
+    const toastMsg = document.getElementById('toast-message');
+    toastMsg.innerHTML = `<i class="ph ${type === 'error' ? 'ph-x-circle text-red-400' : 'ph-check-circle text-green-400'} text-lg"></i> ${msg}`;
+    toast.classList.remove('opacity-0', 'translate-y-10');
+    setTimeout(() => toast.classList.add('opacity-0', 'translate-y-10'), 3000);
+}
 
