@@ -44,7 +44,7 @@ let compressedPhotoDataUrl = null;
 
 // -- Cloudinary Config --
 const CLOUDINARY_CLOUD_NAME = 'disurt4mx';
-const CLOUDINARY_UPLOAD_PRESET = 'gift photos';
+const CLOUDINARY_UPLOAD_PRESET = 'gift_photos'; // Standardized preset name (no spaces)
 
 // -- Initialization --
 function init() {
@@ -297,9 +297,16 @@ async function handleGiftSubmission(e) {
 
         // 1. Upload to Cloudinary instead of storing Base64 in Firestore
         if (compressedPhotoDataUrl) {
-            console.log("Uploading photo to Cloudinary...");
-            photoUrl = await uploadToCloudinary(compressedPhotoDataUrl);
-            console.log("Cloudinary Upload Success:", photoUrl);
+            console.log("DEBUG: Starting Cloudinary upload...");
+            try {
+                photoUrl = await uploadToCloudinary(compressedPhotoDataUrl);
+                console.log("DEBUG: Cloudinary Upload Success:", photoUrl);
+            } catch (cloudinaryErr) {
+                console.error("DEBUG: Cloudinary Upload Failed:", cloudinaryErr);
+                throw new Error("Photo upload failed: " + cloudinaryErr.message);
+            }
+        } else {
+            console.log("DEBUG: No photo selected for upload.");
         }
 
         // 2. Save Metadata to Firestore
@@ -325,7 +332,8 @@ async function handleGiftSubmission(e) {
 
             await db.collection("gifts").add(giftData);
             clearTimeout(firestoreTimeout);
-            console.log("Firestore metadata saved successfully.");
+            console.log("DEBUG: Firestore metadata saved successfully. Verification ID:", giftId);
+            console.log("DEBUG: Data sent to Firestore:", giftData);
         } else {
             throw new Error("Firestore not initialized.");
         }
@@ -508,11 +516,12 @@ async function loadViewerMode(id) {
             viewerContainer.querySelectorAll('[data-sender]').forEach(el => el.textContent = giftData.sender);
             viewerContainer.querySelectorAll('[data-message]').forEach(el => el.textContent = giftData.message);
 
-            // Handle Photo if provided
-            if (giftData.photoUrl) {
+            // Handle Photo if provided (Check both photoUrl and photoURL for compatibility)
+            const finalPhotoUrl = giftData.photoUrl || giftData.photoURL;
+            if (finalPhotoUrl) {
                 viewerContainer.querySelectorAll('[data-photo]').forEach(el => {
-                    if (el.tagName === 'IMG') el.src = giftData.photoUrl;
-                    else el.style.backgroundImage = `url('${giftData.photoUrl}')`;
+                    if (el.tagName === 'IMG') el.src = finalPhotoUrl;
+                    else el.style.backgroundImage = `url('${finalPhotoUrl}')`;
                     el.classList.remove('hidden');
                 });
             }

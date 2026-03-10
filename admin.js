@@ -147,8 +147,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 <td>${gift.sender}</td>
                 <td>${gift.receiver}</td>
                 <td>
-                    ${gift.photoUrl 
-                        ? `<img src="${gift.photoUrl}" class="admin-thumbnail" onclick="window.open('${gift.photoUrl}', '_blank')" title="Click to view full size">`
+                    ${(gift.photoUrl || gift.photoURL)
+                        ? `<img src="${gift.photoUrl || gift.photoURL}" class="admin-thumbnail" onclick="window.open('${gift.photoUrl || gift.photoURL}', '_blank')" title="Click to view full size">`
                         : `<span class="text-gray-600 text-xs italic">No Photo</span>`
                     }
                 </td>
