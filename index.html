@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>GiftOnScreen - Premium Expressions</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Manrope', 'sans-serif'],
+                        display: ['Playfair Display', 'serif'],
+                    },
+                    colors: {
+                        brand: {
+                            blue: '#3a6cff',
+                            pink: '#ff4fa3',
+                            dark: '#06060c'
+                        }
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'float': 'float 3s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="style.css">
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+</head>
+<body class="font-sans antialiased relative">
+
+    <!-- Top Navigation -->
+    <nav class="fixed w-full z-50 top-0 transition-all duration-300 glass-card border-x-0 border-t-0 border-b border-white/10 px-6 py-4 flex justify-between items-center">
+        <div class="flex items-center gap-2 cursor-pointer" onclick="goHome()">
+            <i class="ph-fill ph-gift text-brand-pink text-2xl animate-pulse"></i>
+            <span class="font-display font-bold text-xl tracking-wide text-white">GiftOnScreen</span>
+        </div>
+        <button id="nav-track-btn" class="flex items-center gap-2 text-sm font-semibold bg-white/10 hover:bg-white/20 px-4 py-2 rounded-full transition-colors border border-white/10">
+            <i class="ph ph-magnifying-glass"></i> Track My Gift
+        </button>
+    </nav>
+
+    <!-- MAIN APP CONTAINER -->
+    <main id="app-container" class="pt-28 pb-32 px-4 md:px-8 max-w-7xl mx-auto relative z-10 min-h-screen"></main>
+
+    <!-- STATE 1: CATEGORY GALLERY (Template inside HTML for JS extraction) -->
+    <template id="tpl-state-1">
+        <div class="fade-enter flex flex-col items-center">
+            
+            <div class="text-center mb-12 max-w-2xl mx-auto">
+                <h1 class="font-display text-4xl md:text-6xl font-bold text-white mb-6 leading-tight animate-float text-default-glow">
+                    A Private Expression <br/> <span class="text-gradient">of Emotion</span>
+                </h1>
+                
+                <!-- How It Works -->
+                <div class="glass-card rounded-2xl p-6 mt-8 mb-12 flex flex-col md:flex-row justify-center items-center gap-6 md:gap-12">
+                    <div class="flex flex-col items-center text-center">
+                        <div class="w-12 h-12 rounded-full bg-brand-blue/20 flex items-center justify-center mb-3 text-brand-blue">
+                            <i class="ph ph-hand-pointing text-2xl"></i>
+                        </div>
+                        <span class="text-sm font-semibold text-gray-300">1. Select Occasion</span>
+                    </div>
+                    <i class="ph ph-arrow-right text-gray-500 hidden md:block"></i>
+                    <i class="ph ph-arrow-down text-gray-500 md:hidden block"></i>
+                    <div class="flex flex-col items-center text-center">
+                        <div class="w-12 h-12 rounded-full bg-brand-pink/20 flex items-center justify-center mb-3 text-brand-pink">
+                            <i class="ph ph-magic-wand text-2xl"></i>
+                        </div>
+                        <span class="text-sm font-semibold text-gray-300">2. Customize Design</span>
+                    </div>
+                    <i class="ph ph-arrow-right text-gray-500 hidden md:block"></i>
+                    <i class="ph ph-arrow-down text-gray-500 md:hidden block"></i>
+                    <div class="flex flex-col items-center text-center">
+                        <div class="w-12 h-12 rounded-full bg-green-500/20 flex items-center justify-center mb-3 text-green-400">
+                            <i class="ph ph-whatsapp-logo text-2xl"></i>
+                        </div>
+                        <span class="text-sm font-semibold text-gray-300">3. Activate</span>
+                    </div>
+                </div>
+
+                <h2 class="text-2xl font-display font-medium text-white/90">Select an Occasion</h2>
+            </div>
+
+            <!-- Occasions Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-5xl">
+                <!-- Cards injected by JS -->
+            </div>
+        </div>
+    </template>
+
+    <!-- STATE 2: THEME SELECTION -->
+    <template id="tpl-state-2">
+        <div class="fade-enter w-full max-w-6xl mx-auto">
+            <button class="flex bg-transparent border-0 items-center gap-2 text-gray-400 hover:text-white mb-8 transition-colors" onclick="goHome()">
+                <i class="ph ph-arrow-left"></i> Back to Occasions
+            </button>
+            
+            <div class="mb-10">
+                <h2 class="font-display text-3xl md:text-5xl font-bold text-white mb-4">Choose a <span class="text-gradient" id="theme-category-name">Theme</span></h2>
+                <p class="text-gray-400">Select an aesthetic for your personalized gift experience.</p>
+            </div>
+
+            <!-- Themes Grid -->
+            <div id="themes-grid" class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Theme cards injected by JS -->
+            </div>
+        </div>
+    </template>
+
+    <!-- STATE 3: EDITOR -->
+    <template id="tpl-state-3">
+        <div class="fade-enter w-full max-w-7xl mx-auto h-full grid grid-cols-1 lg:grid-cols-12 gap-8 editor-grid">
+            
+            <!-- Left: Form -->
+            <div class="lg:col-span-7 flex flex-col">
+                <button class="flex items-center gap-2 text-gray-400 hover:text-white mb-6 w-fit" onclick="goState2()">
+                    <i class="ph ph-arrow-left"></i> Change Theme
+                </button>
+                
+                <div class="glass-card rounded-3xl p-6 md:p-10 flex-1">
+                    <h2 class="font-display text-3xl font-bold text-white mb-2">Personalize It</h2>
+                    <p class="text-sm text-gray-400 mb-8">Currently editing: <span id="current-theme-label" class="text-brand-pink font-semibold">...</span></p>
+                    
+                    <form id="editor-form" class="space-y-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-300 mb-2">Receiver's Name</label>
+                                <input type="text" id="receiverName" class="glass-input w-full p-3 rounded-xl transition-all" placeholder="Who is this for?" required>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-300 mb-2">Sender's Name</label>
+                                <input type="text" id="senderName" class="glass-input w-full p-3 rounded-xl transition-all" placeholder="Who is from?" required>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-300 mb-2">Your Message</label>
+                            <textarea id="messageText" rows="4" class="glass-input w-full p-3 rounded-xl transition-all resize-none" placeholder="Write your heartfelt message..." required></textarea>
+                        </div>
+
+                        <div class="glass-input p-4 rounded-xl border-dashed">
+                            <label class="flex flex-col items-center justify-center cursor-pointer w-full h-24">
+                                <i class="ph ph-image text-3xl text-gray-400 mb-2"></i>
+                                <span class="text-sm text-gray-300">Upload a memorable photo (< 500kb)</span>
+                                <input type="file" id="photoUpload" class="hidden" accept="image/*">
+                            </label>
+                            <p id="photo-status" class="text-xs text-center mt-2 text-brand-pink hidden"></p>
+                        </div>
+
+                        <button type="submit" class="w-full bg-gradient-to-r from-brand-blue to-brand-pink text-white font-bold text-lg py-4 rounded-xl hover:shadow-[0_0_20px_rgba(255,79,163,0.4)] transition-all transform hover:-translate-y-1">
+                            Generate Private Link
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Right: Preview Container -->
+            <div class="lg:col-span-5 flex justify-center lg:justify-end items-center preview-container min-h-[600px] lg:min-h-0 relative">
+                 <div class="mock-device flex items-center justify-center relative">
+                     <!-- Live Preview Content -->
+                     <div id="live-preview" class="w-full h-full bg-black flex flex-col justify-center items-center text-center p-6 word-break-words overflow-auto relative">
+                         <div class="absolute inset-0 bg-gradient-to-br from-gray-900 to-black z-0"></div>
+                         <div class="z-10 w-full flex flex-col items-center">
+                             <h2 id="preview-receiver" class="font-display text-3xl text-white mb-4">Receiver</h2>
+                             <img id="preview-photo" src="" class="w-full max-w-[200px] rounded-xl border border-white/20 mb-4 hidden shadow-2xl">
+                             <p id="preview-message" class="text-gray-300 mb-4 italic">Message preview...</p>
+                             <p class="text-sm text-gray-500 uppercase tracking-widest mt-4">From: <span id="preview-sender" class="text-brand-pink font-bold">Sender</span></p>
+                         </div>
+                     </div>
+                 </div>
+            </div>
+            
+        </div>
+    </template>
+
+    <!-- FLOATING WHATSAPP BUTTON -->
+    <a href="https://wa.me/916394460784?text=Hello" target="_blank" class="fixed bottom-6 right-6 z-50 group flex items-center justify-center">
+        <!-- Ping effect -->
+        <span class="absolute inset-0 rounded-full bg-green-400 opacity-75 animate-ping group-hover:hidden"></span>
+        <div class="relative bg-green-500 text-white p-4 rounded-full shadow-lg flex items-center justify-center hover:bg-green-600 transition-colors transform hover:scale-110">
+            <i class="ph-fill ph-whatsapp-logo text-3xl"></i>
+        </div>
+    </a>
+
+    <!-- TRACK MODAL -->
+    <div id="track-modal" class="fixed inset-0 z-[100] hidden items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+        <div class="glass-card w-full max-w-md p-8 rounded-3xl relative fade-enter">
+            <button id="close-modal" class="absolute top-4 right-4 text-gray-400 hover:text-white">
+                <i class="ph ph-x text-2xl"></i>
+            </button>
+            <h3 class="font-display text-2xl font-bold text-white mb-2">Track Your Gift</h3>
+            <p class="text-gray-400 text-sm mb-6">Enter your securely generated GIFT-ID to check its activation status.</p>
+            
+            <div class="flex gap-2">
+                <input type="text" id="track-id" class="glass-input flex-1 p-3 rounded-xl uppercase font-mono" placeholder="GIFT-XXXXX">
+                <button id="track-submit" class="bg-brand-blue text-white px-6 py-3 rounded-xl font-bold hover:bg-blue-600 transition-colors">Check</button>
+            </div>
+            
+            <div id="track-result" class="mt-6 hidden p-4 rounded-xl border border-white/10 bg-black/30 text-center"></div>
+        </div>
+    </div>
+    
+    <!-- LOADING OVERLAY -->
+    <div id="loading-overlay" class="fixed inset-0 z-[200] hidden flex flex-col items-center justify-center bg-black/90 backdrop-blur-md">
+        <div class="spinner mb-4"></div>
+        <p id="loading-text" class="text-brand-pink font-semibold tracking-wide animate-pulse">Processing...</p>
+    </div>
+
+    <!-- VIEWER MODE CONTAINER -->
+    <div id="viewer-container" class="hidden fixed inset-0 z-[300] bg-black text-white overflow-auto">
+        <!-- Injected via JS -->
+    </div>
+
+    <!-- Firebase Compat for Local Execution without HTTP Server (No CORS block) -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+
+    <script src="firebase-config.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - GiftOnScreen</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+</head>
+<body class="admin-body">
+    
+    <div id="admin-login" class="admin-container">
+        <h1>Admin Login</h1>
+        <form id="login-form">
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" id="admin-email" required>
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" id="admin-password" required>
+            </div>
+            <button type="submit" class="primary-btn">Login</button>
+            <p id="login-error" class="error-text hidden"></p>
+        </form>
+    </div>
+
+    <div id="admin-dashboard" class="admin-container hidden">
+        <header class="admin-header">
+            <h1>Admin Dashboard</h1>
+            <button id="logout-btn" class="secondary-btn">Logout</button>
+        </header>
+
+        <!-- Manual Activation Section -->
+        <div class="manual-activation-section mb-10 pb-8 border-b border-white/5">
+            <h2 class="text-xl font-bold mb-4">Manual Activation</h2>
+            <p class="text-gray-400 text-sm mb-4">Enter a Gift ID (e.g. GIFT-XXXX) to manually activate it.</p>
+            <div class="flex gap-4">
+                <input type="text" id="manual-gift-id" class="glass-input flex-1 p-3 rounded-lg uppercase" placeholder="GIFT-ID" style="background: rgba(0,0,0,0.2);">
+                <button id="manual-activate-btn" class="primary-btn" style="width: auto; padding-left: 32px; padding-right: 32px;">Activate Now</button>
+            </div>
+            <p id="manual-feedback" class="mt-3 text-sm hidden"></p>
+        </div>
+
+        <section>
+            <h2 class="text-xl font-bold mb-4">Pending Gifts</h2>
+
+        <section class="mb-10">
+            <h2 class="text-xl font-bold mb-4">Pending Gifts</h2>
+            <div class="table-responsive">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Sender</th>
+                            <th>Receiver</th>
+                            <th>Template</th>
+                            <th>Date</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="pending-list">
+                        <!-- Pending rows injected here -->
+                    </tbody>
+                </table>
+            </div>
+            <p id="no-pending" class="hidden mt-4 text-gray-500">No pending gifts found.</p>
+        </section>
+
+        <section>
+            <h2 class="text-xl font-bold mb-4 text-green-400">Activated Gifts</h2>
+            <div class="table-responsive">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Sender</th>
+                            <th>Receiver</th>
+                            <th>Template</th>
+                            <th>Date</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="active-list">
+                        <!-- Activated rows injected here -->
+                    </tbody>
+                </table>
+            </div>
+            <p id="no-active" class="hidden mt-4 text-gray-500">No activated gifts found.</p>
+        </section>
+    </div>
+
+    <!-- Firebase Compat for Local Execution -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+
+    <script src="firebase-config.js"></script>
+    <script src="admin.js"></script>
+</body>
+</html>

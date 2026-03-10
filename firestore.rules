@@ -1,0 +1,21 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Gifts Collection
+    match /gifts/{giftDoc} {
+      // Anyone can create a new gift request
+      allow create: if true;
+      
+      // Anyone can read a gift if they know its document ID (the secure link)
+      allow get: if true;
+      
+      // No one can list all gifts except authenticated admins
+      allow list: if request.auth != null;
+      
+      // Only authenticated admins can activate/update or delete gifts
+      allow update, delete: if request.auth != null;
+    }
+  }
+}

@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Birthday Ritual - Ultra Premium</title>
+    <!-- Tailwind CSS CDN with plugins -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <style data-purpose="font-imports">
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap');
+    </style>
+    <style data-purpose="layout-and-animations">
+        :root {
+            --gold-primary: #D4AF37;
+            --gold-shimmer: linear-gradient(45deg, #BF953F, #FCF6BA, #B38728, #FBF5B7, #AA771C);
+        }
+
+        body {
+            background-color: #000000;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            font-family: 'Playfair Display', serif;
+        }
+
+        /* Fixed 9:16 Aspect Ratio Container */
+        .ritual-container {
+            width: 100vw;
+            height: 100vh;
+            max-width: 100%;
+            position: relative;
+            background: radial-gradient(circle at center, #1a0b2e 0%, #000000 70%);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Shimmer Gold Text Effect */
+        .shimmer-gold {
+            background: var(--gold-shimmer);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shimmer 4s linear infinite;
+        }
+
+        @keyframes shimmer {
+            to {
+                background-position: 200% center;
+            }
+        }
+
+        /* Candle Flicker Effect */
+        .flame {
+            filter: blur(2px);
+            transform-origin: center bottom;
+            animation: flicker 0.1s infinite alternate;
+            display: none;
+        }
+
+        @keyframes flicker {
+            0% {
+                transform: scale(1, 1) rotate(-1deg);
+                opacity: 0.8;
+            }
+
+            100% {
+                transform: scale(1.1, 1.2) rotate(1deg);
+                opacity: 1;
+            }
+        }
+
+        /* Split Cake Animation */
+        .cake-split-left {
+            transform: translateX(-150%) rotate(-10deg);
+            opacity: 0;
+            transition: all 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .cake-split-right {
+            transform: translateX(150%) rotate(10deg);
+            opacity: 0;
+            transition: all 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Lighter Interaction */
+        #lighter-tool {
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            touch-action: none;
+        }
+
+        #lighter-tool:active {
+            transform: scale(0.9);
+        }
+    </style>
+</head>
+
+<body class="antialiased text-white">
+    <!-- BEGIN: Main Ritual Container -->
+    <main class="ritual-container" data-purpose="ritual-viewport">
+        <!-- BEGIN: Final Reveal Layer (Hidden Behind Cake Initially) -->
+        <div class="absolute inset-0 flex flex-col items-center justify-center opacity-0 z-0 transition-opacity duration-1000 pointer-events-none px-8 text-center"
+            data-purpose="final-message-container" id="final-reveal">
+            <h1 class="font-['Cinzel'] text-4xl mb-4 shimmer-gold tracking-widest font-bold" id="data-receiver">NAME
+            </h1>
+            <p class="text-xl italic leading-relaxed text-gray-300 max-w-xs" id="data-message">
+                May the stars align for your most magical year yet.
+            </p>
+            <div class="mt-12 w-12 h-px bg-yellow-600/50"></div>
+        </div>
+        <!-- END: Final Reveal Layer -->
+        <!-- BEGIN: Interaction Zone -->
+        <div class="relative w-full h-full flex flex-col items-center justify-center z-10">
+            <!-- Component C: The Cake (Split Design) -->
+            <div class="relative w-72 h-72 flex items-center justify-center" data-purpose="cake-assembly">
+                <!-- Left Half of Cake -->
+                <svg class="absolute w-1/2 h-full left-0 transition-all duration-1000" fill="none" id="cake-left"
+                    viewbox="0 0 100 200" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M100 180H20C14.4772 180 10 175.523 10 170V100H100V180Z" fill="#2D1B36"></path>
+                    <path d="M100 100H10C10 94.4772 14.4772 90 20 90H100V100Z" fill="#4A2B59"></path>
+                    <path d="M100 90C100 80 90 70 60 70C30 70 10 80 10 90H100Z" fill="#D4AF37" fill-opacity="0.3">
+                    </path>
+                    <rect fill="#1A0B2E" height="110" width="2" x="98" y="70"></rect>
+                </svg>
+                <!-- Right Half of Cake -->
+                <svg class="absolute w-1/2 h-full right-0 transition-all duration-1000" fill="none" id="cake-right"
+                    viewbox="100 0 100 200" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M100 180H180C185.523 180 190 175.523 190 170V100H100V180Z" fill="#2D1B36"></path>
+                    <path d="M100 100H190C190 94.4772 185.523 90 180 90H100V100Z" fill="#4A2B59"></path>
+                    <path d="M100 90C100 80 110 70 140 70C170 70 190 80 190 90H100Z" fill="#D4AF37" fill-opacity="0.3">
+                    </path>
+                </svg>
+                <!-- Component A: The Candle (Centered on the Cake) -->
+                <div class="absolute bottom-[110px] left-1/2 -translate-x-1/2 transition-opacity duration-500"
+                    data-purpose="candle-component" id="candle-container">
+                    <svg fill="none" height="80" viewbox="0 0 24 80" width="24" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Wick -->
+                        <rect fill="#444" height="6" width="2" x="11" y="20"></rect>
+                        <!-- Candle Body -->
+                        <rect fill="url(#candleGradient)" height="50" rx="2" width="8" x="8" y="26"></rect>
+                        <!-- Flame (Initial State: Hidden) -->
+                        <g class="flame" id="candle-flame">
+                            <path
+                                d="M12 0C12 0 6 8 6 12C6 15.3137 8.68629 18 12 18C15.3137 18 18 15.3137 18 12C18 8 12 0 12 0Z"
+                                fill="#FFA500"></path>
+                            <path
+                                d="M12 4C12 4 9 9 9 12C9 13.6569 10.3431 15 12 15C13.6569 15 15 13.6569 15 12C15 9 12 4 12 4Z"
+                                fill="#FFD700"></path>
+                        </g>
+                        <defs>
+                            <lineargradient gradientunits="userSpaceOnUse" id="candleGradient" x1="8" x2="16" y1="26"
+                                y2="76">
+                                <stop stop-color="#D4AF37"></stop>
+                                <stop offset="1" stop-color="#8B6914"></stop>
+                            </lineargradient>
+                        </defs>
+                    </svg>
+                </div>
+            </div>
+        </div>
+        <!-- END: Interaction Zone -->
+        <!-- Component B: The Lighter Tool (Bottom) -->
+        <div class="absolute bottom-12 z-20" data-purpose="tool-dock">
+            <div class="bg-zinc-900 border border-zinc-700/50 p-6 rounded-full shadow-2xl backdrop-blur-md"
+                id="lighter-tool">
+                <svg class="text-yellow-500" fill="none" height="32" stroke="currentColor" stroke-linecap="round"
+                    stroke-linejoin="round" stroke-width="1.5" viewbox="0 0 24 24" width="32">
+                    <path d="M18 12h-5"></path>
+                    <path d="M13 12a3 3 0 0 0-3-3H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h6a3 3 0 0 0 3-3"></path>
+                    <path d="M13 18h1"></path>
+                    <path d="M13 8h1"></path>
+                    <path d="M18 15V9a3 3 0 0 0-3-3 3 3 0 0 0-3 3v6a3 3 0 0 0 3 3 3 3 0 0 0 3-3Z"></path>
+                </svg>
+            </div>
+            <p class="text-zinc-500 text-[10px] uppercase tracking-widest text-center mt-4 font-sans">Tap to Light
+                Ritual</p>
+        </div>
+    </main>
+    <!-- END: Main Ritual Container -->
+    <script data-purpose="ritual-logic">
+        document.addEventListener('DOMContentLoaded', () => {
+            const lighter = document.getElementById('lighter-tool');
+            const flame = document.getElementById('candle-flame');
+            const candleContainer = document.getElementById('candle-container');
+            const cakeLeft = document.getElementById('cake-left');
+            const cake_right = document.getElementById('cake-right');
+            const finalReveal = document.getElementById('final-reveal');
+
+            let ritualStarted = false;
+
+            // Handle the lighting of the candle
+            lighter.addEventListener('click', () => {
+                if (ritualStarted) return;
+                ritualStarted = true;
+
+                // 1. Show the flame
+                flame.style.display = 'block';
+                lighter.parentElement.style.opacity = '0';
+                lighter.parentElement.style.pointerEvents = 'none';
+
+                // 2. Short pause for visual impact
+                setTimeout(() => {
+                    // 3. Candle fades out
+                    candleContainer.style.opacity = '0';
+
+                    // 4. Cake splits apart
+                    setTimeout(() => {
+                        cakeLeft.classList.add('cake-split-left');
+                        cake_right.classList.add('cake-split-right');
+
+                        // 5. Reveal the content
+                        finalReveal.classList.remove('opacity-0');
+                        finalReveal.classList.add('opacity-100');
+                    }, 600);
+                }, 1500);
+            });
+        });
+    </script>
+</body>
+
+</html>
