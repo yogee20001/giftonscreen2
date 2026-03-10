@@ -148,7 +148,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <td>${gift.receiver}</td>
                 <td>
                     ${gift.photoUrl 
-                        ? `<img src="${gift.photoUrl}" class="admin-thumbnail" onclick="window.open('${gift.photoUrl}', '_blank')" title="Click to view full size">`
+                        ? `<img src="${gift.photoUrl}" class="admin-thumbnail" onclick="viewFullImage('${gift.photoUrl}')" title="Click to view full size">`
                         : `<span class="text-gray-600 text-xs italic">No Photo</span>`
                     }
                 </td>
@@ -163,6 +163,13 @@ document.addEventListener('DOMContentLoaded', () => {
             </tr>
         `).join('');
     }
+
+    // Helper to view Base64 images without Top-Frame navigation error
+    window.viewFullImage = (dataUrl) => {
+        const win = window.open();
+        win.document.write(`<iframe src="${dataUrl}" frameborder="0" style="border:0; top:0px; left:0px; bottom:0px; right:0px; width:100%; height:100%;" allowfullscreen></iframe>`);
+        win.document.title = "View Image - GiftOnScreen";
+    };
 
     // Replace the old fetchPendingGifts calls with fetchGifts
     function fetchPendingGifts() { fetchGifts(); }
