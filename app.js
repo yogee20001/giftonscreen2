@@ -272,13 +272,10 @@ async function handleGiftSubmission(e) {
         const giftId = 'GIFT-' + Math.random().toString(36).substr(2, 6).toUpperCase();
         let photoUrl = "";
 
-        // 1. Upload Photo to Storage if exists
-        if (compressedPhotoDataUrl && storage) {
-            console.log("Uploading photo to storage...");
-            const storageRef = storage.ref(`photos/${giftId}.jpg`);
-            const uploadTask = await storageRef.putString(compressedPhotoDataUrl, 'data_url');
-            photoUrl = await uploadTask.ref.getDownloadURL();
-            console.log("Photo uploaded:", photoUrl);
+        // 1. Store Photo directly in Firestore (Base64) to avoid Storage costs/rules
+        if (compressedPhotoDataUrl) {
+            console.log("Storing photo directly in Firestore document (Base64)...");
+            photoUrl = compressedPhotoDataUrl;
         }
 
         // 2. Save Metadata to Firestore
@@ -291,14 +288,22 @@ async function handleGiftSubmission(e) {
             template: currentTheme.id,
             occasionId: currentOccasion.id,
             status: 'pending',
-            createdAt: Date.now() // Simple timestamp for local sorting resilience
+            createdAt: Date.now()
         };
 
         if (db) {
-            console.log("Saving gift metadata to Firestore...");
+            console.log("Saving gift metadata to Firestore...", giftData);
+            
+            // Set a timeout warning if Firestore takes too long
+            const firestoreTimeout = setTimeout(() => {
+                console.warn("Firestore is taking a long time. Check your Security Rules or Database status in Firebase Console.");
+            }, 5000);
+
             await db.collection("gifts").add(giftData);
+            clearTimeout(firestoreTimeout);
+            console.log("Firestore metadata saved successfully.");
         } else {
-            throw new Error("Firestore not initialized. Check your config.");
+            throw new Error("Firestore not initialized.");
         }
 
         const domain = window.location.origin;
