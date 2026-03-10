@@ -273,3 +273,17 @@ body {
     gap: 6px;
 }
 
+/* Admin Dashboard Specifics */
+.admin-thumbnail {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 1px solid rgba(255,255,255,0.1);
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+.admin-thumbnail:hover {
+    transform: scale(1.1);
+    border-color: #3b82f6;
+}

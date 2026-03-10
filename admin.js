@@ -146,6 +146,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 <td><strong>${gift.id}</strong></td>
                 <td>${gift.sender}</td>
                 <td>${gift.receiver}</td>
+                <td>
+                    ${gift.photoUrl 
+                        ? `<img src="${gift.photoUrl}" class="admin-thumbnail" onclick="window.open('${gift.photoUrl}', '_blank')" title="Click to view full size">`
+                        : `<span class="text-gray-600 text-xs italic">No Photo</span>`
+                    }
+                </td>
                 <td>${gift.template}</td>
                 <td>${new Date(gift.createdAt).toLocaleDateString()}</td>
                 <td>
