@@ -2,12 +2,13 @@
 
 // TODO: Replace with actual Firebase Config provided by user later
 const firebaseConfig = {
-  apiKey: "PLACEHOLDER_API_KEY",
-  authDomain: "PLACEHOLDER_AUTH_DOMAIN",
-  projectId: "PLACEHOLDER_PROJECT_ID",
-  storageBucket: "PLACEHOLDER_STORAGE_BUCKET",
-  messagingSenderId: "PLACEHOLDER_SENDER_ID",
-  appId: "PLACEHOLDER_APP_ID"
+  apiKey: "AIzaSyDDnD8UUvRJnjwU9-Ee2-5uh0ybG7pkutE",
+  authDomain: "giftonscreen.firebaseapp.com",
+  projectId: "giftonscreen",
+  storageBucket: "giftonscreen.firebasestorage.app",
+  messagingSenderId: "984262120605",
+  appId: "1:984262120605:web:df7aa8c601c2f7f10bf074",
+  measurementId: "G-6QKJGDW5Z6"
 };
 
 // Initialize Firebase App

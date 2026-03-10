@@ -34,6 +34,7 @@ body {
 .text-gradient {
   background: linear-gradient(120deg, var(--blue-soft), var(--pink-soft));
   -webkit-background-clip: text;
+  background-clip: text;
   color: transparent;
 }
 
@@ -234,5 +235,41 @@ body {
 
 .table-responsive {
     overflow-x: auto;
+}
+
+/* Status Utilities */
+.bg-green-500 { background-color: #22c55e !important; }
+.bg-yellow-500 { background-color: #eab308 !important; }
+.bg-red-500 { background-color: #ef4444 !important; }
+.text-blue-400 { color: #60a5fa !important; }
+.text-green-400 { color: #4ade80 !important; }
+.text-yellow-400 { color: #fbbf24 !important; }
+
+.animate-pulse {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: .5; }
+}
+
+/* Dashboard Polish */
+.admin-table tr:hover {
+    background: rgba(255,255,255,0.02);
+}
+
+.admin-header h1 {
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin-bottom: 4px;
+}
+
+#db-status {
+    font-size: 0.75rem;
+    color: #94a3b8;
+    display: flex;
+    align-items: center;
+    gap: 6px;
 }
 
