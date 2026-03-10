@@ -6,79 +6,62 @@ const CLOUDINARY_ASSET_PRESET = 'assets';
 let currentTab = 'activation';
 let allGifts = [];
 
-// -- DOM Elements --
-const loginOverlay = document.getElementById('admin-login');
-const dashboard = document.getElementById('admin-dashboard');
-const loginForm = document.getElementById('login-form');
-const loginError = document.getElementById('login-error');
-const logoutBtn = document.getElementById('logout-btn');
-const dbStatus = document.getElementById('db-status');
-const viewTitle = document.getElementById('view-title');
-const globalSearch = document.getElementById('global-search');
-
-// Tabs
-const sidebarItems = document.querySelectorAll('.sidebar-item');
-const tabContents = document.querySelectorAll('.tab-content');
-
-// Lists
-const activationList = document.getElementById('activation-list');
-const allGiftsList = document.getElementById('all-gifts-list');
-const assetsGallery = document.getElementById('assets-gallery');
-const noActivation = document.getElementById('no-activation');
-
-// Assets
-const dropZone = document.getElementById('drop-zone');
-const assetInput = document.getElementById('asset-input');
-const uploadStatusContainer = document.getElementById('upload-status-container');
+// -- DOM Elements (Lazy Lookup) --
+const getEl = (id) => document.getElementById(id);
+const qAll = (sel) => document.querySelectorAll(sel);
 
 // -- Initialization --
 firebase.auth().onAuthStateChanged(user => {
     if (user) {
-        loginOverlay.classList.add('hidden');
-        dashboard.classList.remove('hidden');
+        getEl('admin-login').classList.add('hidden');
+        getEl('admin-dashboard').classList.remove('hidden');
         initDashboard();
     } else {
-        loginOverlay.classList.remove('hidden');
-        dashboard.classList.add('hidden');
+        getEl('admin-login').classList.remove('hidden');
+        getEl('admin-dashboard').classList.add('hidden');
     }
 });
 
 // -- Login Logic --
-loginForm.onsubmit = async (e) => {
+getEl('login-form').onsubmit = async (e) => {
     e.preventDefault();
-    const email = document.getElementById('admin-email').value;
-    const password = document.getElementById('admin-password').value;
-    const btn = loginForm.querySelector('button');
+    const email = getEl('admin-email').value;
+    const password = getEl('admin-password').value;
+    const btn = getEl('login-form').querySelector('button');
     
     btn.disabled = true;
     btn.textContent = "Verifying...";
-    loginError.classList.add('hidden');
+    getEl('login-error').classList.add('hidden');
     
     try {
         await firebase.auth().signInWithEmailAndPassword(email, password);
     } catch (err) {
-        loginError.textContent = "Invalid credentials. Access denied.";
-        loginError.classList.remove('hidden');
+        getEl('login-error').textContent = "Invalid credentials. Access denied.";
+        getEl('login-error').classList.remove('hidden');
     } finally {
         btn.disabled = false;
         btn.textContent = "Login to Dashboard";
     }
 };
 
+const logoutBtn = getEl('logout-btn');
 if (logoutBtn) logoutBtn.onclick = () => firebase.auth().signOut();
 
 // -- Tab Navigation --
-sidebarItems.forEach(item => {
-    item.onclick = () => {
-        const target = item.getAttribute('data-tab');
-        switchTab(target);
-    };
-});
+function initTabs() {
+    const sidebarItems = qAll('.sidebar-item');
+    sidebarItems.forEach(item => {
+        item.onclick = () => {
+            const target = item.getAttribute('data-tab');
+            switchTab(target);
+        };
+    });
+}
 
 function switchTab(tabId) {
     currentTab = tabId;
-    sidebarItems.forEach(i => i.classList.toggle('active', i.getAttribute('data-tab') === tabId));
-    tabContents.forEach(c => c.classList.toggle('active', c.id === `tab-${tabId}`));
+    qAll('.sidebar-item').forEach(i => i.classList.toggle('active', i.getAttribute('data-tab') === tabId));
+    qAll('.tab-content').forEach(c => c.classList.toggle('active', c.id === `tab-${tabId}`));
     
     // Update Header
     const titles = {
@@ -86,13 +69,13 @@ function switchTab(tabId) {
         'all-gifts': 'All Gifts Database',
         'assets': 'Asset Hub'
     };
-    viewTitle.textContent = titles[tabId];
+    getEl('view-title').textContent = titles[tabId];
     renderCurrentTab();
 }
 
 // -- Dashboard Core --
 function initDashboard() {
-    dbStatus.innerHTML = '<span class="w-2 h-2 rounded-full bg-green-500"></span> Live Connection';
+    getEl('db-status').innerHTML = '<span class="w-2 h-2 rounded-full bg-green-500"></span> Live Connection';
     
     // Listen to Gifts
     db.collection('gifts').orderBy('createdAt', 'desc').onSnapshot(snapshot => {
@@ -101,22 +84,25 @@ function initDashboard() {
         updateStats();
     }, err => {
         console.error("Firestore Listen Error:", err);
-        dbStatus.innerHTML = '<span class="w-2 h-2 rounded-full bg-red-500"></span> Sync Error';
+        if (getEl('db-status')) getEl('db-status').innerHTML = '<span class="w-2 h-2 rounded-full bg-red-500"></span> Sync Error';
     });
 
+    initTabs();
     initAssetUpload();
 }
 
 function updateStats() {
     const pendingCount = allGifts.filter(g => g.status === 'pending').length;
-    const statPending = document.getElementById('stat-pending');
+    const statPending = getEl('stat-pending');
     if (statPending) statPending.textContent = pendingCount;
 }
 
-globalSearch.oninput = () => renderCurrentTab();
+const globalSearch = getEl('global-search');
+if (globalSearch) globalSearch.oninput = () => renderCurrentTab();
 
 function renderCurrentTab() {
-    const query = globalSearch.value.toLowerCase();
+    const searchVal = getEl('global-search')?.value || "";
+    const query = searchVal.toLowerCase();
     const filtered = allGifts.filter(g => 
         (g.id || "").toLowerCase().includes(query) || 
         (g.recipientName || "").toLowerCase().includes(query) ||
@@ -130,13 +116,16 @@ function renderCurrentTab() {
 // -- Render Functions --
 function renderActivation(gifts) {
     const pending = gifts.filter(g => g.status === 'pending');
-    activationList.innerHTML = '';
+    const container = getEl('activation-list');
+    if (!container) return;
+    
+    container.innerHTML = '';
     
     if (pending.length === 0) {
-        noActivation.classList.remove('hidden');
+        getEl('no-activation')?.classList.remove('hidden');
         return;
     }
-    noActivation.classList.add('hidden');
+    getEl('no-activation')?.classList.add('hidden');
 
     pending.forEach(gift => {
         const row = document.createElement('tr');
@@ -147,13 +136,15 @@ function renderActivation(gifts) {
         row.innerHTML = `
             <td class="p-4 font-mono text-brand-blue font-bold">${gift.id}</td>
             <td class="p-4">
-                <p class="font-bold">${gift.recipientName || 'N/A'}</p>
-                <p class="text-[10px] text-gray-500">From: ${gift.senderName || 'Anonymous'}</p>
+                <p class="font-bold text-sm">${gift.recipientName || 'N/A'}</p>
+                <p class="text-[10px] text-gray-500 uppercase tracking-tighter">From: ${gift.senderName || 'Anonymous'}</p>
             </td>
             <td class="p-4">
-                <img src="${photo}" class="w-10 h-10 rounded-lg object-cover border border-white/10 cursor-pointer" onclick="window.open('${photo}')">
+                <div class="w-10 h-10 rounded-lg overflow-hidden border border-white/10">
+                    <img src="${photo}" class="w-full h-full object-cover cursor-pointer hover:scale-110 transition-transform" onclick="window.open('${photo}')">
+                </div>
             </td>
-            <td class="p-4 text-gray-500 text-xs">${date}</td>
+            <td class="p-4 text-gray-500 text-[10px]">${date}</td>
             <td class="p-4 text-right">
                 <label class="switch">
                     <input type="checkbox" onchange="toggleGiftStatus('${gift.docId}', this.checked)" ${gift.status === 'active' ? 'checked' : ''}>
@@ -161,23 +152,26 @@ function renderActivation(gifts) {
                 </label>
             </td>
         `;
-        activationList.appendChild(row);
+        container.appendChild(row);
     });
 }
 
 function renderAllGifts(gifts) {
-    allGiftsList.innerHTML = '';
+    const container = getEl('all-gifts-list');
+    if (!container) return;
+    container.innerHTML = '';
+    
     gifts.forEach(gift => {
         const row = document.createElement('tr');
         row.className = 'border-b border-white/5 hover:bg-white/5 transition-colors';
         row.innerHTML = `
-            <td class="p-4 font-mono text-xs text-gray-400">${gift.id}</td>
+            <td class="p-4 font-mono text-[10px] text-gray-500">${gift.id}</td>
             <td class="p-4">
-                <p class="font-bold">${gift.recipientName || 'N/A'}</p>
+                <p class="font-bold text-sm">${gift.recipientName || 'N/A'}</p>
                 <p class="text-[10px] text-gray-500">From: ${gift.senderName || 'Anonymous'}</p>
             </td>
             <td class="p-4">
-                <span class="px-2 py-1 rounded bg-white/5 text-[10px] uppercase font-bold text-gray-400">${gift.occasion || 'General'}</span>
+                <span class="px-2 py-1 rounded bg-white/5 text-[10px] uppercase font-bold text-gray-400 border border-white/5">${gift.occasion || 'General'}</span>
             </td>
             <td class="p-4 text-right">
                 <label class="switch scale-75 origin-right">
@@ -186,7 +180,7 @@ function renderAllGifts(gifts) {
                 </label>
             </td>
         `;
-        allGiftsList.appendChild(row);
+        container.appendChild(row);
     });
 }
 
@@ -195,7 +189,7 @@ async function toggleGiftStatus(docId, isActive) {
     const status = isActive ? 'active' : 'pending';
     try {
         await db.collection('gifts').doc(docId).update({ status });
-        showToast(`Gift ID updated to ${status.toUpperCase()}`);
+        showToast(`Status updated to ${status.toUpperCase()}`);
     } catch (err) {
         console.error("Status Update Failed:", err);
         showToast("Error updating status", "error");
@@ -204,13 +198,16 @@ async function toggleGiftStatus(docId, isActive) {
 
 // -- Asset Hub Logic --
 function initAssetUpload() {
-    if (!dropZone) return;
+    const dropZone = getEl('drop-zone');
+    const assetInput = getEl('asset-input');
+    if (!dropZone || !assetInput) return;
+
     dropZone.onclick = () => assetInput.click();
-    dropZone.ondragover = (e) => { e.preventDefault(); dropZone.classList.add('bg-white/10'); };
-    dropZone.ondragleave = () => dropZone.classList.remove('bg-white/10');
+    dropZone.ondragover = (e) => { e.preventDefault(); dropZone.classList.add('bg-brand-blue/5', 'border-brand-blue/30'); };
+    dropZone.ondragleave = () => dropZone.classList.remove('bg-brand-blue/5', 'border-brand-blue/30');
     dropZone.ondrop = (e) => {
         e.preventDefault();
-        dropZone.classList.remove('bg-white/10');
+        dropZone.classList.remove('bg-brand-blue/5', 'border-brand-blue/30');
         handleAssetFiles(e.dataTransfer.files);
     };
     assetInput.onchange = (e) => handleAssetFiles(e.target.files);
@@ -223,17 +220,20 @@ async function handleAssetFiles(files) {
 }
 
 async function processAndUploadAsset(file) {
+    const container = getEl('upload-status-container');
+    if (!container) return;
+
     const statusEl = document.createElement('div');
     statusEl.className = 'glass-card p-3 rounded-xl flex items-center justify-between border-white/10 animate-pulse bg-white/5';
     statusEl.innerHTML = `<span class="text-xs truncate w-32">${file.name}</span><span class="text-[10px] text-brand-blue font-bold">OPTIMIZING...</span>`;
-    uploadStatusContainer.appendChild(statusEl);
+    container.appendChild(statusEl);
 
     try {
         const compressed = await compressAsset(file);
         const url = await uploadToCloudinary(compressed);
         statusEl.remove();
         addAssetToGallery(file.name, url);
-        showToast("Asset ready!");
+        showToast("Asset uploaded!");
     } catch (err) {
         statusEl.innerHTML = `<span class="text-red-500 text-[10px]">FAILED: ${err.message}</span>`;
         setTimeout(() => statusEl.remove(), 4000);
@@ -241,6 +241,9 @@ async function processAndUploadAsset(file) {
 }
 
 function addAssetToGallery(name, url) {
+    const gallery = getEl('assets-gallery');
+    if (!gallery) return;
+
     const card = document.createElement('div');
     card.className = 'admin-glass p-2 rounded-xl group relative overflow-hidden transition-all hover:border-brand-blue/30';
     card.innerHTML = `
@@ -252,7 +255,7 @@ function addAssetToGallery(name, url) {
             </button>
         </div>
     `;
-    assetsGallery.prepend(card);
+    gallery.prepend(card);
 }
 
 // -- Helpers --
@@ -287,8 +290,9 @@ window.copyToClipboard = (text) => {
 };
 
 function showToast(msg, type = "success") {
-    const toast = document.getElementById('toast');
-    const toastMsg = document.getElementById('toast-message');
+    const toast = getEl('toast');
+    const toastMsg = getEl('toast-message');
+    if (!toast || !toastMsg) return;
     toastMsg.innerHTML = `<i class="ph ${type === 'error' ? 'ph-x-circle text-red-400' : 'ph-check-circle text-green-400'} text-lg"></i> ${msg}`;
     toast.classList.remove('opacity-0', 'translate-y-10');
     setTimeout(() => toast.classList.add('opacity-0', 'translate-y-10'), 3000);
