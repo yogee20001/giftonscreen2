@@ -231,32 +231,69 @@ function renderState3() {
     appContainer.appendChild(node);
 }
 
-// -- Compression Utility --
-function compressImage(file, maxSizeKB) {
-    return new Promise((resolve, reject) => {
+// -- High-Quality Compression Utility --
+async function compressImage(file, maxSizeKB) {
+    const MAX_WIDTH = 1280; // 720p width for high quality
+    const targetSize = maxSizeKB * 1024;
+    
+    // 1. Load image
+    const img = await new Promise((resolve, reject) => {
         const reader = new FileReader();
-        reader.readAsDataURL(file);
         reader.onload = e => {
             const img = new Image();
+            img.onload = () => resolve(img);
+            img.onerror = reject;
             img.src = e.target.result;
-            img.onload = () => {
-                const cvs = document.createElement('canvas');
-                let w = img.width; let h = img.height;
-                const MAX = 800;
-                if(w > h && w > MAX) { h *= MAX/w; w = MAX; }
-                else if (h > MAX) { w *= MAX/h; h = MAX; }
-                cvs.width = w; cvs.height = h;
-                const ctx = cvs.getContext('2d');
-                ctx.drawImage(img, 0, 0, w, h);
-                resolve(cvs.toDataURL('image/jpeg', 0.8));
-            };
-            img.onerror = err => reject(err);
         };
-        reader.onerror = err => reject(err);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
     });
+
+    // 2. Calculate initial dimensions
+    let w = img.width;
+    let h = img.height;
+    if (w > MAX_WIDTH) {
+        h = Math.round((h * MAX_WIDTH) / w);
+        w = MAX_WIDTH;
+    }
+
+    const canvas = document.createElement('canvas');
+    canvas.width = w;
+    canvas.height = h;
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(img, 0, 0, w, h);
+
+    // 3. Iterative Compression
+    let quality = 0.92; // Start with high quality
+    let format = 'image/webp'; // Try WebP first for better compression/quality
+    let base64 = '';
+    
+    // Check if WebP is supported, otherwise fallback to JPEG
+    const isWebPSupported = canvas.toDataURL('image/webp').indexOf('data:image/webp') === 0;
+    if (!isWebPSupported) format = 'image/jpeg';
+
+    console.log(`DEBUG: Compressing image with ${format}...`);
+
+    for (let i = 0; i < 5; i++) { // Max 5 attempts to find sweet spot
+        base64 = canvas.toDataURL(format, quality);
+        const size = Math.round((base64.length * 3) / 4); // Approximate byte size from base64
+        
+        console.log(`DEBUG: Attempt ${i+1} - Size: ${Math.round(size/1024)}KB, Quality: ${quality}`);
+        
+        if (size <= targetSize) break;
+        
+        // Reduce quality faster if far over limit
+        if (size > targetSize * 2) quality -= 0.15;
+        else quality -= 0.1;
+        
+        if (quality < 0.3) break; // Don't go below trash quality
+    }
+
+    return base64;
 }
 
 async function uploadToCloudinary(base64Data) {
+    console.log("DEBUG: Preparing data for Cloudinary...");
     const formData = new FormData();
     formData.append('file', base64Data);
     formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);

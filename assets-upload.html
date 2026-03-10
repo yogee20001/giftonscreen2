@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Asset Hub - GiftOnScreen Premium</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Manrope', 'sans-serif'],
+                        display: ['Playfair Display', 'serif'],
+                    },
+                    colors: {
+                        brand: {
+                            blue: '#3a6cff',
+                            pink: '#ff4fa3',
+                            dark: '#06060c'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <style>
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            border: 1px border rgba(255, 255, 255, 0.1);
+        }
+        .upload-zone {
+            transition: all 0.3s ease;
+            border: 2px dashed rgba(255, 255, 255, 0.2);
+        }
+        .upload-zone.drag-over {
+            border-color: #3a6cff;
+            background: rgba(58, 108, 255, 0.05);
+            transform: scale(1.01);
+        }
+    </style>
+</head>
+<body class="bg-brand-dark text-white min-h-screen">
+
+    <nav class="glass-card border-x-0 border-t-0 border-b border-white/10 px-8 py-6 flex justify-between items-center mb-12">
+        <div class="flex items-center gap-2 cursor-pointer" onclick="window.location.href='index.html'">
+            <i class="ph-fill ph-sketch-logo text-brand-blue text-2xl"></i>
+            <span class="font-display font-bold text-xl tracking-wide">Asset Hub</span>
+        </div>
+        <div class="flex items-center gap-6">
+            <a href="admin.html" class="text-sm text-gray-400 hover:text-white transition-colors">Admin Dashboard</a>
+            <div class="h-4 w-px bg-white/10"></div>
+            <span class="text-xs font-mono text-brand-pink bg-brand-pink/10 px-3 py-1 rounded-full border border-brand-pink/20">PRESET: ASSETS</span>
+        </div>
+    </nav>
+
+    <main class="max-w-4xl mx-auto px-6 pb-20">
+        
+        <header class="mb-12 text-center">
+            <h1 class="font-display text-4xl md:text-5xl font-bold mb-4">Optimize & Host</h1>
+            <p class="text-gray-400 max-w-xl mx-auto">Upload high-resolution backgrounds or textures. Our system will iteratively compress them for premium speed before hosting on Cloudinary.</p>
+        </header>
+
+        <!-- Upload Section -->
+        <div class="glass-card rounded-3xl p-8 mb-12">
+            <div id="drop-zone" class="upload-zone rounded-2xl p-12 flex flex-col items-center justify-center cursor-pointer mb-6">
+                <input type="file" id="asset-input" class="hidden" accept="image/*" multiple>
+                <div class="w-16 h-16 rounded-full bg-brand-blue/20 text-brand-blue flex items-center justify-center mb-4">
+                    <i class="ph ph-cloud-arrow-up text-3xl"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-2">Drop assets here</h3>
+                <p class="text-gray-500 text-sm">or click to browse from your computer</p>
+                <p class="text-[10px] text-gray-600 mt-4 uppercase tracking-widest">Supports JPG, PNG, WEBP (Max 2MB per file)</p>
+            </div>
+
+            <div id="upload-status-container" class="space-y-4">
+                <!-- Uploading items will appear here -->
+            </div>
+        </div>
+
+        <!-- Recent Uploads / Gallery -->
+        <section>
+            <div class="flex items-center justify-between mb-6">
+                <h2 class="text-2xl font-display font-bold">Session Uploads</h2>
+                <button id="clear-gallery" class="text-xs text-gray-500 hover:text-red-400">Clear List</button>
+            </div>
+            
+            <div id="assets-gallery" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Example Card (Hidden by default) -->
+            </div>
+            
+            <div id="no-assets" class="text-center py-20 glass-card rounded-3xl border-dashed">
+                <i class="ph ph-image-square text-4xl text-gray-600 mb-4"></i>
+                <p class="text-gray-500">No assets uploaded in this session yet.</p>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Success Toast -->
+    <div id="toast" class="fixed bottom-8 left-1/2 -translate-x-1/2 glass-card border-brand-blue/30 px-6 py-3 rounded-2xl shadow-2xl transition-all duration-500 opacity-0 translate-y-10 z-[100]">
+        <span id="toast-message" class="text-sm font-semibold flex items-center gap-2">
+            <i class="ph ph-check-circle text-green-400 text-lg"></i> URL Copied to Clipboard
+        </span>
+    </div>
+
+    <script src="assets-upload.js"></script>
+</body>
+</html>
