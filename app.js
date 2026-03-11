@@ -12,20 +12,10 @@ const occasions = [
 // Mock Stitch AI specific templates available per occasion
 const themeTemplates = {
     'birthday': [
-        { id: 'bday/ritual', name: 'Birthday Ritual', desc: 'An ultra-premium interactive celebration.' },
-        { id: 'neon', name: 'Neon Vibes', desc: 'A glowing cyberpunk style celebration.' },
-        { id: 'soft', name: 'Minimalist Soft', desc: 'Clean, elegant geometry.' },
-        { id: 'balloons', name: 'Floating Balloons', desc: 'Interactive 3D balloon effects.' }
+        { id: 'bday/candle', name: 'Premium Candle', desc: 'An ultra-premium cinematic birthday experience with interactive candle and cake.' }
     ],
-    'anniversary': [
-        { id: 'soft', name: 'Romantic Glow', desc: 'Warm gradients and elegant typography.' },
-        { id: 'neon', name: 'Modern Neon', desc: 'Vibrant love celebration.' }
-    ],
-    // Fallback template map
-    'default': [
-        { id: 'neon', name: 'Neon Pulse', desc: 'Energetic and bright.' },
-        { id: 'soft', name: 'Elegant Serenity', desc: 'Calm and sophisticated.' }
-    ]
+    'anniversary': [],
+    'default': []
 };
 
 // -- DOM Elements --

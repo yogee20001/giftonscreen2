@@ -1,81 +1,91 @@
-# GiftOnScreen — Complete Multi-Step Instructions
+# 🎁 GiftOnScreen | Project Manifest & Technical Standards
 
-## Step 1: The Gallery (Entry State)
-- The root `index.html` must first check for a URL `id`.
-- If NO `id` is present, display the Occasion Gallery (as seen in Screenshot 20).
-- Users must select an Occasion (e.g., Birthday) -> then select a Template Theme (e.g., "Neon" or "Soft").
-
-## Step 2: The Editor (Selection State)
-- Once a template is selected, hide the Gallery and reveal the **Split-Screen Editor**.
-- **Left:** Form for Receiver Name, Sender Name, Message, Photo, and Audio.
-- **Right:** An Ultra-Lite Static Preview that mimics the chosen template's CSS.
-- **Real-time Sync:** Use JS to mirror form inputs into the Preview instantly.
-- **Mandatory Compression:** Use Browser Canvas API to shrink photos to <500KB before upload.
-
-## Step 3: The Renderer (Viewer Mode)
-- If URL has `?id=GIFT-XXXXXXXX`, bypass Gallery/Editor.
-- **Validation:** Check format `GIFT-[Alphanumeric]`.
-- **Status Check:** - Fetch from Firestore. 
-    - If `status == "pending"`, show "Activation Required" + WhatsApp link.
-    - If `status == "active"`, fetch HTML from `/templates/[path]/index.html`.
-- **Data Injection:** Find `[data-receiver]`, `[data-sender]`, `[data-message]`, and `<img data-photo>` to inject user content.
-
-## Step 4: Admin Activation
-- Create `/admin.html` (Firebase Auth protected).
-- List "pending" documents.
-- Provide a "Switch to Active" button to update Firestore.
-
-## Step 5: Technical Constraints
-- No system logic or Firebase calls inside Template HTML files.
-- Hard Fail: If ID is wrong or data missing, show only "Gift not found."
-- Mobile-First: All designs must be responsive and "game-like" (fixed ratio).
-
-## 🎁 GiftOnScreen: Premium Design Guidelines
-
-### 1. Visual Philosophy (The "Atmosphere")
-
-* **Negative Space:** Maintain a minimalist aesthetic; prioritize "dark space" and breathing room to let the central message shine.
-* **Immersive Effects:** Use subtle, non-distracting motion (e.g., floating SVGs or soft bokeh) to create a "living" digital canvas.
-* **Micro-interactions:** Every button and card must have a tactile response, such as soft glows or subtle $1.05\times$ scaling on hover.
-
-### 2. The "Unboxing" Reveal
-
-* **Sequenced Content:** Do not display the gift all at once. Implement a "Tap to Open" or animated envelope entrance to create an emotional "unboxing" moment.
-* **Audio Orchestration:** Music must fade in gently and be synchronized with the appearance of the main visual elements.
-
-### 3. Tactile UI & Performance
-
-* **Fixed Aspect Ratio:** All templates must use a fixed-ratio, "game-like" view to ensure perfect framing on every mobile device.
-* **Zero Latency:** High-fidelity media must be pre-processed; use the browser's Canvas API to compress images to under **500KB** before saving.
-* **Premium Fonts:** Use high-end typography (e.g., modern serifs or elegant handwriting fonts) specifically for recipient and sender names.
+This document is the "Source of Truth" for the **GiftOnScreen** platform. All development, whether manual or AI-generated (via Antigravity), must strictly adhere to these architectural and design rules.
 
 ---
 
-## 🛠️ Technical Implementation Flow
+## 🏗️ 1. System Architecture (The 4-Step Flow)
 
-### Phase 1: Gallery & Selection
+### Step 1: The Gallery (Entry State)
+- **Logic:** The root `index.html` checks for a URL parameter `?id=`.
+- **Empty State:** If NO ID is present, render the **Occasion Gallery**.
+- **User Path:** Select Occasion (e.g., Birthday) → Select Template Theme (e.g., "Neon" or "Soft").
 
-* **State 1:** Display the "Occasion Gallery" (Screenshot 20 style).
-* **State 2:** Reveal sub-themes (e.g., "Neon B-Day," "Vintage Rose") after an occasion is selected.
+### Step 2: The Editor (Selection State)
+- **UI:** Hide Gallery, reveal the **Split-Screen Editor**.
+- **Left Side (Form):** Inputs for Receiver Name, Sender Name, Message, Photo, and Audio selection.
+- **Right Side (Preview):** An **Ultra-Lite Static Preview** mirroring the chosen template's CSS.
+- **Real-time Sync:** JavaScript must mirror form inputs into the Preview instantly.
+- **Mandatory Compression:** Use Browser Canvas API to shrink photos to **<500KB** before Firestore upload.
 
-### Phase 2: The Logic Engine
+### Step 3: The Renderer (Viewer Mode)
+- **Validation:** If URL has `?id=GIFT-XXXXXXXX`, bypass Gallery/Editor. Check format: `GIFT-[Alphanumeric]`.
+- **Status Check (Firestore):**
+    - If `status == "pending"`: Show "Activation Required" + WhatsApp link.
+    - If `status == "active"`: Fetch HTML from `/templates/[path]/index.html`.
+- **Data Injection:** Find elements with `[data-receiver]`, `[data-sender]`, `[data-message]`, and `<img data-photo>` to inject user content dynamically.
 
-* **ID Validation:** Strictly follow the `GIFT-XXXXXXXX` alphanumeric format.
-* **Activation Gate:** Gifts with `status: "pending"` must redirect to the WhatsApp activation screen.
-* **Live Preview:** The editor must feature a "Lite Shell" that mirrors user input (text/photo) in real-time before submission.
-
-### Phase 3: Deployment
-
-* **Host:** Cloudflare Pages.
-* **Database:** Firebase Firestore.
-* **Design Tool:** Stitch AI (for base HTML/Tailwind exports).
+### Step 4: Admin Activation
+- **Location:** `/admin.html` (Firebase Auth Protected).
+- **Function:** List "pending" documents and provide a "Switch to Active" button to update Firestore status.
 
 ---
 
-### **How to Update in Antigravity**
+## 📐 2. Premium Design Guidelines
 
-1. Open `README.md` in your sidebar.
-2. Select all text and replace it with the guidelines above.
-3. **Pro Tip:** After saving, tell your Antigravity Agent: *"Please read the updated `README.md`. These are the strict qualities all future templates and code must adhere to."*
+### Visual Philosophy ("The Atmosphere")
+* **Negative Space:** Minimalist aesthetic; prioritize "dark space" to let central messages shine.
+* **Immersive Effects:** Use subtle motion (floating SVGs/soft bokeh) for a "living" canvas.
+* **Micro-interactions:** Buttons/cards must have tactile responses (soft glows or $1.05\times$ scaling).
 
-**Would you like me to generate the "Unboxing" transition code (HTML/CSS) for your first premium template?**
+### The "Unboxing" Sequence
+Templates must follow a **Three-Act Storyboard**:
+1.  **Act I (The Hook):** "Tap to Open" cover (e.g., an animated envelope or unlit candle).
+2.  **Act II (The Engagement):** A game-like gesture (Drag/Slide/Rotate) to "unlock" the gift.
+3.  **Act III (The Reveal):** Cinematic display of personalized content with audio fade-in.
+
+---
+
+## 🛠️ 3. Development & File Structure (Antigravity Protocol)
+
+To ensure high performance and portability, all templates must follow these strict rules:
+
+### Single-File Architecture
+- **Portable HTML:** Every template must be a **single `index.html`** file.
+- **Embedded Assets:** - Include all CSS within a `<style>` tag in the `<head>`.
+    - Include all JS logic within a `<script>` tag at the end of the `<body>`.
+- **No System Logic:** Templates must NOT contain Firebase calls. They are "dumb shells" that accept data via the Renderer.
+
+### Asset Localization
+- **Folder Scoping:** Each template resides in its own folder: `/templates/[template-name]/`.
+- **Self-Contained:** All images/audio/lottie files must be placed in that same folder.
+- **Relative Paths:** Always use `./asset-name.webp` for assets.
+
+### Technical Geometry
+- **Fixed Aspect Ratio:** Strictly **9:16 (Vertical)** view.
+- **Safe Zones:** Keep interactive triggers **15%** away from top/bottom edges.
+- **No Scrolling:** Use `touch-action: none` and `overflow: hidden` on the main container.
+
+---
+
+## 🎨 4. Global CSS Boilerplate
+Use these variables in every template for cross-platform consistency:
+
+```css
+:root {
+  --canvas-ratio: 9/16;
+  --safe-area-padding: 20px;
+  --primary-accent: #FFD700; /* Gold */
+  --transition-speed: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  --glass-bg: rgba(255, 255, 255, 0.2);
+}
+
+.gift-container {
+  aspect-ratio: var(--canvas-ratio);
+  width: 100%;
+  max-width: 450px;
+  margin: 0 auto;
+  position: relative;
+  overflow: hidden;
+  touch-action: none;
+}
