@@ -105,8 +105,8 @@ function renderCurrentTab() {
     const query = searchVal.toLowerCase();
     const filtered = allGifts.filter(g => 
         (g.id || "").toLowerCase().includes(query) || 
-        (g.recipientName || "").toLowerCase().includes(query) ||
-        (g.senderName || "").toLowerCase().includes(query)
+        (g.receiver || "").toLowerCase().includes(query) ||
+        (g.sender || "").toLowerCase().includes(query)
     );
 
     if (currentTab === 'activation') renderActivation(filtered);
@@ -130,19 +130,26 @@ function renderActivation(gifts) {
     pending.forEach(gift => {
         const row = document.createElement('tr');
         row.className = 'border-b border-white/5 hover:bg-white/5 transition-colors group';
-        const date = gift.createdAt?.toDate ? gift.createdAt.toDate().toLocaleDateString() : 'N/A';
-        const photo = gift.photoUrl || gift.photoURL || 'https://via.placeholder.com/100';
+        
+        // createdAt may be a Firestore Timestamp or a plain Date.now() number
+        let date = 'N/A';
+        if (gift.createdAt) {
+            const d = gift.createdAt?.toDate ? gift.createdAt.toDate() : new Date(gift.createdAt);
+            date = d.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+        }
+        const photo = gift.photoUrl || gift.photoURL || '';
 
         row.innerHTML = `
-            <td class="p-4 font-mono text-brand-blue font-bold">${gift.id}</td>
+            <td class="p-4 font-mono text-brand-blue font-bold text-xs">${gift.id || 'N/A'}</td>
             <td class="p-4">
-                <p class="font-bold text-sm">${gift.recipientName || 'N/A'}</p>
-                <p class="text-[10px] text-gray-500 uppercase tracking-tighter">From: ${gift.senderName || 'Anonymous'}</p>
+                <p class="font-bold text-sm">${gift.receiver || gift.recipientName || 'N/A'}</p>
+                <p class="text-[10px] text-gray-500 uppercase tracking-tighter">From: ${gift.sender || gift.senderName || 'Anonymous'}</p>
             </td>
+            <td class="p-4 text-xs text-gray-400">${gift.template || gift.occasionId || '—'}</td>
             <td class="p-4">
-                <div class="w-10 h-10 rounded-lg overflow-hidden border border-white/10">
+                ${photo ? `<div class="w-10 h-10 rounded-lg overflow-hidden border border-white/10">
                     <img src="${photo}" class="w-full h-full object-cover cursor-pointer hover:scale-110 transition-transform" onclick="window.open('${photo}')">
-                </div>
+                </div>` : '<span class="text-[10px] text-gray-600">No photo</span>'}
             </td>
             <td class="p-4 text-gray-500 text-[10px]">${date}</td>
             <td class="p-4 text-right">
@@ -161,18 +168,44 @@ function renderAllGifts(gifts) {
     if (!container) return;
     container.innerHTML = '';
     
+    if (gifts.length === 0) {
+        container.innerHTML = `<tr><td colspan="6" class="p-8 text-center text-gray-600 text-sm">No gifts found.</td></tr>`;
+        return;
+    }
+
     gifts.forEach(gift => {
         const row = document.createElement('tr');
         row.className = 'border-b border-white/5 hover:bg-white/5 transition-colors';
+        
+        // createdAt may be Firestore Timestamp or plain Date.now() number
+        let date = 'N/A';
+        if (gift.createdAt) {
+            const d = gift.createdAt?.toDate ? gift.createdAt.toDate() : new Date(gift.createdAt);
+            date = d.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+        }
+        
+        const photo = gift.photoUrl || gift.photoURL || '';
+        const statusBadge = gift.status === 'active'
+            ? `<span class="px-2 py-0.5 rounded-full bg-green-500/10 text-green-400 text-[10px] font-bold border border-green-500/20">ACTIVE</span>`
+            : `<span class="px-2 py-0.5 rounded-full bg-yellow-500/10 text-yellow-400 text-[10px] font-bold border border-yellow-500/20">PENDING</span>`;
+
         row.innerHTML = `
-            <td class="p-4 font-mono text-[10px] text-gray-500">${gift.id}</td>
+            <td class="p-4 font-mono text-[10px] text-brand-blue font-semibold">${gift.id || 'N/A'}</td>
             <td class="p-4">
-                <p class="font-bold text-sm">${gift.recipientName || 'N/A'}</p>
-                <p class="text-[10px] text-gray-500">From: ${gift.senderName || 'Anonymous'}</p>
+                <p class="font-bold text-sm">${gift.receiver || gift.recipientName || 'N/A'}</p>
+                <p class="text-[10px] text-gray-500">From: ${gift.sender || gift.senderName || 'Anonymous'}</p>
             </td>
             <td class="p-4">
-                <span class="px-2 py-1 rounded bg-white/5 text-[10px] uppercase font-bold text-gray-400 border border-white/5">${gift.occasion || 'General'}</span>
+                <div>
+                    <span class="px-2 py-1 rounded bg-white/5 text-[10px] uppercase font-bold text-gray-400 border border-white/5">${gift.template || '—'}</span>
+                    <p class="text-[10px] text-gray-600 mt-1">${gift.occasionId || ''}</p>
+                </div>
             </td>
+            <td class="p-4">
+                ${photo ? `<img src="${photo}" class="w-8 h-8 rounded-lg object-cover border border-white/10 cursor-pointer" onclick="window.open('${photo}')" title="View photo">` : '<span class="text-[10px] text-gray-600">—</span>'}
+            </td>
+            <td class="p-4 text-gray-500 text-[10px]">${date}</td>
+            <td class="p-4">${statusBadge}</td>
             <td class="p-4 text-right">
                 <label class="switch scale-75 origin-right">
                     <input type="checkbox" onchange="toggleGiftStatus('${gift.docId}', this.checked)" ${gift.status === 'active' ? 'checked' : ''}>
