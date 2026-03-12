@@ -35,49 +35,44 @@
             --subtitle-color: #e0e0e0;
             --transition-speed: 0.4s;
             --easing: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            --viewport-radius: 24px;
+            --viewport-shadow: 0 20px 80px rgba(0, 0, 0, 0.5);
+            --safe-zone: 5%;
         }
 
-        /* High-Performance Body Styles */
+        /* High-Performance Body Styles - Decorative Background Layer */
         body {
             background-color: var(--bg-dark);
-            background-image:
-                radial-gradient(circle at 20% 20%, rgba(212, 175, 55, 0.1) 0%, transparent 50%),
-                radial-gradient(circle at 80% 80%, rgba(166, 209, 244, 0.1) 0%, transparent 50%);
             overflow: hidden;
             color: var(--text-color);
             width: 100vw;
             height: 100vh;
             font-family: 'Montserrat', sans-serif;
             position: relative;
-            transition: background-color 3s var(--easing), background-image 3s var(--easing);
-            will-change: background-color, background-image;
-            /* Prevent zoom on mobile */
+            transition: background-color 3s var(--easing);
+            will-change: background-color;
             touch-action: manipulation;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        /* Enhanced Ambient Background with Depth Layers */
-        .ambient-bg {
-            position: absolute;
+        /* === DECORATIVE BACKGROUND LAYER (Outside Viewport) === */
+        .decorative-bg-layer {
+            position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             z-index: 0;
             pointer-events: none;
-            /* Add subtle noise texture */
-            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="4" height="4"><rect width="4" height="4" fill="rgba(255,255,255,0.02)"/><rect x="0" y="3" width="1" height="1" fill="rgba(0,0,0,0.1)"/><rect x="2" y="1" width="1" height="1" fill="rgba(0,0,0,0.1)"/></svg>');
+            background:
+                radial-gradient(circle at 20% 20%, rgba(212, 175, 55, 0.12) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(166, 209, 244, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 50% 50%, rgba(255, 182, 193, 0.05) 0%, transparent 70%);
         }
 
-        #particles-canvas {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            opacity: 0.3;
-            will-change: opacity;
-        }
-
+        /* Floating glow orbs - decorative */
         .glow-orb {
             position: absolute;
             border-radius: 50%;
@@ -85,34 +80,33 @@
             opacity: 0;
             transition: opacity 4s var(--easing), transform 10s ease-in-out infinite alternate;
             will-change: opacity, transform;
-            /* Add subtle pulsing */
             animation: orb-pulse 15s ease-in-out infinite;
         }
 
         .orb-1 {
-            width: 40vw;
-            height: 40vw;
-            background: radial-gradient(circle, rgba(255, 182, 193, 0.25), transparent 70%);
-            top: -10%;
-            left: -10%;
+            width: 50vw;
+            height: 50vw;
+            background: radial-gradient(circle, rgba(255, 182, 193, 0.3), transparent 70%);
+            top: -15%;
+            left: -15%;
             transform: translate(10%, 10%);
         }
 
         .orb-2 {
-            width: 50vw;
-            height: 50vw;
-            background: radial-gradient(circle, rgba(135, 206, 235, 0.2), transparent 70%);
+            width: 60vw;
+            height: 60vw;
+            background: radial-gradient(circle, rgba(135, 206, 235, 0.25), transparent 70%);
             bottom: -20%;
-            right: -10%;
+            right: -15%;
             transform: translate(-10%, -10%);
         }
 
         .orb-3 {
-            width: 30vw;
-            height: 30vw;
-            background: radial-gradient(circle, rgba(255, 215, 0, 0.15), transparent 70%);
-            top: 50%;
-            left: 50%;
+            width: 40vw;
+            height: 40vw;
+            background: radial-gradient(circle, rgba(255, 215, 0, 0.2), transparent 70%);
+            top: 30%;
+            left: 30%;
             transform: translate(-50%, -50%);
         }
 
@@ -124,110 +118,24 @@
             }
 
             50% {
-                transform: scale(1.05) translate(10%, 10%);
+                transform: scale(1.1) translate(10%, 10%);
             }
         }
 
-        /* Transition to Lit Environment with Enhanced Lighting */
-        body.lit-environment {
-            background-color: var(--bg-lit);
-            background-image:
-                radial-gradient(circle at 20% 20%, rgba(212, 175, 55, 0.25) 0%, transparent 60%),
-                radial-gradient(circle at 80% 80%, rgba(166, 209, 244, 0.2) 0%, transparent 60%),
-                linear-gradient(135deg, rgba(255, 200, 50, 0.15), transparent 50%);
-        }
-
-        body.lit-environment .glow-orb {
-            opacity: 1;
-        }
-
-        body.lit-environment #particles-canvas {
-            opacity: 0.8;
-        }
-
-        /* Performance-Optimized Container */
-        #main-container {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            transform-origin: center center;
-            z-index: 10;
-            will-change: transform;
-            /* Enable hardware acceleration */
-            transform: translate3d(0, 0, 0);
-        }
-
-        .scene {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            will-change: opacity, display;
-        }
-
-        /* Base Ambient Background */
-        .ambient-bg {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 0;
-            pointer-events: none;
-        }
-
+        /* Particles canvas - decorative background */
         #particles-canvas {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            opacity: 0.3;
-        }
-
-        .glow-orb {
-            position: absolute;
-            border-radius: 50%;
-            filter: blur(80px);
-            opacity: 0;
-            transition: opacity 4s ease, transform 10s ease-in-out infinite alternate;
-        }
-
-        .orb-1 {
-            width: 40vw;
-            height: 40vw;
-            background: rgba(255, 182, 193, 0.15);
-            top: -10%;
-            left: -10%;
-            transform: translate(10%, 10%);
-        }
-
-        .orb-2 {
-            width: 50vw;
-            height: 50vw;
-            background: rgba(135, 206, 235, 0.1);
-            bottom: -20%;
-            right: -10%;
-            transform: translate(-10%, -10%);
-        }
-
-        .orb-3 {
-            width: 30vw;
-            height: 30vw;
-            background: rgba(255, 215, 0, 0.08);
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
+            opacity: 0.4;
+            will-change: opacity;
         }
 
         /* Transition to Lit Environment */
         body.lit-environment {
-            background-color: #1a1525;
+            background-color: var(--bg-lit);
         }
 
         body.lit-environment .glow-orb {
@@ -237,13 +145,32 @@
         body.lit-environment #particles-canvas {
             opacity: 0.8;
         }
+        /* === GAME VIEWPORT - Zoom-to-Fit Fixed Layout === */
+        .game-viewport {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #030005;
+            z-index: 10;
+            overflow: hidden;
+        }
 
+        /* Fixed 9:16 Base Canvas */
         #main-container {
             position: absolute;
-            width: 100%;
-            height: 100%;
+            width: 360px;
+            height: 640px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
             transform-origin: center center;
-            z-index: 10;
+            z-index: 15;
+            overflow: hidden;
+            background: linear-gradient(180deg, #0d0c13 0%, #1a1525 50%, #0d0c13 100%);
+            will-change: transform;
         }
 
         .scene {
@@ -256,25 +183,46 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
+            will-change: opacity, display, transform;
         }
 
-        /* Glassmorphism Instructions */
+        .vignette-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 100;
+            background: radial-gradient(ellipse at center, transparent 60%, rgba(0, 0, 0, 0.6) 100%);
+        }
+
+        /* === SAFE ZONE MARGINS === */
+        .scene-content {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            padding: var(--safe-zone);
+        }
+
+        /* === GLASSMORPHISM INSTRUCTIONS === */
         .glass-instruction {
             position: absolute;
-            padding: 12px 30px;
+            padding: 10px 24px;
             background: rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 30px;
-            font-size: 1.1rem;
-            font-weight: 300;
-            letter-spacing: 2px;
+            font-size: 0.7rem;
+            font-weight: 400;
+            letter-spacing: 1.5px;
             color: rgba(255, 255, 255, 0.9);
             text-transform: uppercase;
             box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
             overflow: hidden;
             pointer-events: none;
+            z-index: 50;
         }
 
         .glass-instruction span {
@@ -308,22 +256,31 @@
             }
         }
 
+        /* Instruction positions within viewport */
         .lighter-tip {
-            bottom: 15%;
+            top: 105%; /* Positioned relative to lighter-wrapper */
+            left: 50%;
+            transform: translateX(-50%);
+            white-space: nowrap;
         }
 
         .slice-tip {
-            top: 15%;
+            top: 110%; /* Positioned relative to knife-wrapper */
+            left: 50%;
+            transform: translateX(-50%);
+            white-space: nowrap;
         }
 
-        /* --- Scene 1: Candle --- */
+        /* === SCENE 1: CANDLE (Top Area 15-25%) === */
         .candle-wrapper {
             position: absolute;
-            top: 55%;
+            top: 18%;
             left: 50%;
-            transform: translate(-50%, -50%);
-            width: 120px;
-            height: 300px;
+            transform: translate(-50%, 0);
+            width: 15%;
+            max-width: 140px;
+            height: auto;
+            aspect-ratio: 2/5;
         }
 
         .candle-lux {
@@ -333,39 +290,45 @@
 
         .ambient-candle-glow {
             position: absolute;
-            top: 50px;
+            top: 30%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 250px;
-            height: 250px;
-            background: radial-gradient(circle, rgba(255, 200, 50, 0.4) 0%, rgba(255, 100, 0, 0.1) 40%, transparent 70%);
+            width: 300%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 200, 50, 0.5) 0%, rgba(255, 100, 0, 0.15) 40%, transparent 70%);
             border-radius: 50%;
             opacity: 0;
             pointer-events: none;
             mix-blend-mode: screen;
         }
 
-        /* --- Scene 1: Lighter --- */
+        /* === SCENE 1: LIGHTER (Bottom Area) === */
         .lighter-wrapper {
             position: absolute;
-            bottom: -200px;
-            /* hidden init */
+            bottom: 8%; /* Slightly higher to allow instruction below */
             left: 50%;
             transform: translateX(-50%);
-            width: 100px;
-            height: 200px;
+            width: 10%;
+            max-width: 80px;
+            height: auto;
+            aspect-ratio: 1/2;
             cursor: pointer;
             z-index: 20;
+            transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), filter 0.2s ease;
+        }
+
+        .lighter-wrapper:hover {
+            transform: translateX(-50%) scale(1.05); /* organic hover */
+            filter: drop-shadow(0px 4px 12px rgba(255, 200, 50, 0.3));
         }
 
         .lighter-wrapper::after {
-            /* pseudo element to expand clickable area if needed */
             content: '';
             position: absolute;
-            top: -50px;
-            left: -50px;
-            right: -50px;
-            bottom: -50px;
+            top: -30px;
+            left: -30px;
+            right: -30px;
+            bottom: -30px;
         }
 
         .lighter-lux {
@@ -374,14 +337,16 @@
             pointer-events: none;
         }
 
-        /* --- Scene 2: Cake --- */
+        /* === SCENE 2: CAKE (Lower Middle Area) === */
         .cake-wrapper {
             position: absolute;
-            top: 75%;
+            top: 65%; /* Shifted downwards */
             left: 50%;
-            transform: translate(-50%, calc(-50% - 120px));
-            width: 200px;
-            height: 500px;
+            transform: translate(-50%, -50%);
+            width: 35%;
+            max-width: 200px;
+            height: auto;
+            aspect-ratio: 2/5;
             z-index: 12;
         }
 
@@ -389,14 +354,15 @@
             position: absolute;
             top: 0;
             left: 0;
-            width: 200px;
-            height: 500px;
+            width: 100%;
+            height: 100%;
         }
 
         .cake-half>svg {
             width: 100%;
             height: 100%;
             display: block;
+            overflow: visible;
         }
 
         .lux-left {
@@ -409,27 +375,31 @@
 
         .cake-stand {
             position: absolute;
-            top: 75%;
+            top: 50%;
             left: 50%;
-            transform: translate(-50%, -40px);
-            width: 420px;
-            height: 60px;
+            transform: translate(-50%, 80%);
+            width: 180%;
+            height: auto;
+            aspect-ratio: 7/1;
             z-index: 11;
         }
 
-        /* --- Scene 2: Knife --- */
+        /* === SCENE 2: KNIFE (Between Candle and Cake) === */
         .knife-wrapper {
             position: absolute;
-            top: 50%;
+            top: 45%; /* Positioned between candle (top) and cake (bottom) */
             left: 50%;
-            transform: translate(-50%, -50%) rotate(90deg);
-            width: 1100px;
-            height: 150px;
+            transform: translate(-50%, -50%) rotate(90deg) scale(6.0);
+            width: 100%;
+            height: auto;
+            aspect-ratio: 15/1;
+            max-width: 600px;
             opacity: 0;
             z-index: 15;
             cursor: grab;
-            /* Mobile optimization: larger touch target */
             touch-action: manipulation;
+            filter: drop-shadow(0 0 15px rgba(0,0,0,0.4));
+            will-change: transform, filter;
         }
 
         .knife-wrapper:active {
@@ -442,24 +412,12 @@
             pointer-events: none;
         }
 
-        /* Mobile-specific knife positioning */
-        @media (max-width: 768px) {
-            .knife-wrapper {
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%) rotate(90deg);
-                width: 1400px;
-                height: 200px;
-            }
-        }
-
-        /* --- Scene 4: Typography & Replay --- */
+        /* === SCENE 3: MESSAGE (Full Viewport) === */
         #scene-3 {
             z-index: 30;
             pointer-events: none;
         }
 
-        /* Enhanced background blur layers for premium depth effect */
         .scene-3-background {
             position: absolute;
             top: 0;
@@ -468,10 +426,8 @@
             height: 100%;
             z-index: 20;
             pointer-events: none;
-            /* Create multiple blur layers for depth */
         }
 
-        /* Deep background blur layer */
         .scene-3-background::before {
             content: '';
             position: absolute;
@@ -479,62 +435,30 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: radial-gradient(circle at center, rgba(212, 175, 55, 0.15), rgba(166, 209, 244, 0.1) 50%, transparent 80%);
-            filter: blur(40px);
-            opacity: 0.6;
+            background: radial-gradient(circle at center, rgba(212, 175, 55, 0.2), rgba(166, 209, 244, 0.1) 50%, transparent 80%);
+            filter: blur(30px);
+            opacity: 0.7;
             will-change: filter;
         }
 
-        /* Medium blur layer for cake elements */
         .scene-3-background::after {
             content: '';
             position: absolute;
             top: 50%;
             left: 50%;
-            width: 600px;
-            height: 400px;
+            width: 80%;
+            height: 60%;
             transform: translate(-50%, -50%);
-            background:
-                radial-gradient(circle at 30% 30%, rgba(255, 241, 235, 0.3), transparent 60%),
-                radial-gradient(circle at 70% 70%, rgba(172, 224, 249, 0.2), transparent 60%);
-            filter: blur(25px);
-            opacity: 0.4;
+            background: radial-gradient(circle at 30% 30%, rgba(255, 241, 235, 0.4), transparent 60%);
+            filter: blur(20px);
+            opacity: 0.5;
             will-change: transform, filter;
         }
 
-        /* Mobile optimization for background blur */
-        @media (max-width: 768px) {
-            .scene-3-background::before {
-                filter: blur(25px);
-                opacity: 0.5;
-            }
-
-            .scene-3-background::after {
-                width: 450px;
-                height: 300px;
-                filter: blur(20px);
-                opacity: 0.3;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .scene-3-background::before {
-                filter: blur(15px);
-                opacity: 0.4;
-            }
-
-            .scene-3-background::after {
-                width: 350px;
-                height: 250px;
-                filter: blur(15px);
-                opacity: 0.25;
-            }
-        }
-
-
+        /* Message Box */
         .message-box {
             text-align: center;
-            padding: 50px;
+            padding: 30px;
             border-radius: 20px;
             background: rgba(255, 255, 255, 0.03);
             backdrop-filter: blur(15px);
@@ -543,189 +467,37 @@
             box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
             z-index: 35;
             position: relative;
-            /* Mobile optimization: reduce padding for mobile */
             will-change: transform, opacity;
+            width: 320px;
         }
 
-        .lux-title {
-            font-family: 'Playfair Display', serif;
-            font-size: 5rem;
-            font-style: italic;
-            font-weight: 700;
-            /* Premium multi-layer gradient for mobile performance */
-            background: linear-gradient(135deg, #d4af37 0%, #fcf6ba 50%, #b38728 100%);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            /* Enhanced text shadow for depth */
-            text-shadow:
-                0 0 10px rgba(252, 246, 186, 0.5),
-                0 4px 20px rgba(252, 246, 186, 0.3),
-                0 8px 30px rgba(181, 135, 40, 0.2);
-            margin-bottom: 20px;
-            /* Mobile optimization: reduce font size on small screens */
-            line-height: 1.1;
-            /* Subtle 3D effect */
-            transform: translateZ(0);
-            will-change: transform;
-            /* Breathing animation for premium feel */
-            animation: titleBreath 4s ease-in-out infinite;
-        }
-
-        /* Premium text effects for different screen sizes */
-        @media (max-width: 768px) {
-            .lux-title {
-                font-size: 3.5rem;
-                text-shadow:
-                    0 0 8px rgba(252, 246, 186, 0.4),
-                    0 3px 15px rgba(252, 246, 186, 0.25);
-            }
-        }
-
-        @media (max-width: 480px) {
-            .lux-title {
-                font-size: 2.5rem;
-                text-shadow:
-                    0 0 6px rgba(252, 246, 186, 0.3),
-                    0 2px 10px rgba(252, 246, 186, 0.2);
-            }
-        }
-
-        @keyframes titleBreath {
-            0%, 100% { transform: scale(1) translateY(0px); }
-            50% { transform: scale(1.02) translateY(-2px); }
-        }
-
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translate(-50%, 20px);
-            }
-            to {
-                opacity: 1;
-                transform: translate(-50%, 0);
-            }
-        }
-
-        .lux-subtitle {
-            font-family: 'Montserrat', sans-serif;
-            font-size: 1.2rem;
-            font-weight: 300;
-            color: #e0e0e0;
-            margin-bottom: 40px;
-            letter-spacing: 1px;
-            /* Enhanced subtitle styling */
-            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-            /* Subtle fade-in animation */
-            opacity: 0;
-            animation: subtitleFadeIn 1s ease-out 0.5s forwards;
-            line-height: 1.6;
-        }
-
-        @keyframes subtitleFadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0px);
-            }
-        }
-
-        /* Mobile-optimized subtitle */
-        @media (max-width: 768px) {
-            .lux-subtitle {
-                font-size: 1rem;
-                letter-spacing: 0.5px;
-                line-height: 1.5;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .lux-subtitle {
-                font-size: 0.9rem;
-                letter-spacing: 0.3px;
-                line-height: 1.4;
-                margin-bottom: 30px;
-            }
-        }
-
-        .lux-button {
-            padding: 15px 40px;
-            font-family: 'Montserrat', sans-serif;
-            font-size: 1rem;
-            font-weight: 500;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            color: #fff;
-            background: transparent;
-            border: 1px solid rgba(212, 175, 55, 0.5);
-            /* gold border */
-            border-radius: 40px;
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
-            transition: all 0.3s ease;
-            pointer-events: auto;
-            /* enable clicks inside non-pointer scene */
-        }
-
-        .lux-button::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, rgba(212, 175, 55, 0.2), rgba(252, 246, 186, 0.05));
-            transition: opacity 0.3s ease;
-            opacity: 0;
-            z-index: 0;
-        }
-
-        .lux-button:hover::before {
-            opacity: 1;
-        }
-
-        .lux-button:hover {
-            border-color: rgba(212, 175, 55, 1);
-            box-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
-            transform: translateY(-2px);
-        }
-
-        .lux-button span {
-            position: relative;
-            z-index: 1;
-        }
-
+        /* Firebase Data Container */
         .firebase-data-container {
             position: absolute;
-            top: 20%;
+            top: 25%;
             left: 50%;
             transform: translateX(-50%);
             text-align: center;
-            z-index: 40; /* Higher than message-box (35) */
+            z-index: 40;
             opacity: 0;
-            /* Animation handled by GSAP */
+            width: 90%;
         }
 
         .receiver-info {
             display: flex;
+            flex-direction: column;
             align-items: center;
-            justify-content: center;
-            gap: 2rem;
-            margin-bottom: 2rem;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
         }
 
         .photo-container {
             position: relative;
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
+            width: 180px;
+            height: 180px;
+            border-radius: 12px;
             overflow: hidden;
-            border: 4px solid rgba(255, 255, 255, 0.2);
+            border: 3px solid rgba(255, 255, 255, 0.2);
             background: rgba(255, 255, 255, 0.1);
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
         }
@@ -744,999 +516,1356 @@
             align-items: center;
             justify-content: center;
             font-family: 'Montserrat', sans-serif;
-            font-size: 1.5rem;
+            font-size: 1rem;
             color: #d1d5db;
             background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
             border: 2px dashed rgba(255, 255, 255, 0.3);
         }
 
+        .lux-title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(1.8rem, 5vw, 2.8rem);
+            font-style: italic;
+            font-weight: 700;
+            background: linear-gradient(135deg, #d4af37 0%, #fcf6ba 50%, #b38728 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 10px rgba(252, 246, 186, 0.5);
+            margin-bottom: 15px;
+            line-height: 1.1;
+            transform: translateZ(0);
+            will-change: transform;
+            animation: titleBreath 4s ease-in-out infinite;
+        }
+
+        @keyframes titleBreath {
+
+            0%,
+            100% {
+                transform: scale(1) translateY(0px);
+            }
+
+            50% {
+                transform: scale(1.02) translateY(-2px);
+            }
+        }
+
         .custom-message {
             font-family: 'Playfair Display', serif;
-            font-size: 1.5rem;
+            font-size: 18px;
             color: #fff;
-            margin-bottom: 1rem;
-            line-height: 1.6;
+            margin-bottom: 16px;
+            line-height: 1.5;
             text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
-            min-height: 3rem;
         }
 
         .sender-name {
             font-family: 'Montserrat', sans-serif;
-            font-size: 1.1rem;
+            font-size: 0.9rem;
             color: #d1d5db;
             font-style: italic;
-            margin-bottom: 3rem;
-            min-height: 1.5rem;
+            margin-bottom: 2rem;
         }
 
-        @media (max-width: 768px) {
-            .firebase-data-container {
-                top: 15%;
-                gap: 1rem;
-            }
-
-            .photo-container {
-                width: 100px;
-                height: 100px;
-            }
-
-            .custom-message {
-                font-size: 1.2rem;
-            }
-
-            .sender-name {
-                font-size: 1rem;
-            }
+        /* Button */
+        .lux-button {
+            padding: 10px 24px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 500;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: #fff;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(212, 175, 55, 0.5);
+            border-radius: 40px;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            pointer-events: auto;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
         }
 
-        @media (max-width: 480px) {
-            .firebase-data-container {
-                top: 10%;
-                gap: 0.5rem;
-            }
-
-            .photo-container {
-                width: 80px;
-                height: 80px;
-            }
-
-            .custom-message {
-                font-size: 1rem;
-            }
-
-            .sender-name {
-                font-size: 0.9rem;
-            }
+        .lux-button .instagram-icon {
+            width: 18px;
+            height: 18px;
+            fill: currentColor;
+            opacity: 0.9;
         }
 
-        @media (max-width: 768px) {
-            .lux-title {
-                font-size: 3.5rem;
-            }
-
-            .cake-wrapper {
-                transform: scale(0.7) translate(-50%, calc(-50% - 120px));
-                transform-origin: left top;
-            }
-
-            .cake-stand {
-                transform: scale(0.7) translate(-50%, -40px);
-                transform-origin: left top;
-            }
-
-            .candle-wrapper {
-                transform: scale(0.8) translate(-50%, -50%);
-                transform-origin: left top;
-            }
+        /* Particles & Balloons */
+        .spark-container {
+            position: absolute;
+            top: 20%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 10;
         }
+        .sparkle {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: #fff;
+            border-radius: 50%;
+            box-shadow: 0 0 5px #ffaa00, 0 0 10px #ffaa00;
+            opacity: 0;
+            animation: floatUpSparkle 2s ease-in infinite;
+        }
+        @keyframes floatUpSparkle {
+            0% { transform: translateY(0) scale(1); opacity: 1; }
+            100% { transform: translateY(-30px) scale(0); opacity: 0; }
+        }
+
+        .balloon {
+            position: absolute;
+            bottom: -50px;
+            width: 30px;
+            height: 40px;
+            background: #ffb6c1;
+            border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%;
+            box-shadow: inset -5px -5px 10px rgba(0,0,0,0.1);
+            animation: floatUpBalloon 8s ease-in forwards;
+            z-index: 5;
+            opacity: 0.8;
+        }
+        .balloon::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 2px;
+            height: 20px;
+            background: rgba(255,255,255,0.3);
+        }
+        @keyframes floatUpBalloon {
+            0% { transform: translateY(0) rotate(-5deg); opacity: 0; }
+            10% { opacity: 0.8; }
+            50% { transform: translateY(-50vh) rotate(5deg); }
+            100% { transform: translateY(-120vh) rotate(-5deg); opacity: 0; }
+        }
+
+        /* Branding Styles */
+        .branding-footer {
+            position: absolute;
+            bottom: 20px;
+            left: 0;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            pointer-events: none;
+            z-index: 100;
+            opacity: 0.7;
+        }
+
+        .branding-logo {
+            width: 24px;
+            height: 24px;
+            object-fit: contain;
+        }
+
+        .branding-text {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 10px;
+            font-weight: 500;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.8);
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Static Capture Branding (Safe CSS) */
+        .static-branding {
+            position: absolute;
+            top: 590px;
+            left: 0;
+            width: 360px;
+            text-align: center;
+        }
+
+        .static-logo {
+            width: 24px;
+            height: 24px;
+            margin-bottom: 2px;
+        }
+
+        .static-text {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 10px;
+            font-weight: 500;
+            letter-spacing: 2px;
+            color: #ffffff;
+        }
+
     </style>
 
     <!-- Meta Tags for Premium Experience -->
     <meta name="theme-color" content="#1a1525">
     <meta name="description" content="An ultra-premium interactive birthday celebration experience">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
 
     <!-- Preload Critical Assets -->
     <link rel="preload" href="https://assets.mixkit.co/active_storage/sfx/228/228-preview.mp3" as="audio">
     <link rel="preload" href="https://assets.mixkit.co/active_storage/sfx/2049/2049-preview.mp3" as="audio">
+
+    <!-- Firebase SDK (Compat) -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 </head>
 
 <body>
 
-    <!-- Ambient Background Elements -->
-    <div class="ambient-bg">
+    <!-- === DECORATIVE BACKGROUND LAYER === -->
+    <div class="decorative-bg-layer">
         <div class="glow-orb orb-1"></div>
         <div class="glow-orb orb-2"></div>
         <div class="glow-orb orb-3"></div>
         <canvas id="particles-canvas"></canvas>
     </div>
 
-    <!-- Main Viewport Container (for zoom effects) -->
-    <div id="main-container">
-        <!-- Scene 1: Candle & Cinematic Lighter -->
-        <div id="scene-1" class="scene">
-            <div class="candle-wrapper">
-                <!-- Luxurious Candle SVG -->
-                <svg class="candle-lux" viewBox="0 0 120 300" xmlns="http://www.w3.org/2000/svg">
-                    <defs>
-                        <!-- Candle Body Gradient -->
-                        <linearGradient id="luxCandleGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                            <stop offset="0%" stop-color="#fff5f5" />
-                            <stop offset="20%" stop-color="#ffebeb" />
-                            <stop offset="50%" stop-color="#fff" />
-                            <stop offset="80%" stop-color="#ffebeb" />
-                            <stop offset="100%" stop-color="#f5e1e1" />
-                        </linearGradient>
-                        <linearGradient id="luxFlameGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-                            <stop offset="0%" stop-color="#ffffff" />
-                            <stop offset="20%" stop-color="#ffea00" />
-                            <stop offset="60%" stop-color="#ff7b00" />
-                            <stop offset="100%" stop-color="#ff0000" />
-                        </linearGradient>
-                        <filter id="ultraGlow" x="-50%" y="-50%" width="200%" height="200%">
-                            <feGaussianBlur stdDeviation="15" result="blur1" />
-                            <feGaussianBlur stdDeviation="30" result="blur2" />
-                            <feMerge>
-                                <feMergeNode in="blur2" />
-                                <feMergeNode in="blur1" />
-                                <feMergeNode in="SourceGraphic" />
-                            </feMerge>
-                        </filter>
-                    </defs>
-                    <!-- Floating Base/Plate -->
-                    <ellipse cx="60" cy="270" rx="45" ry="12" fill="rgba(255,255,255,0.1)" />
-                    <ellipse cx="60" cy="268" rx="40" ry="10" fill="#d4af37" /> <!-- Gold plate -->
-                    <!-- Body -->
-                    <rect x="40" y="100" width="40" height="165" rx="8" fill="url(#luxCandleGrad)"
-                        filter="drop-shadow(0 10px 10px rgba(0,0,0,0.2))" />
-                    <!-- Wax Drips -->
-                    <path d="M42 100 Q 45 130 48 135 Q 51 130 54 100 Z" fill="#fff" />
-                    <path d="M78 100 Q 75 140 72 145 Q 69 140 66 100 Z" fill="#fff" />
-                    <!-- Wick -->
-                    <path d="M60 100 Q 62 90 58 80" stroke="#222" stroke-width="3" fill="none" stroke-linecap="round" />
-                    <!-- Flame -->
-                    <path id="candle-flame" d="M58 20 C 70 50 65 75 58 80 C 51 75 46 50 58 20 Z"
-                        fill="url(#luxFlameGrad)" filter="url(#ultraGlow)" opacity="0" class="fire" />
-                </svg>
-                <div class="ambient-candle-glow"></div>
-            </div>
+    <!-- === GAME VIEWPORT CONTAINER === -->
+    <div class="game-viewport">
+        <div class="viewport-inner">
+            <!-- Vignette Overlay -->
+            <div class="vignette-overlay"></div>
 
-            <div class="lighter-wrapper">
-                <!-- Cinematic Lighter SVG -->
-                <svg class="lighter-lux" viewBox="0 0 100 200" xmlns="http://www.w3.org/2000/svg">
-                    <defs>
-                        <linearGradient id="metalGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                            <stop offset="0%" stop-color="#4a4a4a" />
-                            <stop offset="20%" stop-color="#8c8c8c" />
-                            <stop offset="50%" stop-color="#d9d9d9" />
-                            <stop offset="80%" stop-color="#8c8c8c" />
-                            <stop offset="100%" stop-color="#3d3d3d" />
-                        </linearGradient>
-                        <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%" stop-color="#bf953f" />
-                            <stop offset="50%" stop-color="#fcf6ba" />
-                            <stop offset="100%" stop-color="#b38728" />
-                        </linearGradient>
-                    </defs>
-
-                    <!-- Lighter Body -->
-                    <rect x="25" y="80" width="50" height="100" rx="5" fill="url(#metalGrad)" stroke="#333"
-                        stroke-width="1" />
-                    <!-- Gold Trim top -->
-                    <rect x="25" y="80" width="50" height="8" fill="url(#goldGrad)" />
-                    <!-- Gold Trim bottom -->
-                    <rect x="25" y="172" width="50" height="8" fill="url(#goldGrad)" />
-
-                    <!-- Inner Mechanism -->
-                    <rect x="35" y="55" width="30" height="25" fill="#222" />
-                    <circle cx="40" cy="65" r="5" fill="#fcf6ba" /> <!-- Strike wheel -->
-
-                    <!-- Lid (Will rotate open) -->
-                    <g id="lighter-lid" transform="translate(75, 80)">
-                        <rect x="-50" y="-45" width="50" height="45" rx="5" fill="url(#metalGrad)" />
-                        <!-- Gold Trim bottom of lid -->
-                        <rect x="-50" y="-8" width="50" height="8" fill="url(#goldGrad)" />
-                    </g>
-
-                    <!-- Lighter Flame -->
-                    <path id="lighter-flame" d="M50 -10 C 60 20 55 45 50 50 C 45 45 40 20 50 -10 Z"
-                        fill="url(#luxFlameGrad)" filter="url(#ultraGlow)" opacity="0" />
-                </svg>
-
-                <div class="glass-instruction lighter-tip">
-                    <span>Tap to Ignite</span>
-                    <div class="shimmer"></div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Scene 2 & 3: Luxurious Cake & Custom Knife -->
-        <div id="scene-2" class="scene" style="display: none; opacity: 0;">
-            <div class="glass-instruction slice-tip">
-                <span>Drag knife to slice</span>
-                <div class="shimmer"></div>
-            </div>
-
-            <div class="cake-wrapper">
-                <!-- Left Cake Half -->
-                <div class="cake-half lux-left">
-                    <svg viewBox="0 0 200 500" xmlns="http://www.w3.org/2000/svg" style="overflow: visible;">
-                        <path fill="#a88679" d="M173.667-13.94c-49.298,0-102.782,0-147.334,0c-3.999,0-4-16.002,0-16.002
-    c44.697,0,96.586,0,147.334,0C177.667-29.942,177.668-13.94,173.667-13.94z">
-                            <animate id="bizcocho_3_left_s2" attributeName="d" calcMode="spline"
-                                keySplines="0 0 1 1; 0 0 1 1" begin="relleno_2_left_s2.end" dur="0.6s" fill="freeze"
-                                values="
-                            M173.667-13.94c-49.298,0-102.782,0-147.334,0c-3.999,0-4-16.002,0-16.002
-    c44.697,0,96.586,0,147.334,0C177.667-29.942,177.668-13.94,173.667-13.94z
-                            ;
-                            M173.667,411.567c-47.995,12.408-102.955,12.561-147.334,0
-    c-3.848-1.089-0.189-16.089,3.661-15.002c44.836,12.66,90.519,12.753,139.427,0.07
-    C173.293,395.631,177.541,410.566,173.667,411.567z
-                            ;
-                            M173.667,427.569c-49.795,0-101.101,0-147.334,0c-3.999,0-4-16.002,0-16.002
-    c46.385,0,97.539,0,147.334,0C177.668,411.567,177.667,427.569,173.667,427.569z
-                            " />
-                        </path>
-                        <path fill="#8b6a60" d="M100-178.521c1.858,0,3.364,1.506,3.364,3.363c0,0,0,33.17,0,44.227
-    c0,19.144,0,57.431,0,76.574c0,10.152,0,40.607,0,40.607c0,1.858-1.506,3.364-3.364,3.364l0,0c-1.858,0-3.364-1.506-3.364-3.364c0,0,0-30.455,0-40.607c0-19.144,0-57.432,0-76.575c0-11.057,0-44.226,0-44.226C96.636-177.015,98.142-178.521,100-178.521
-    L100-178.521z">
-                            <animate id="relleno_2_left_s2" attributeName="d" calcMode="spline"
-                                keySplines="0 0 1 1; 0 0 1 1; 0 0 0.58 1" begin="bizcocho_2_left_s2.end" dur="1.0s"
-                                fill="freeze" values="
-                            M100-178.521c1.858,0,3.364,1.506,3.364,3.363c0,0,0,33.17,0,44.227
-    c0,19.144,0,57.431,0,76.574c0,10.152,0,40.607,0,40.607c0,1.858-1.506,3.364-3.364,3.364l0,0c-1.858,0-3.364-1.506-3.364-3.364c0,0,0-30.455,0-40.607c0-19.144,0-57.432,0-76.575c0-11.057,0-44.226,0-44.226C96.636-177.015,98.142-178.521,100-178.521
-    L100-178.521z
-                            ;
-                            M100,267.257c1.858,0,3.364,1.506,3.364,3.363c0,0,0,33.17,0,44.227
-    c0,19.143,0,57.43,0,76.574c0,10.151,0,40.606,0,40.606c0,1.858-1.506,3.364-3.364,3.364l0,0c-1.858,0-3.364-1.506-3.364-3.364
-    c0,0,0-30.455,0-40.606c0-19.145,0-57.432,0-76.576c0-11.057,0-44.225,0-44.225C96.636,268.763,98.142,267.257,100,267.257
-    L100,267.257z
-                            ;
-                            M93.928,405.433c-0.655,6.444-0.102,9.067,2.957,11.798c0,0,8.083,5.571,16.828,3.503
-    c18.629-4.406,43.813,6.194,50.792,7.791c14.75,3.375,9.162,6.867,9.162,6.867c-2.412,2.258-58.328,0-73.667,0l0,0
-    c-1.858,0-69.995,2.133-73.667,0c0,0-3.337-2.439,6.172-5.992c11.375-4.25,52.875,8.822,47.139-9.442
-    c-6.333-20.167,5.226-21.514,5.226-21.514c3.435-0.915,12.78-6.663,10.923-0.546L93.928,405.433z
-                            ;
-                            M102.242,427.569c5.348,0,14.079,0,17.462,0c0,0,17.026,0,27.504,0
-    c19.143,0,20.39-3.797,26.459,0c3,1.877,0,7.823,0,7.823c-2.412,2.258-58.328,0-73.667,0l0,0c-1.858,0-67.187,0-73.667,0
-    c0,0-4.125-4.983,0-7.823c5.201-3.58,16.085,0,23.725,0c8.841,0,20.762,0,20.762,0c3.686,0,8.597,0,19.511,0H102.242z
-                            " />
-                        </path>
-                        <path fill="#a88679" d="M173.667-15.929c-46.512,0-105.486,0-147.334,0c-3.999,0-4-16.002,0-16.002
-    c43.566,0,97.96,0,147.334,0C177.667-31.931,177.666-15.929,173.667-15.929z">
-                            <animate id="bizcocho_2_left_s2" attributeName="d" calcMode="spline"
-                                keySplines="0 0 1 1; 0 0 1 1; 0.25 0 0.58 1" begin="relleno_1_left_s2.end" dur="1.0s"
-                                fill="freeze" values="
-                            M173.667-15.929c-46.512,0-105.486,0-147.334,0c-3.999,0-4-16.002,0-16.002
-    c43.566,0,97.96,0,147.334,0C177.667-31.931,177.666-15.929,173.667-15.929z
-                            ;
-                            M173.434,445.393c-47.269,8.001-105.245,8.001-147.334,0c-3.929-0.747-0.692-16.543,3.243-15.824
-    c43.828,8.001,92.165,8.001,140.739,0C174.029,428.918,177.377,444.726,173.434,445.393z
-                            ;
-                            M173.667,449.514c-47.576-5.454-102.799-5.744-147.333,0c-3.966,0.512-3.938-15.297,0-16.002
-    c43.683-7.823,97.646-8.026,147.333,0C177.616,434.15,177.642,449.969,173.667,449.514z
-                            ;
-                            M173.667,451.394c-49.298,0-102.782,0-147.334,0c-3.999,0-4-16.002,0-16.002
-    c44.697,0,96.586,0,147.334,0C177.667,435.392,177.668,451.394,173.667,451.394z
-                            " />
-                        </path>
-                        <path fill="#8b6a60" d="M101.368-73.685c0,12.164,0,15.18,0,28.519c0,22.702,0-13.661,0,8.304c0,14.48,0,18.233,0,30.512
-    c0,1.753-2.958,1.847-2.958,0c0-12.68,0-16.277,0-30.401c0-21.983,0,11.66,0-8.305c0-13.027,0-15.992,0-28.628
-    C98.411-75.883,101.368-75.592,101.368-73.685z">
-                            <animate id="relleno_1_left_s2" attributeName="d" calcMode="spline"
-                                keySplines="0 0 1 1; 0 0 1 1; 0 0 0.6 1" begin="bizcocho_1_left_s2.end" dur="1.0s"
-                                fill="freeze" values="
-                            M101.368-73.685c0,12.164,0,15.18,0,28.519c0,22.702,0-13.661,0,8.304c0,14.48,0,18.233,0,30.512
-    c0,1.753-2.958,1.847-2.958,0c0-12.68,0-16.277,0-30.401c0-21.983,0,11.66,0-8.305c0-13.027,0-15.992,0-28.628
-    C98.411-75.883,101.368-75.592,101.368-73.685z
-                            ;
-                            M101.368,350.885c0,12.164,0,65.18,0,78.518c0,22.703,0-33.66,0-11.695c0,14.48,0,28.232,0,40.512
-    c0,1.753-2.958,1.847-2.958,0c0-12.68,0-26.277,0-40.402c0-21.982,0,31.66,0,11.695c0-13.027,0-65.992,0-78.627
-    C98.411,348.686,101.368,348.977,101.368,350.885z
-                            ;
-                            M128.38,447.567c37.626,6.312,39.303,13.658,26.833,12.833c-22.653-1.499-13.636-0.831-23.302-0.831
-    c-14.48,0-17.884,0-30.163,0c-2.087,0-2.068,0-3.915,0c-13.333,0-8.963,0-23.088,0c-11.668,0-14.062,5.995-27.532,1.164
-    c-12.629-4.529,38.667-3.167,46.833-17.333C100.077,432.94,105.546,443.736,128.38,447.567z
-                            ;
-                            M173.667,451.394c2.875,0,2.997,9.257,0,9.131c-22.662-0.956-32.09-0.956-41.756-0.956
-    c-14.48,0-17.884,0-30.163,0c-2.087,0-2.068,0-3.915,0c-13.333,0-8.963,0-23.088,0c-11.668,0-34.99-0.294-48.412,1.831
-    c-4.109,0.65-3.01-10.006,0-10.006C37.129,451.394,149.379,451.394,173.667,451.394z
-                            " />
-                        </path>
-                        <path fill="#a88679" d="M173.667,21.571c-33.174,0-111.467,0-147.334,0c-4,0-4-16.002,0-16.002c39.836,0,105.982,0,147.334,0
-    C177.668,5.569,177.667,21.571,173.667,21.571z">
-                            <animate id="bizcocho_1_left_s2" attributeName="d" calcMode="spline"
-                                keySplines="0 0 1 1; 0 0 1 1; 0 0 1 1; 0.25 0 1 1; 0 0 1 1; 0.25 0 0.6 1"
-                                begin="indefinite" dur="1.6s" fill="freeze" values="
-                            M173.667,21.571c-33.174,0-111.467,0-147.334,0c-4,0-4-16.002,0-16.002c39.836,0,105.982,0,147.334,0
-    C177.668,5.569,177.667,21.571,173.667,21.571z
-                            ;
-                            M173.667,459.569c-33.197,16.002-110.782,16.002-147.334,0c-3.664-1.604,1.614-15.617,5.337-14.153
-    c40.702,16.002,94.289,16.104,136.505,0.103C171.917,444.1,177.271,457.832,173.667,459.569z
-                            ;
-                            M171.817,475.571c-39.361-3.001-105.438-2.571-143.556,0c-3.991,0.27-7.377-14.736-3.387-15.014
-    c41.553-2.888,104.421-3.121,150.51-0.233C179.378,460.574,175.806,475.875,171.817,475.571z
-                            ;
-                            M171.817,459.564c-38.8-12.188-104.504-13.762-143.556,0c-3.772,1.329-7.961-12.604-4.178-13.905
-    c40.864-14.064,105.114-15.52,151.918-0.973C179.822,445.874,175.634,460.762,171.817,459.564z
-                            ;
-                            M173.667,475.571c-46.376-5.005-105.924-4.003-147.334,0c-3.981,0.385-3.479-15.421,0.479-16.002
-    c43.087-6.327,97.705-7.083,146.855,0.438C177.621,460.613,177.644,476,173.667,475.571z
-                            ;
-                            M173.667,474.117c-46.376,1.866-105.638,2.01-147.334,0c-3.995-0.192-3.52-16.144,0.479-16.002
-    c43.794,1.55,96.341,1.541,145.723,0C176.532,457.99,177.663,473.956,173.667,474.117z
-                            ;
-                            M173.667,475.571c-46.512,0-105.486,0-147.334,0c-3.999,0-4-16.002,0-16.002c43.566,0,97.96,0,147.334,0
-    C177.667,459.569,177.666,475.571,173.667,475.571z
-                            " />
-                        </path>
-                        <path fill="#fefae9" d="M104.812,113.216c0,3.119-2.164,5.67-4.812,5.67c-2.646,0-4.812-2.551-4.812-5.67c0-5.594,0-16.782,0-22.375
-    c0-5.143,0-15.427,0-20.568c0-7.333,0-21.998,0-29.33c0-5.523,0-16.569,0-22.092c0-3.295,0-9.885,0-13.181
-    C95.188,2.551,97.353,0,100,0c2.648,0,4.812,2.551,4.812,5.669c0,3.248,0,9.743,0,12.991c0,5.428,0,16.284,0,21.711
-    c0,7.618,0,22.854,0,30.472c0,4.952,0,14.854,0,19.807C104.812,96.292,104.812,107.576,104.812,113.216z">
-                            <animate id="crema_left_s2" attributeName="d" calcMode="spline"
-                                keySplines="0 0 1 1; 0 0 1 1; 0 0 1 1; 0.25 0 1 1; 0 0 1 1; 0 0 0.58 1"
-                                begin="bizcocho_3_left_s2.end" dur="4s" fill="freeze" values="
-                            M104.812,113.216c0,3.119-2.164,5.67-4.812,5.67c-2.646,0-4.812-2.551-4.812-5.67c0-5.594,0-16.782,0-22.375
-    c0-5.143,0-15.427,0-20.568c0-7.333,0-21.998,0-29.33c0-5.523,0-16.569,0-22.092c0-3.295,0-9.885,0-13.181
-    C95.188,2.551,97.353,0,100,0c2.648,0,4.812,2.551,4.812,5.669c0,3.248,0,9.743,0,12.991c0,5.428,0,16.284,0,21.711
-    c0,7.618,0,22.854,0,30.472c0,4.952,0,14.854,0,19.807C104.812,96.292,104.812,107.576,104.812,113.216z
-                            ;
-                            M104.812,405.897c0,3.119-2.164,5.67-4.812,5.67c-2.646,0-4.812-2.551-4.812-5.67c0-5.594,0-16.782,0-22.376
-    c0-5.143,0-15.426,0-20.568c0-7.332,0-21.997,0-29.33c0-5.522,0-16.568,0-22.092c0-3.295,0-9.885,0-13.181
-    c0-3.118,2.165-5.669,4.812-5.669c2.648,0,4.812,2.551,4.812,5.669c0,3.247,0,9.743,0,12.991c0,5.428,0,16.283,0,21.711
-    c0,7.618,0,22.854,0,30.473c0,4.951,0,14.854,0,19.807C104.812,388.972,104.812,400.256,104.812,405.897z
-                            ;
-                            M111.873,411.567c-3.119,0-9.226,0-11.874,0c-2.646,0-7.748,0-10.867,0c-7.086,0-12.698,0-18.292,0
-    c-6.592,0-12.871,7.371-19.166,3.008c-10.043-6.961-7.776-10.169,2.991-17.745c12.61-8.873,27.713,1.994,25.919-7.531
-    c-2.589-13.742,11.008-14.513,11.365-17.789c0.441-4.051,4.235-11.107,8.051-8.175c3.113,2.393,1.007,8.008,0,13.159
-    c-1.871,9.569,8.058,2.113,9.494,14.155c2.592,21.732,21.184-0.675,29.309,7.976c5.216,5.553,18.413,5.552,15.426,12.942
-    c-3.131,7.745-15.825-4.369-23.8,2.903C126.261,418.271,118.301,411.567,111.873,411.567z
-                            ;
-                            M111.873,411.567c-3.119,0-9.226,0-11.874,0c-2.646,0-9.734,4.069-12.853,4.069
-    c-7.086,0-10.712-4.069-16.306-4.069c-6.592,0-12.12,6.013-19.166,3.008c-7.053-3.008-7.458,2.026-18.659,1.165
-    c-6.832-0.525-7.522-3.034-7.533-6.265c-0.037-10.336,22.073-2.452,36.613-2.628c10.234-0.124,19.856-1.439,37.905-2.102
-    c16.642-0.61,32.699,1.552,46.009,1.927c12.438,0.351,29.663-8.99,31.532,3.315c0.773,5.093-5.605,3.342-11.211,9.579
-    c-5.093,5.667-7.59-4.605-12.965-3.832c-8.269,1.189-14.962-8.537-22.937-1.265C126.261,418.271,118.301,411.567,111.873,411.567z
-                            ;
-                            M110.946,413.652c-2.904-1.137-8.405-2.748-12.446-0.97c-6.099,2.685-7.273,10.358-13.253,8.242
-    c-7.843-2.775-8.953-5.008-14.546-5.01c-24.653-0.011-4.849,26.507-18.264,26.507c-12.377,0,5.791-33.537-19.422-26.682
-    c-7.703,2.095-9.806-0.942-9.817-4.173c-0.037-10.336,24.357-4.544,38.897-4.72c10.234-0.124,19.856-1.439,37.905-2.102
-    c16.642-0.61,32.699,1.552,46.009,1.927c12.438,0.351,28.973-8.865,31.532,3.315c1.449,6.896,0.318,15.624-3.874,15.624
-    c-7.619,0-1.788-15.192-19.243-7.111c-7.581,3.51-15.963-9.738-26.669,1.066C120.644,426.744,118.381,416.561,110.946,413.652z
-                            ;
-                            M111.547,413.9c-2.969-0.956-8.775-0.949-13.167-0.5c-14.667,1.5-8.325,16.508-14.667,16.666
-    c-6.667,0.166-0.167-13.5-13.013-14.151c-30.471-1.545-5.572,46.651-18.987,46.651c-12.377,0,10.333-50.166-18.667-44.5
-    c-7.835,1.531-9.537-1.417-9.548-4.647c-0.037-10.336,23.675-5.177,38.215-5.353c10.234-0.124,20.618-1.671,38.667-2.333
-    c16.642-0.61,32.023,1.458,45.333,1.833c12.438,0.351,33.819-8.431,33.199,4.001c-0.532,10.666,0.414,26.166-5.245,25.833
-    c-7.606-0.447-2.954-31.5-19.243-18.899c-7.985,6.177-17.658-5.969-27.377,5.732C118.88,434.066,121.38,417.067,111.547,413.9z
-                            ;
-                            M111.547,415.233c-6.667-0.834-9.667,4.667-13.833,3.333c-19.649-6.291-8.158,22.176-14.5,22.334
-    c-6.667,0.166,2.833-18-13.333-22.167c-29.544-7.615-9.667,43.833-20.167,43.833c-10.333,0,8.004-55.006-16.833-39
-    c-7.5,4.833-9.508-3.78-9.299-7.004c0.799-12.329,23.592-7.153,38.132-7.329c10.234-0.124,20.238-1.505,38.287-2.167
-    c16.642-0.61,32.903,1.125,46.213,1.5c12.438,0.351,35.058-5.579,31.863,6.451c-5.532,20.833,1.25,28.216-4.409,27.883
-    c-7.606-0.447-6.058-37.895-20.62-23.333c-10.167,10.166-15.972-0.747-25,12C119.547,443.568,121.798,416.515,111.547,415.233z
-                            " />
-                        </path>
-                        <rect x="10" y="475.571" fill="#fefae9" width="180" height="4" />
-                    </svg>
-                </div>
-
-                <!-- Right Cake Half -->
-                <div class="cake-half lux-right">
-                    <svg viewBox="0 0 200 500" xmlns="http://www.w3.org/2000/svg" style="overflow: visible;">
-                        <path fill="#a88679" d="M173.667-13.94c-49.298,0-102.782,0-147.334,0c-3.999,0-4-16.002,0-16.002
-    c44.697,0,96.586,0,147.334,0C177.667-29.942,177.668-13.94,173.667-13.94z">
-                            <animate id="bizcocho_3_right_s2" attributeName="d" calcMode="spline"
-                                keySplines="0 0 1 1; 0 0 1 1" begin="relleno_2_right_s2.end" dur="0.6s" fill="freeze"
-                                values="
-                            M173.667-13.94c-49.298,0-102.782,0-147.334,0c-3.999,0-4-16.002,0-16.002
-    c44.697,0,96.586,0,147.334,0C177.667-29.942,177.668-13.94,173.667-13.94z
-                            ;
-                            M173.667,411.567c-47.995,12.408-102.955,12.561-147.334,0
-    c-3.848-1.089-0.189-16.089,3.661-15.002c44.836,12.66,90.519,12.753,139.427,0.07
-    C173.293,395.631,177.541,410.566,173.667,411.567z
-                            ;
-                            M173.667,427.569c-49.795,0-101.101,0-147.334,0c-3.999,0-4-16.002,0-16.002
-    c46.385,0,97.539,0,147.334,0C177.668,411.567,177.667,427.569,173.667,427.569z
-                            " />
-                        </path>
-                        <path fill="#8b6a60" d="M100-178.521c1.858,0,3.364,1.506,3.364,3.363c0,0,0,33.17,0,44.227
-    c0,19.144,0,57.431,0,76.574c0,10.152,0,40.607,0,40.607c0,1.858-1.506,3.364-3.364,3.364l0,0c-1.858,0-3.364-1.506-3.364-3.364c0,0,0-30.455,0-40.607c0-19.144,0-57.432,0-76.575c0-11.057,0-44.226,0-44.226C96.636-177.015,98.142-178.521,100-178.521
-    L100-178.521z">
-                            <animate id="relleno_2_right_s2" attributeName="d" calcMode="spline"
-                                keySplines="0 0 1 1; 0 0 1 1; 0 0 0.58 1" begin="bizcocho_2_right_s2.end" dur="1.0s"
-                                fill="freeze" values="
-                            M100-178.521c1.858,0,3.364,1.506,3.364,3.363c0,0,0,33.17,0,44.227
-    c0,19.144,0,57.431,0,76.574c0,10.152,0,40.607,0,40.607c0,1.858-1.506,3.364-3.364,3.364l0,0c-1.858,0-3.364-1.506-3.364-3.364c0,0,0-30.455,0-40.607c0-19.144,0-57.432,0-76.575c0-11.057,0-44.226,0-44.226C96.636-177.015,98.142-178.521,100-178.521
-    L100-178.521z
-                            ;
-                            M100,267.257c1.858,0,3.364,1.506,3.364,3.363c0,0,0,33.17,0,44.227
-    c0,19.143,0,57.43,0,76.574c0,10.151,0,40.606,0,40.606c0,1.858-1.506,3.364-3.364,3.364l0,0c-1.858,0-3.364-1.506-3.364-3.364
-    c0,0,0-30.455,0-40.606c0-19.145,0-57.432,0-76.576c0-11.057,0-44.225,0-44.225C96.636,268.763,98.142,267.257,100,267.257
-    L100,267.257z
-                            ;
-                            M93.928,405.433c-0.655,6.444-0.102,9.067,2.957,11.798c0,0,8.083,5.571,16.828,3.503
-    c18.629-4.406,43.813,6.194,50.792,7.791c14.75,3.375,9.162,6.867,9.162,6.867c-2.412,2.258-58.328,0-73.667,0l0,0
-    c-1.858,0-69.995,2.133-73.667,0c0,0-3.337-2.439,6.172-5.992c11.375-4.25,52.875,8.822,47.139-9.442
-    c-6.333-20.167,5.226-21.514,5.226-21.514c3.435-0.915,12.78-6.663,10.923-0.546L93.928,405.433z
-                            ;
-                            M102.242,427.569c5.348,0,14.079,0,17.462,0c0,0,17.026,0,27.504,0
-    c19.143,0,20.39-3.797,26.459,0c3,1.877,0,7.823,0,7.823c-2.412,2.258-58.328,0-73.667,0l0,0c-1.858,0-67.187,0-73.667,0
-    c0,0-4.125-4.983,0-7.823c5.201-3.58,16.085,0,23.725,0c8.841,0,20.762,0,20.762,0c3.686,0,8.597,0,19.511,0H102.242z
-                            " />
-                        </path>
-                        <path fill="#a88679" d="M173.667-15.929c-46.512,0-105.486,0-147.334,0c-3.999,0-4-16.002,0-16.002
-    c43.566,0,97.96,0,147.334,0C177.667-31.931,177.666-15.929,173.667-15.929z">
-                            <animate id="bizcocho_2_right_s2" attributeName="d" calcMode="spline"
-                                keySplines="0 0 1 1; 0 0 1 1; 0.25 0 0.58 1" begin="relleno_1_right_s2.end" dur="1.0s"
-                                fill="freeze" values="
-                            M173.667-15.929c-46.512,0-105.486,0-147.334,0c-3.999,0-4-16.002,0-16.002
-    c43.566,0,97.96,0,147.334,0C177.667-31.931,177.666-15.929,173.667-15.929z
-                            ;
-                            M173.434,445.393c-47.269,8.001-105.245,8.001-147.334,0c-3.929-0.747-0.692-16.543,3.243-15.824
-    c43.828,8.001,92.165,8.001,140.739,0C174.029,428.918,177.377,444.726,173.434,445.393z
-                            ;
-                            M173.667,449.514c-47.576-5.454-102.799-5.744-147.333,0c-3.966,0.512-3.938-15.297,0-16.002
-    c43.683-7.823,97.646-8.026,147.333,0C177.616,434.15,177.642,449.969,173.667,449.514z
-                            ;
-                            M173.667,451.394c-49.298,0-102.782,0-147.334,0c-3.999,0-4-16.002,0-16.002
-    c44.697,0,96.586,0,147.334,0C177.667,435.392,177.668,451.394,173.667,451.394z
-                            " />
-                        </path>
-                        <path fill="#8b6a60" d="M101.368-73.685c0,12.164,0,15.18,0,28.519c0,22.702,0-13.661,0,8.304c0,14.48,0,18.233,0,30.512
-    c0,1.753-2.958,1.847-2.958,0c0-12.68,0-16.277,0-30.401c0-21.983,0,11.66,0-8.305c0-13.027,0-15.992,0-28.628
-    C98.411-75.883,101.368-75.592,101.368-73.685z">
-                            <animate id="relleno_1_right_s2" attributeName="d" calcMode="spline"
-                                keySplines="0 0 1 1; 0 0 1 1; 0 0 0.6 1" begin="bizcocho_1_right_s2.end" dur="1.0s"
-                                fill="freeze" values="
-                            M101.368-73.685c0,12.164,0,15.18,0,28.519c0,22.702,0-13.661,0,8.304c0,14.48,0,18.233,0,30.512
-    c0,1.753-2.958,1.847-2.958,0c0-12.68,0-16.277,0-30.401c0-21.983,0,11.66,0-8.305c0-13.027,0-15.992,0-28.628
-    C98.411-75.883,101.368-75.592,101.368-73.685z
-                            ;
-                            M101.368,350.885c0,12.164,0,65.18,0,78.518c0,22.703,0-33.66,0-11.695c0,14.48,0,28.232,0,40.512
-    c0,1.753-2.958,1.847-2.958,0c0-12.68,0-26.277,0-40.402c0-21.982,0,31.66,0,11.695c0-13.027,0-65.992,0-78.627
-    C98.411,348.686,101.368,348.977,101.368,350.885z
-                            ;
-                            M128.38,447.567c37.626,6.312,39.303,13.658,26.833,12.833c-22.653-1.499-13.636-0.831-23.302-0.831
-    c-14.48,0-17.884,0-30.163,0c-2.087,0-2.068,0-3.915,0c-13.333,0-8.963,0-23.088,0c-11.668,0-14.062,5.995-27.532,1.164
-    c-12.629-4.529,38.667-3.167,46.833-17.333C100.077,432.94,105.546,443.736,128.38,447.567z
-                            ;
-                            M173.667,451.394c2.875,0,2.997,9.257,0,9.131c-22.662-0.956-32.09-0.956-41.756-0.956
-    c-14.48,0-17.884,0-30.163,0c-2.087,0-2.068,0-3.915,0c-13.333,0-8.963,0-23.088,0c-11.668,0-34.99-0.294-48.412,1.831
-    c-4.109,0.65-3.01-10.006,0-10.006C37.129,451.394,149.379,451.394,173.667,451.394z
-                            " />
-                        </path>
-                        <path fill="#a88679" d="M173.667,21.571c-33.174,0-111.467,0-147.334,0c-4,0-4-16.002,0-16.002c39.836,0,105.982,0,147.334,0
-    C177.668,5.569,177.667,21.571,173.667,21.571z">
-                            <animate id="bizcocho_1_right_s2" attributeName="d" calcMode="spline"
-                                keySplines="0 0 1 1; 0 0 1 1; 0 0 1 1; 0.25 0 1 1; 0 0 1 1; 0.25 0 0.6 1"
-                                begin="indefinite" dur="1.6s" fill="freeze" values="
-                            M173.667,21.571c-33.174,0-111.467,0-147.334,0c-4,0-4-16.002,0-16.002c39.836,0,105.982,0,147.334,0
-    C177.668,5.569,177.667,21.571,173.667,21.571z
-                            ;
-                            M173.667,459.569c-33.197,16.002-110.782,16.002-147.334,0c-3.664-1.604,1.614-15.617,5.337-14.153
-    c40.702,16.002,94.289,16.104,136.505,0.103C171.917,444.1,177.271,457.832,173.667,459.569z
-                            ;
-                            M171.817,475.571c-39.361-3.001-105.438-2.571-143.556,0c-3.991,0.27-7.377-14.736-3.387-15.014
-    c41.553-2.888,104.421-3.121,150.51-0.233C179.378,460.574,175.806,475.875,171.817,475.571z
-                            ;
-                            M171.817,459.564c-38.8-12.188-104.504-13.762-143.556,0c-3.772,1.329-7.961-12.604-4.178-13.905
-    c40.864-14.064,105.114-15.52,151.918-0.973C179.822,445.874,175.634,460.762,171.817,459.564z
-                            ;
-                            M173.667,475.571c-46.376-5.005-105.924-4.003-147.334,0c-3.981,0.385-3.479-15.421,0.479-16.002
-    c43.087-6.327,97.705-7.083,146.855,0.438C177.621,460.613,177.644,476,173.667,475.571z
-                            ;
-                            M173.667,474.117c-46.376,1.866-105.638,2.01-147.334,0c-3.995-0.192-3.52-16.144,0.479-16.002
-    c43.794,1.55,96.341,1.541,145.723,0C176.532,457.99,177.663,473.956,173.667,474.117z
-                            ;
-                            M173.667,475.571c-46.512,0-105.486,0-147.334,0c-3.999,0-4-16.002,0-16.002c43.566,0,97.96,0,147.334,0
-    C177.667,459.569,177.666,475.571,173.667,475.571z
-                            " />
-                        </path>
-                        <path fill="#fefae9" d="M104.812,113.216c0,3.119-2.164,5.67-4.812,5.67c-2.646,0-4.812-2.551-4.812-5.67c0-5.594,0-16.782,0-22.375
-    c0-5.143,0-15.427,0-20.568c0-7.333,0-21.998,0-29.33c0-5.523,0-16.569,0-22.092c0-3.295,0-9.885,0-13.181
-    C95.188,2.551,97.353,0,100,0c2.648,0,4.812,2.551,4.812,5.669c0,3.248,0,9.743,0,12.991c0,5.428,0,16.284,0,21.711
-    c0,7.618,0,22.854,0,30.472c0,4.952,0,14.854,0,19.807C104.812,96.292,104.812,107.576,104.812,113.216z">
-                            <animate id="crema_right_s2" attributeName="d" calcMode="spline"
-                                keySplines="0 0 1 1; 0 0 1 1; 0 0 1 1; 0.25 0 1 1; 0 0 1 1; 0 0 0.58 1"
-                                begin="bizcocho_3_right_s2.end" dur="4s" fill="freeze" values="
-                            M104.812,113.216c0,3.119-2.164,5.67-4.812,5.67c-2.646,0-4.812-2.551-4.812-5.67c0-5.594,0-16.782,0-22.375
-    c0-5.143,0-15.427,0-20.568c0-7.333,0-21.998,0-29.33c0-5.523,0-16.569,0-22.092c0-3.295,0-9.885,0-13.181
-    C95.188,2.551,97.353,0,100,0c2.648,0,4.812,2.551,4.812,5.669c0,3.248,0,9.743,0,12.991c0,5.428,0,16.284,0,21.711
-    c0,7.618,0,22.854,0,30.472c0,4.952,0,14.854,0,19.807C104.812,96.292,104.812,107.576,104.812,113.216z
-                            ;
-                            M104.812,405.897c0,3.119-2.164,5.67-4.812,5.67c-2.646,0-4.812-2.551-4.812-5.67c0-5.594,0-16.782,0-22.376
-    c0-5.143,0-15.426,0-20.568c0-7.332,0-21.997,0-29.33c0-5.522,0-16.568,0-22.092c0-3.295,0-9.885,0-13.181
-    c0-3.118,2.165-5.669,4.812-5.669c2.648,0,4.812,2.551,4.812,5.669c0,3.247,0,9.743,0,12.991c0,5.428,0,16.283,0,21.711
-    c0,7.618,0,22.854,0,30.473c0,4.951,0,14.854,0,19.807C104.812,388.972,104.812,400.256,104.812,405.897z
-                            ;
-                            M111.873,411.567c-3.119,0-9.226,0-11.874,0c-2.646,0-7.748,0-10.867,0c-7.086,0-12.698,0-18.292,0
-    c-6.592,0-12.871,7.371-19.166,3.008c-10.043-6.961-7.776-10.169,2.991-17.745c12.61-8.873,27.713,1.994,25.919-7.531
-    c-2.589-13.742,11.008-14.513,11.365-17.789c0.441-4.051,4.235-11.107,8.051-8.175c3.113,2.393,1.007,8.008,0,13.159
-    c-1.871,9.569,8.058,2.113,9.494,14.155c2.592,21.732,21.184-0.675,29.309,7.976c5.216,5.553,18.413,5.552,15.426,12.942
-    c-3.131,7.745-15.825-4.369-23.8,2.903C126.261,418.271,118.301,411.567,111.873,411.567z
-                            ;
-                            M111.873,411.567c-3.119,0-9.226,0-11.874,0c-2.646,0-9.734,4.069-12.853,4.069
-    c-7.086,0-10.712-4.069-16.306-4.069c-6.592,0-12.12,6.013-19.166,3.008c-7.053-3.008-7.458,2.026-18.659,1.165
-    c-6.832-0.525-7.522-3.034-7.533-6.265c-0.037-10.336,22.073-2.452,36.613-2.628c10.234-0.124,19.856-1.439,37.905-2.102
-    c16.642-0.61,32.699,1.552,46.009,1.927c12.438,0.351,29.663-8.99,31.532,3.315c0.773,5.093-5.605,3.342-11.211,9.579
-    c-5.093,5.667-7.59-4.605-12.965-3.832c-8.269,1.189-14.962-8.537-22.937-1.265C126.261,418.271,118.301,411.567,111.873,411.567z
-                            ;
-                            M110.946,413.652c-2.904-1.137-8.405-2.748-12.446-0.97c-6.099,2.685-7.273,10.358-13.253,8.242
-    c-7.843-2.775-8.953-5.008-14.546-5.01c-24.653-0.011-4.849,26.507-18.264,26.507c-12.377,0,5.791-33.537-19.422-26.682
-    c-7.703,2.095-9.806-0.942-9.817-4.173c-0.037-10.336,24.357-4.544,38.897-4.72c10.234-0.124,19.856-1.439,37.905-2.102
-    c16.642-0.61,32.699,1.552,46.009,1.927c12.438,0.351,28.973-8.865,31.532,3.315c1.449,6.896,0.318,15.624-3.874,15.624
-    c-7.619,0-1.788-15.192-19.243-7.111c-7.581,3.51-15.963-9.738-26.669,1.066C120.644,426.744,118.381,416.561,110.946,413.652z
-                            ;
-                            M111.547,413.9c-2.969-0.956-8.775-0.949-13.167-0.5c-14.667,1.5-8.325,16.508-14.667,16.666
-    c-6.667,0.166-0.167-13.5-13.013-14.151c-30.471-1.545-5.572,46.651-18.987,46.651c-12.377,0,10.333-50.166-18.667-44.5
-    c-7.835,1.531-9.537-1.417-9.548-4.647c-0.037-10.336,23.675-5.177,38.215-5.353c10.234-0.124,20.618-1.671,38.667-2.333
-    c16.642-0.61,32.023,1.458,45.333,1.833c12.438,0.351,33.819-8.431,33.199,4.001c-0.532,10.666,0.414,26.166-5.245,25.833
-    c-7.606-0.447-2.954-31.5-19.243-18.899c-7.985,6.177-17.658-5.969-27.377,5.732C118.88,434.066,121.38,417.067,111.547,413.9z
-                            ;
-                            M111.547,415.233c-6.667-0.834-9.667,4.667-13.833,3.333c-19.649-6.291-8.158,22.176-14.5,22.334
-    c-6.667,0.166,2.833-18-13.333-22.167c-29.544-7.615-9.667,43.833-20.167,43.833c-10.333,0,8.004-55.006-16.833-39
-    c-7.5,4.833-9.508-3.78-9.299-7.004c0.799-12.329,23.592-7.153,38.132-7.329c10.234-0.124,20.238-1.505,38.287-2.167
-    c16.642-0.61,32.903,1.125,46.213,1.5c12.438,0.351,35.058-5.579,31.863,6.451c-5.532,20.833,1.25,28.216-4.409,27.883
-    c-7.606-0.447-6.058-37.895-20.62-23.333c-10.167,10.166-15.972-0.747-25,12C119.547,443.568,121.798,416.515,111.547,415.233z
-                            " />
-                        </path>
-                        <rect x="10" y="475.571" fill="#fefae9" width="180" height="4" />
-                    </svg>
-                </div>
-            </div>
-
-            <div class="knife-wrapper">
-                <svg class="knife-lux" viewBox="0 0 30 220" xmlns="http://www.w3.org/2000/svg">
-                    <!-- Elegant Handle -->
-                    <rect x="8" y="140" width="14" height="70" rx="4" fill="#111" />
-                    <rect x="7" y="140" width="16" height="5" fill="#d4af37" />
-                    <rect x="7" y="205" width="16" height="5" fill="#d4af37" />
-                    <!-- Shiny Blade -->
-                    <path d="M15 0 L22 20 L22 140 L8 140 L8 20 Z" fill="url(#metalGrad)"
-                        filter="drop-shadow(2px 5px 5px rgba(0,0,0,0.3))" />
-                    <path d="M15 0 L20 20 L20 140 L15 140 Z" fill="#fff" opacity="0.3" /> <!-- specular highlight -->
-                </svg>
-            </div>
-        </div>
-
-        <!-- Scene 4: Premium Celebration Message -->
-        <div id="scene-3" class="scene" style="display: none; opacity: 0;">
-            <!-- Enhanced background blur layers for premium depth effect -->
-            <div class="scene-3-background"></div>
-
-            <!-- Firebase Data Container -->
-            <div id="firebase-data-container" class="firebase-data-container">
-                <div class="receiver-info">
-                    <div id="receiver-photo-container" class="photo-container">
-                        <img id="receiver-photo" data-photo src="" alt="Receiver Photo" class="receiver-photo"
-                            style="display: none;">
-                        <div id="photo-placeholder" class="photo-placeholder">Photo</div>
+            <!-- Main Content Container -->
+            <div id="main-container">
+                <!-- Scene 1: Candle & Cinematic Lighter -->
+                <div id="scene-1" class="scene">
+                    <div class="candle-wrapper">
+                        <!-- Luxurious Candle SVG -->
+                        <svg class="candle-lux" viewBox="0 0 120 300" xmlns="http://www.w3.org/2000/svg">
+                            <defs>
+                                <!-- Candle Body Gradient -->
+                                <linearGradient id="luxCandleGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                                    <stop offset="0%" stop-color="#fff5f5" />
+                                    <stop offset="20%" stop-color="#ffebeb" />
+                                    <stop offset="50%" stop-color="#fff" />
+                                    <stop offset="80%" stop-color="#ffebeb" />
+                                    <stop offset="100%" stop-color="#f5e1e1" />
+                                </linearGradient>
+                                <linearGradient id="luxFlameGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                                    <stop offset="0%" stop-color="#ffffff" />
+                                    <stop offset="20%" stop-color="#ffea00" />
+                                    <stop offset="60%" stop-color="#ff7b00" />
+                                    <stop offset="100%" stop-color="#ff0000" />
+                                </linearGradient>
+                                <filter id="ultraGlow" x="-50%" y="-50%" width="200%" height="200%">
+                                    <feGaussianBlur stdDeviation="15" result="blur1" />
+                                    <feGaussianBlur stdDeviation="30" result="blur2" />
+                                    <feMerge>
+                                        <feMergeNode in="blur2" />
+                                        <feMergeNode in="blur1" />
+                                        <feMergeNode in="SourceGraphic" />
+                                    </feMerge>
+                                </filter>
+                            </defs>
+                            <!-- Floating Base/Plate -->
+                            <ellipse cx="60" cy="270" rx="45" ry="12" fill="rgba(255,255,255,0.1)" />
+                            <ellipse cx="60" cy="268" rx="40" ry="10" fill="#d4af37" /> <!-- Gold plate -->
+                            <!-- Body -->
+                            <rect x="40" y="100" width="40" height="165" rx="8" fill="url(#luxCandleGrad)"
+                                filter="drop-shadow(0 10px 10px rgba(0,0,0,0.2))" />
+                            <!-- Wax Drips -->
+                            <path d="M42 100 Q 45 130 48 135 Q 51 130 54 100 Z" fill="#fff" />
+                            <path d="M78 100 Q 75 140 72 145 Q 69 140 66 100 Z" fill="#fff" />
+                            <!-- Wick -->
+                            <path d="M60 100 Q 62 90 58 80" stroke="#222" stroke-width="3" fill="none"
+                                stroke-linecap="round" />
+                            <!-- Flame -->
+                            <path id="candle-flame" d="M58 20 C 70 50 65 75 58 80 C 51 75 46 50 58 20 Z"
+                                fill="url(#luxFlameGrad)" filter="url(#ultraGlow)" opacity="0" class="fire" />
+                        </svg>
+                        <div class="ambient-candle-glow"></div>
                     </div>
-                    <h1 id="receiver-name" class="lux-title" data-receiver>Happy Birthday</h1>
+
+                    <div class="lighter-wrapper">
+                        <!-- Cinematic Lighter SVG -->
+                        <svg class="lighter-lux" viewBox="0 0 100 200" xmlns="http://www.w3.org/2000/svg">
+                            <defs>
+                                <linearGradient id="metalGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                                    <stop offset="0%" stop-color="#4a4a4a" />
+                                    <stop offset="20%" stop-color="#8c8c8c" />
+                                    <stop offset="50%" stop-color="#d9d9d9" />
+                                    <stop offset="80%" stop-color="#8c8c8c" />
+                                    <stop offset="100%" stop-color="#3d3d3d" />
+                                </linearGradient>
+                                <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" stop-color="#bf953f" />
+                                    <stop offset="50%" stop-color="#fcf6ba" />
+                                    <stop offset="100%" stop-color="#b38728" />
+                                </linearGradient>
+                            </defs>
+
+                            <!-- Lighter Body -->
+                            <rect x="25" y="80" width="50" height="100" rx="5" fill="url(#metalGrad)" stroke="#333"
+                                stroke-width="1" />
+                            <!-- Gold Trim top -->
+                            <rect x="25" y="80" width="50" height="8" fill="url(#goldGrad)" />
+                            <!-- Gold Trim bottom -->
+                            <rect x="25" y="172" width="50" height="8" fill="url(#goldGrad)" />
+
+                            <!-- Inner Mechanism -->
+                            <rect x="35" y="55" width="30" height="25" fill="#222" />
+                            <circle cx="40" cy="65" r="5" fill="#fcf6ba" /> <!-- Strike wheel -->
+
+                            <!-- Lid (Will rotate open) -->
+                            <g id="lighter-lid" transform="translate(75, 80)">
+                                <rect x="-50" y="-45" width="50" height="45" rx="5" fill="url(#metalGrad)" />
+                                <!-- Gold Trim bottom of lid -->
+                                <rect x="-50" y="-8" width="50" height="8" fill="url(#goldGrad)" />
+                            </g>
+
+                            <!-- Lighter Flame -->
+                            <path id="lighter-flame" d="M50 -10 C 60 20 55 45 50 50 C 45 45 40 20 50 -10 Z"
+                                fill="url(#luxFlameGrad)" filter="url(#ultraGlow)" opacity="0" />
+                        </svg>
+
+                        <div class="glass-instruction lighter-tip">
+                            <span>Tap to Ignite</span>
+                            <div class="shimmer"></div>
+                        </div>
+                    </div>
                 </div>
-                <div id="custom-message" class="custom-message" data-message></div>
-                <div id="sender-name" class="sender-name" data-sender></div>
-            </div>
 
-            <div class="message-box glass-panel">
-                <button id="replay-btn" class="lux-button">
-                    <span>Replay Experience</span>
-                </button>
-            </div>
-        </div>
-    </div> <!-- end main-container -->
+                <!-- Scene 2 & 3: Luxurious Cake & Custom Knife -->
+                <div id="scene-2" class="scene" style="display: none; opacity: 0;">
+                    <div class="glass-instruction slice-tip">
+                        <span>Drag knife to split cake</span>
+                        <div class="shimmer"></div>
+                    </div>
 
-    <!-- Audio Elements -->
-    <audio id="sfx-lighter-open" src="https://assets.mixkit.co/active_storage/sfx/228/228-preview.mp3"
-        preload="auto"></audio>
-    <audio id="sfx-lighter-spark" src="https://assets.mixkit.co/active_storage/sfx/2049/2049-preview.mp3"
-        preload="auto"></audio>
-    <audio id="sfx-flame" src="https://assets.mixkit.co/active_storage/sfx/2236/2236-preview.mp3" preload="auto"
-        loop></audio>
-    <audio id="sfx-slice" src="https://assets.mixkit.co/active_storage/sfx/2997/2997-preview.mp3"
-        preload="auto"></audio>
-    <audio id="sfx-pop" src="https://assets.mixkit.co/active_storage/sfx/2002/2002-preview.mp3" preload="auto"></audio>
-    <audio id="ambient-music" src="https://assets.mixkit.co/music/preview/mixkit-beautiful-dream-493.mp3" preload="auto"
-        loop></audio>
+                    <div class="cake-wrapper">
+                        <!-- Left Cake Half -->
+                        <div class="cake-half lux-left">
+                            <svg viewBox="0 0 200 500" xmlns="http://www.w3.org/2000/svg" style="overflow: visible;">
+                                <path fill="#a88679" d="M173.667-13.94c-49.298,0-102.782,0-147.334,0c-3.999,0-4-16.002,0-16.002
+    c44.697,0,96.586,0,147.334,0C177.667-29.942,177.668-13.94,173.667-13.94z">
+                                    <animate id="bizcocho_3_left_s2" attributeName="d" calcMode="spline"
+                                        keySplines="0 0 1 1; 0 0 1 1" begin="relleno_2_left_s2.end" dur="0.6s"
+                                        fill="freeze" values="
+                            M173.667-13.94c-49.298,0-102.782,0-147.334,0c-3.999,0-4-16.002,0-16.002
+    c44.697,0,96.586,0,147.334,0C177.667-29.942,177.668-13.94,173.667-13.94z
+                            ;
+                            M173.667,411.567c-47.995,12.408-102.955,12.561-147.334,0
+    c-3.848-1.089-0.189-16.089,3.661-15.002c44.836,12.66,90.519,12.753,139.427,0.07
+    C173.293,395.631,177.541,410.566,173.667,411.567z
+                            ;
+                            M173.667,427.569c-49.795,0-101.101,0-147.334,0c-3.999,0-4-16.002,0-16.002
+    c46.385,0,97.539,0,147.334,0C177.668,411.567,177.667,427.569,173.667,427.569z
+                            " />
+                                </path>
+                                <path fill="#8b6a60" d="M100-178.521c1.858,0,3.364,1.506,3.364,3.363c0,0,0,33.17,0,44.227
+    c0,19.144,0,57.431,0,76.574c0,10.152,0,40.607,0,40.607c0,1.858-1.506,3.364-3.364,3.364l0,0c-1.858,0-3.364-1.506-3.364-3.364c0,0,0-30.455,0-40.607c0-19.144,0-57.432,0-76.575c0-11.057,0-44.226,0-44.226C96.636-177.015,98.142-178.521,100-178.521
+    L100-178.521z">
+                                    <animate id="relleno_2_left_s2" attributeName="d" calcMode="spline"
+                                        keySplines="0 0 1 1; 0 0 1 1; 0 0 0.58 1" begin="bizcocho_2_left_s2.end"
+                                        dur="1.0s" fill="freeze" values="
+                            M100-178.521c1.858,0,3.364,1.506,3.364,3.363c0,0,0,33.17,0,44.227
+    c0,19.144,0,57.431,0,76.574c0,10.152,0,40.607,0,40.607c0,1.858-1.506,3.364-3.364,3.364l0,0c-1.858,0-3.364-1.506-3.364-3.364c0,0,0-30.455,0-40.607c0-19.144,0-57.432,0-76.575c0-11.057,0-44.226,0-44.226C96.636-177.015,98.142-178.521,100-178.521
+    L100-178.521z
+                            ;
+                            M100,267.257c1.858,0,3.364,1.506,3.364,3.363c0,0,0,33.17,0,44.227
+    c0,19.143,0,57.43,0,76.574c0,10.151,0,40.606,0,40.606c0,1.858-1.506,3.364-3.364,3.364l0,0c-1.858,0-3.364-1.506-3.364-3.364
+    c0,0,0-30.455,0-40.606c0-19.145,0-57.432,0-76.576c0-11.057,0-44.225,0-44.225C96.636,268.763,98.142,267.257,100,267.257
+    L100,267.257z
+                            ;
+                            M93.928,405.433c-0.655,6.444-0.102,9.067,2.957,11.798c0,0,8.083,5.571,16.828,3.503
+    c18.629-4.406,43.813,6.194,50.792,7.791c14.75,3.375,9.162,6.867,9.162,6.867c-2.412,2.258-58.328,0-73.667,0l0,0
+    c-1.858,0-69.995,2.133-73.667,0c0,0-3.337-2.439,6.172-5.992c11.375-4.25,52.875,8.822,47.139-9.442
+    c-6.333-20.167,5.226-21.514,5.226-21.514c3.435-0.915,12.78-6.663,10.923-0.546L93.928,405.433z
+                            ;
+                            M102.242,427.569c5.348,0,14.079,0,17.462,0c0,0,17.026,0,27.504,0
+    c19.143,0,20.39-3.797,26.459,0c3,1.877,0,7.823,0,7.823c-2.412,2.258-58.328,0-73.667,0l0,0c-1.858,0-67.187,0-73.667,0
+    c0,0-4.125-4.983,0-7.823c5.201-3.58,16.085,0,23.725,0c8.841,0,20.762,0,20.762,0c3.686,0,8.597,0,19.511,0H102.242z
+                            " />
+                                </path>
+                                <path fill="#a88679" d="M173.667-15.929c-46.512,0-105.486,0-147.334,0c-3.999,0-4-16.002,0-16.002
+    c43.566,0,97.96,0,147.334,0C177.667-31.931,177.666-15.929,173.667-15.929z">
+                                    <animate id="bizcocho_2_left_s2" attributeName="d" calcMode="spline"
+                                        keySplines="0 0 1 1; 0 0 1 1; 0.25 0 0.58 1" begin="relleno_1_left_s2.end"
+                                        dur="1.0s" fill="freeze" values="
+                            M173.667-15.929c-46.512,0-105.486,0-147.334,0c-3.999,0-4-16.002,0-16.002
+    c43.566,0,97.96,0,147.334,0C177.667-31.931,177.666-15.929,173.667-15.929z
+                            ;
+                            M173.434,445.393c-47.269,8.001-105.245,8.001-147.334,0c-3.929-0.747-0.692-16.543,3.243-15.824
+    c43.828,8.001,92.165,8.001,140.739,0C174.029,428.918,177.377,444.726,173.434,445.393z
+                            ;
+                            M173.667,449.514c-47.576-5.454-102.799-5.744-147.333,0c-3.966,0.512-3.938-15.297,0-16.002
+    c43.683-7.823,97.646-8.026,147.333,0C177.616,434.15,177.642,449.969,173.667,449.514z
+                            ;
+                            M173.667,451.394c-49.298,0-102.782,0-147.334,0c-3.999,0-4-16.002,0-16.002
+    c44.697,0,96.586,0,147.334,0C177.667,435.392,177.668,451.394,173.667,451.394z
+                            " />
+                                </path>
+                                <path fill="#8b6a60" d="M101.368-73.685c0,12.164,0,15.18,0,28.519c0,22.702,0-13.661,0,8.304c0,14.48,0,18.233,0,30.512
+    c0,1.753-2.958,1.847-2.958,0c0-12.68,0-16.277,0-30.401c0-21.983,0,11.66,0-8.305c0-13.027,0-15.992,0-28.628
+    C98.411-75.883,101.368-75.592,101.368-73.685z">
+                                    <animate id="relleno_1_left_s2" attributeName="d" calcMode="spline"
+                                        keySplines="0 0 1 1; 0 0 1 1; 0 0 0.6 1" begin="bizcocho_1_left_s2.end"
+                                        dur="1.0s" fill="freeze" values="
+                            M101.368-73.685c0,12.164,0,15.18,0,28.519c0,22.702,0-13.661,0,8.304c0,14.48,0,18.233,0,30.512
+    c0,1.753-2.958,1.847-2.958,0c0-12.68,0-16.277,0-30.401c0-21.983,0,11.66,0-8.305c0-13.027,0-15.992,0-28.628
+    C98.411-75.883,101.368-75.592,101.368-73.685z
+                            ;
+                            M101.368,350.885c0,12.164,0,65.18,0,78.518c0,22.703,0-33.66,0-11.695c0,14.48,0,28.232,0,40.512
+    c0,1.753-2.958,1.847-2.958,0c0-12.68,0-26.277,0-40.402c0-21.982,0,31.66,0,11.695c0-13.027,0-65.992,0-78.627
+    C98.411,348.686,101.368,348.977,101.368,350.885z
+                            ;
+                            M128.38,447.567c37.626,6.312,39.303,13.658,26.833,12.833c-22.653-1.499-13.636-0.831-23.302-0.831
+    c-14.48,0-17.884,0-30.163,0c-2.087,0-2.068,0-3.915,0c-13.333,0-8.963,0-23.088,0c-11.668,0-14.062,5.995-27.532,1.164
+    c-12.629-4.529,38.667-3.167,46.833-17.333C100.077,432.94,105.546,443.736,128.38,447.567z
+                            ;
+                            M173.667,451.394c2.875,0,2.997,9.257,0,9.131c-22.662-0.956-32.09-0.956-41.756-0.956
+    c-14.48,0-17.884,0-30.163,0c-2.087,0-2.068,0-3.915,0c-13.333,0-8.963,0-23.088,0c-11.668,0-34.99-0.294-48.412,1.831
+    c-4.109,0.65-3.01-10.006,0-10.006C37.129,451.394,149.379,451.394,173.667,451.394z
+                            " />
+                                </path>
+                                <path fill="#a88679" d="M173.667,21.571c-33.174,0-111.467,0-147.334,0c-4,0-4-16.002,0-16.002c39.836,0,105.982,0,147.334,0
+    C177.668,5.569,177.667,21.571,173.667,21.571z">
+                                    <animate id="bizcocho_1_left_s2" attributeName="d" calcMode="spline"
+                                        keySplines="0 0 1 1; 0 0 1 1; 0 0 1 1; 0.25 0 1 1; 0 0 1 1; 0.25 0 0.6 1"
+                                        begin="indefinite" dur="1.6s" fill="freeze" values="
+                            M173.667,21.571c-33.174,0-111.467,0-147.334,0c-4,0-4-16.002,0-16.002c39.836,0,105.982,0,147.334,0
+    C177.668,5.569,177.667,21.571,173.667,21.571z
+                            ;
+                            M173.667,459.569c-33.197,16.002-110.782,16.002-147.334,0c-3.664-1.604,1.614-15.617,5.337-14.153
+    c40.702,16.002,94.289,16.104,136.505,0.103C171.917,444.1,177.271,457.832,173.667,459.569z
+                            ;
+                            M171.817,475.571c-39.361-3.001-105.438-2.571-143.556,0c-3.991,0.27-7.377-14.736-3.387-15.014
+    c41.553-2.888,104.421-3.121,150.51-0.233C179.378,460.574,175.806,475.875,171.817,475.571z
+                            ;
+                            M171.817,459.564c-38.8-12.188-104.504-13.762-143.556,0c-3.772,1.329-7.961-12.604-4.178-13.905
+    c40.864-14.064,105.114-15.52,151.918-0.973C179.822,445.874,175.634,460.762,171.817,459.564z
+                            ;
+                            M173.667,475.571c-46.376-5.005-105.924-4.003-147.334,0c-3.981,0.385-3.479-15.421,0.479-16.002
+    c43.087-6.327,97.705-7.083,146.855,0.438C177.621,460.613,177.644,476,173.667,475.571z
+                            ;
+                            M173.667,474.117c-46.376,1.866-105.638,2.01-147.334,0c-3.995-0.192-3.52-16.144,0.479-16.002
+    c43.794,1.55,96.341,1.541,145.723,0C176.532,457.99,177.663,473.956,173.667,474.117z
+                            ;
+                            M173.667,475.571c-46.512,0-105.486,0-147.334,0c-3.999,0-4-16.002,0-16.002c43.566,0,97.96,0,147.334,0
+    C177.667,459.569,177.666,475.571,173.667,475.571z
+                            " />
+                                </path>
+                                <path fill="#fefae9" d="M104.812,113.216c0,3.119-2.164,5.67-4.812,5.67c-2.646,0-4.812-2.551-4.812-5.67c0-5.594,0-16.782,0-22.375
+    c0-5.143,0-15.427,0-20.568c0-7.333,0-21.998,0-29.33c0-5.523,0-16.569,0-22.092c0-3.295,0-9.885,0-13.181
+    C95.188,2.551,97.353,0,100,0c2.648,0,4.812,2.551,4.812,5.669c0,3.248,0,9.743,0,12.991c0,5.428,0,16.284,0,21.711
+    c0,7.618,0,22.854,0,30.472c0,4.952,0,14.854,0,19.807C104.812,96.292,104.812,107.576,104.812,113.216z">
+                                    <animate id="crema_left_s2" attributeName="d" calcMode="spline"
+                                        keySplines="0 0 1 1; 0 0 1 1; 0 0 1 1; 0.25 0 1 1; 0 0 1 1; 0 0 0.58 1"
+                                        begin="bizcocho_3_left_s2.end" dur="4s" fill="freeze" values="
+                            M104.812,113.216c0,3.119-2.164,5.67-4.812,5.67c-2.646,0-4.812-2.551-4.812-5.67c0-5.594,0-16.782,0-22.375
+    c0-5.143,0-15.427,0-20.568c0-7.333,0-21.998,0-29.33c0-5.523,0-16.569,0-22.092c0-3.295,0-9.885,0-13.181
+    C95.188,2.551,97.353,0,100,0c2.648,0,4.812,2.551,4.812,5.669c0,3.248,0,9.743,0,12.991c0,5.428,0,16.284,0,21.711
+    c0,7.618,0,22.854,0,30.472c0,4.952,0,14.854,0,19.807C104.812,96.292,104.812,107.576,104.812,113.216z
+                            ;
+                            M104.812,405.897c0,3.119-2.164,5.67-4.812,5.67c-2.646,0-4.812-2.551-4.812-5.67c0-5.594,0-16.782,0-22.376
+    c0-5.143,0-15.426,0-20.568c0-7.332,0-21.997,0-29.33c0-5.522,0-16.568,0-22.092c0-3.295,0-9.885,0-13.181
+    c0-3.118,2.165-5.669,4.812-5.669c2.648,0,4.812,2.551,4.812,5.669c0,3.247,0,9.743,0,12.991c0,5.428,0,16.283,0,21.711
+    c0,7.618,0,22.854,0,30.473c0,4.951,0,14.854,0,19.807C104.812,388.972,104.812,400.256,104.812,405.897z
+                            ;
+                            M111.873,411.567c-3.119,0-9.226,0-11.874,0c-2.646,0-7.748,0-10.867,0c-7.086,0-12.698,0-18.292,0
+    c-6.592,0-12.871,7.371-19.166,3.008c-10.043-6.961-7.776-10.169,2.991-17.745c12.61-8.873,27.713,1.994,25.919-7.531
+    c-2.589-13.742,11.008-14.513,11.365-17.789c0.441-4.051,4.235-11.107,8.051-8.175c3.113,2.393,1.007,8.008,0,13.159
+    c-1.871,9.569,8.058,2.113,9.494,14.155c2.592,21.732,21.184-0.675,29.309,7.976c5.216,5.553,18.413,5.552,15.426,12.942
+    c-3.131,7.745-15.825-4.369-23.8,2.903C126.261,418.271,118.301,411.567,111.873,411.567z
+                            ;
+                            M111.873,411.567c-3.119,0-9.226,0-11.874,0c-2.646,0-9.734,4.069-12.853,4.069
+    c-7.086,0-10.712-4.069-16.306-4.069c-6.592,0-12.12,6.013-19.166,3.008c-7.053-3.008-7.458,2.026-18.659,1.165
+    c-6.832-0.525-7.522-3.034-7.533-6.265c-0.037-10.336,22.073-2.452,36.613-2.628c10.234-0.124,19.856-1.439,37.905-2.102
+    c16.642-0.61,32.699,1.552,46.009,1.927c12.438,0.351,29.663-8.99,31.532,3.315c0.773,5.093-5.605,3.342-11.211,9.579
+    c-5.093,5.667-7.59-4.605-12.965-3.832c-8.269,1.189-14.962-8.537-22.937-1.265C126.261,418.271,118.301,411.567,111.873,411.567z
+                            ;
+                            M110.946,413.652c-2.904-1.137-8.405-2.748-12.446-0.97c-6.099,2.685-7.273,10.358-13.253,8.242
+    c-7.843-2.775-8.953-5.008-14.546-5.01c-24.653-0.011-4.849,26.507-18.264,26.507c-12.377,0,5.791-33.537-19.422-26.682
+    c-7.703,2.095-9.806-0.942-9.817-4.173c-0.037-10.336,24.357-4.544,38.897-4.72c10.234-0.124,19.856-1.439,37.905-2.102
+    c16.642-0.61,32.699,1.552,46.009,1.927c12.438,0.351,28.973-8.865,31.532,3.315c1.449,6.896,0.318,15.624-3.874,15.624
+    c-7.619,0-1.788-15.192-19.243-7.111c-7.581,3.51-15.963-9.738-26.669,1.066C120.644,426.744,118.381,416.561,110.946,413.652z
+                            ;
+                            M111.547,413.9c-2.969-0.956-8.775-0.949-13.167-0.5c-14.667,1.5-8.325,16.508-14.667,16.666
+    c-6.667,0.166-0.167-13.5-13.013-14.151c-30.471-1.545-5.572,46.651-18.987,46.651c-12.377,0,10.333-50.166-18.667-44.5
+    c-7.835,1.531-9.537-1.417-9.548-4.647c-0.037-10.336,23.675-5.177,38.215-5.353c10.234-0.124,20.618-1.671,38.667-2.333
+    c16.642-0.61,32.023,1.458,45.333,1.833c12.438,0.351,33.819-8.431,33.199,4.001c-0.532,10.666,0.414,26.166-5.245,25.833
+    c-7.606-0.447-2.954-31.5-19.243-18.899c-7.985,6.177-17.658-5.969-27.377,5.732C118.88,434.066,121.38,417.067,111.547,413.9z
+                            ;
+                            M111.547,415.233c-6.667-0.834-9.667,4.667-13.833,3.333c-19.649-6.291-8.158,22.176-14.5,22.334
+    c-6.667,0.166,2.833-18-13.333-22.167c-29.544-7.615-9.667,43.833-20.167,43.833c-10.333,0,8.004-55.006-16.833-39
+    c-7.5,4.833-9.508-3.78-9.299-7.004c0.799-12.329,23.592-7.153,38.132-7.329c10.234-0.124,20.238-1.505,38.287-2.167
+    c16.642-0.61,32.903,1.125,46.213,1.5c12.438,0.351,35.058-5.579,31.863,6.451c-5.532,20.833,1.25,28.216-4.409,27.883
+    c-7.606-0.447-6.058-37.895-20.62-23.333c-10.167,10.166-15.972-0.747-25,12C119.547,443.568,121.798,416.515,111.547,415.233z
+                            " />
+                                </path>
+                                <rect x="10" y="475.571" fill="#fefae9" width="180" height="4" />
+                            </svg>
+                        </div>
 
-    <!-- Scripts -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/Draggable.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-    
-    <script>
-        // Register GSAP Plugins
-        gsap.registerPlugin(Draggable);
+                        <!-- Right Cake Half -->
+                        <div class="cake-half lux-right">
+                            <svg viewBox="0 0 200 500" xmlns="http://www.w3.org/2000/svg" style="overflow: visible;">
+                                <path fill="#a88679" d="M173.667-13.94c-49.298,0-102.782,0-147.334,0c-3.999,0-4-16.002,0-16.002
+    c44.697,0,96.586,0,147.334,0C177.667-29.942,177.668-13.94,173.667-13.94z">
+                                    <animate id="bizcocho_3_right_s2" attributeName="d" calcMode="spline"
+                                        keySplines="0 0 1 1; 0 0 1 1" begin="relleno_2_right_s2.end" dur="0.6s"
+                                        fill="freeze" values="
+                            M173.667-13.94c-49.298,0-102.782,0-147.334,0c-3.999,0-4-16.002,0-16.002
+    c44.697,0,96.586,0,147.334,0C177.667-29.942,177.668-13.94,173.667-13.94z
+                            ;
+                            M173.667,411.567c-47.995,12.408-102.955,12.561-147.334,0
+    c-3.848-1.089-0.189-16.089,3.661-15.002c44.836,12.66,90.519,12.753,139.427,0.07
+    C173.293,395.631,177.541,410.566,173.667,411.567z
+                            ;
+                            M173.667,427.569c-49.795,0-101.101,0-147.334,0c-3.999,0-4-16.002,0-16.002
+    c46.385,0,97.539,0,147.334,0C177.668,411.567,177.667,427.569,173.667,427.569z
+                            " />
+                                </path>
+                                <path fill="#8b6a60" d="M100-178.521c1.858,0,3.364,1.506,3.364,3.363c0,0,0,33.17,0,44.227
+    c0,19.144,0,57.431,0,76.574c0,10.152,0,40.607,0,40.607c0,1.858-1.506,3.364-3.364,3.364l0,0c-1.858,0-3.364-1.506-3.364-3.364c0,0,0-30.455,0-40.607c0-19.144,0-57.432,0-76.575c0-11.057,0-44.226,0-44.226C96.636-177.015,98.142-178.521,100-178.521
+    L100-178.521z">
+                                    <animate id="relleno_2_right_s2" attributeName="d" calcMode="spline"
+                                        keySplines="0 0 1 1; 0 0 1 1; 0 0 0.58 1" begin="bizcocho_2_right_s2.end"
+                                        dur="1.0s" fill="freeze" values="
+                            M100-178.521c1.858,0,3.364,1.506,3.364,3.363c0,0,0,33.17,0,44.227
+    c0,19.144,0,57.431,0,76.574c0,10.152,0,40.607,0,40.607c0,1.858-1.506,3.364-3.364,3.364l0,0c-1.858,0-3.364-1.506-3.364-3.364c0,0,0-30.455,0-40.607c0-19.144,0-57.432,0-76.575c0-11.057,0-44.226,0-44.226C96.636-177.015,98.142-178.521,100-178.521
+    L100-178.521z
+                            ;
+                            M100,267.257c1.858,0,3.364,1.506,3.364,3.363c0,0,0,33.17,0,44.227
+    c0,19.143,0,57.43,0,76.574c0,10.151,0,40.606,0,40.606c0,1.858-1.506,3.364-3.364,3.364l0,0c-1.858,0-3.364-1.506-3.364-3.364
+    c0,0,0-30.455,0-40.606c0-19.145,0-57.432,0-76.576c0-11.057,0-44.225,0-44.225C96.636,268.763,98.142,267.257,100,267.257
+    L100,267.257z
+                            ;
+                            M93.928,405.433c-0.655,6.444-0.102,9.067,2.957,11.798c0,0,8.083,5.571,16.828,3.503
+    c18.629-4.406,43.813,6.194,50.792,7.791c14.75,3.375,9.162,6.867,9.162,6.867c-2.412,2.258-58.328,0-73.667,0l0,0
+    c-1.858,0-69.995,2.133-73.667,0c0,0-3.337-2.439,6.172-5.992c11.375-4.25,52.875,8.822,47.139-9.442
+    c-6.333-20.167,5.226-21.514,5.226-21.514c3.435-0.915,12.78-6.663,10.923-0.546L93.928,405.433z
+                            ;
+                            M102.242,427.569c5.348,0,14.079,0,17.462,0c0,0,17.026,0,27.504,0
+    c19.143,0,20.39-3.797,26.459,0c3,1.877,0,7.823,0,7.823c-2.412,2.258-58.328,0-73.667,0l0,0c-1.858,0-67.187,0-73.667,0
+    c0,0-4.125-4.983,0-7.823c5.201-3.58,16.085,0,23.725,0c8.841,0,20.762,0,20.762,0c3.686,0,8.597,0,19.511,0H102.242z
+                            " />
+                                </path>
+                                <path fill="#a88679" d="M173.667-15.929c-46.512,0-105.486,0-147.334,0c-3.999,0-4-16.002,0-16.002
+    c43.566,0,97.96,0,147.334,0C177.667-31.931,177.666-15.929,173.667-15.929z">
+                                    <animate id="bizcocho_2_right_s2" attributeName="d" calcMode="spline"
+                                        keySplines="0 0 1 1; 0 0 1 1; 0.25 0 0.58 1" begin="relleno_1_right_s2.end"
+                                        dur="1.0s" fill="freeze" values="
+                            M173.667-15.929c-46.512,0-105.486,0-147.334,0c-3.999,0-4-16.002,0-16.002
+    c43.566,0,97.96,0,147.334,0C177.667-31.931,177.666-15.929,173.667-15.929z
+                            ;
+                            M173.434,445.393c-47.269,8.001-105.245,8.001-147.334,0c-3.929-0.747-0.692-16.543,3.243-15.824
+    c43.828,8.001,92.165,8.001,140.739,0C174.029,428.918,177.377,444.726,173.434,445.393z
+                            ;
+                            M173.667,449.514c-47.576-5.454-102.799-5.744-147.333,0c-3.966,0.512-3.938-15.297,0-16.002
+    c43.683-7.823,97.646-8.026,147.333,0C177.616,434.15,177.642,449.969,173.667,449.514z
+                            ;
+                            M173.667,451.394c-49.298,0-102.782,0-147.334,0c-3.999,0-4-16.002,0-16.002
+    c44.697,0,96.586,0,147.334,0C177.667,435.392,177.668,451.394,173.667,451.394z
+                            " />
+                                </path>
+                                <path fill="#8b6a60" d="M101.368-73.685c0,12.164,0,15.18,0,28.519c0,22.702,0-13.661,0,8.304c0,14.48,0,18.233,0,30.512
+    c0,1.753-2.958,1.847-2.958,0c0-12.68,0-16.277,0-30.401c0-21.983,0,11.66,0-8.305c0-13.027,0-15.992,0-28.628
+    C98.411-75.883,101.368-75.592,101.368-73.685z">
+                                    <animate id="relleno_1_right_s2" attributeName="d" calcMode="spline"
+                                        keySplines="0 0 1 1; 0 0 1 1; 0 0 0.6 1" begin="bizcocho_1_right_s2.end"
+                                        dur="1.0s" fill="freeze" values="
+                            M101.368-73.685c0,12.164,0,15.18,0,28.519c0,22.702,0-13.661,0,8.304c0,14.48,0,18.233,0,30.512
+    c0,1.753-2.958,1.847-2.958,0c0-12.68,0-16.277,0-30.401c0-21.983,0,11.66,0-8.305c0-13.027,0-15.992,0-28.628
+    C98.411-75.883,101.368-75.592,101.368-73.685z
+                            ;
+                            M101.368,350.885c0,12.164,0,65.18,0,78.518c0,22.703,0-33.66,0-11.695c0,14.48,0,28.232,0,40.512
+    c0,1.753-2.958,1.847-2.958,0c0-12.68,0-26.277,0-40.402c0-21.982,0,31.66,0,11.695c0-13.027,0-65.992,0-78.627
+    C98.411,348.686,101.368,348.977,101.368,350.885z
+                            ;
+                            M128.38,447.567c37.626,6.312,39.303,13.658,26.833,12.833c-22.653-1.499-13.636-0.831-23.302-0.831
+    c-14.48,0-17.884,0-30.163,0c-2.087,0-2.068,0-3.915,0c-13.333,0-8.963,0-23.088,0c-11.668,0-14.062,5.995-27.532,1.164
+    c-12.629-4.529,38.667-3.167,46.833-17.333C100.077,432.94,105.546,443.736,128.38,447.567z
+                            ;
+                            M173.667,451.394c2.875,0,2.997,9.257,0,9.131c-22.662-0.956-32.09-0.956-41.756-0.956
+    c-14.48,0-17.884,0-30.163,0c-2.087,0-2.068,0-3.915,0c-13.333,0-8.963,0-23.088,0c-11.668,0-34.99-0.294-48.412,1.831
+    c-4.109,0.65-3.01-10.006,0-10.006C37.129,451.394,149.379,451.394,173.667,451.394z
+                            " />
+                                </path>
+                                <path fill="#a88679" d="M173.667,21.571c-33.174,0-111.467,0-147.334,0c-4,0-4-16.002,0-16.002c39.836,0,105.982,0,147.334,0
+    C177.668,5.569,177.667,21.571,173.667,21.571z">
+                                    <animate id="bizcocho_1_right_s2" attributeName="d" calcMode="spline"
+                                        keySplines="0 0 1 1; 0 0 1 1; 0 0 1 1; 0.25 0 1 1; 0 0 1 1; 0.25 0 0.6 1"
+                                        begin="indefinite" dur="1.6s" fill="freeze" values="
+                            M173.667,21.571c-33.174,0-111.467,0-147.334,0c-4,0-4-16.002,0-16.002c39.836,0,105.982,0,147.334,0
+    C177.668,5.569,177.667,21.571,173.667,21.571z
+                            ;
+                            M173.667,459.569c-33.197,16.002-110.782,16.002-147.334,0c-3.664-1.604,1.614-15.617,5.337-14.153
+    c40.702,16.002,94.289,16.104,136.505,0.103C171.917,444.1,177.271,457.832,173.667,459.569z
+                            ;
+                            M171.817,475.571c-39.361-3.001-105.438-2.571-143.556,0c-3.991,0.27-7.377-14.736-3.387-15.014
+    c41.553-2.888,104.421-3.121,150.51-0.233C179.378,460.574,175.806,475.875,171.817,475.571z
+                            ;
+                            M171.817,459.564c-38.8-12.188-104.504-13.762-143.556,0c-3.772,1.329-7.961-12.604-4.178-13.905
+    c40.864-14.064,105.114-15.52,151.918-0.973C179.822,445.874,175.634,460.762,171.817,459.564z
+                            ;
+                            M173.667,475.571c-46.376-5.005-105.924-4.003-147.334,0c-3.981,0.385-3.479-15.421,0.479-16.002
+    c43.087-6.327,97.705-7.083,146.855,0.438C177.621,460.613,177.644,476,173.667,475.571z
+                            ;
+                            M173.667,474.117c-46.376,1.866-105.638,2.01-147.334,0c-3.995-0.192-3.52-16.144,0.479-16.002
+    c43.794,1.55,96.341,1.541,145.723,0C176.532,457.99,177.663,473.956,173.667,474.117z
+                            ;
+                            M173.667,475.571c-46.512,0-105.486,0-147.334,0c-3.999,0-4-16.002,0-16.002c43.566,0,97.96,0,147.334,0
+    C177.667,459.569,177.666,475.571,173.667,475.571z
+                            " />
+                                </path>
+                                <path fill="#fefae9" d="M104.812,113.216c0,3.119-2.164,5.67-4.812,5.67c-2.646,0-4.812-2.551-4.812-5.67c0-5.594,0-16.782,0-22.375
+    c0-5.143,0-15.427,0-20.568c0-7.333,0-21.998,0-29.33c0-5.523,0-16.569,0-22.092c0-3.295,0-9.885,0-13.181
+    C95.188,2.551,97.353,0,100,0c2.648,0,4.812,2.551,4.812,5.669c0,3.248,0,9.743,0,12.991c0,5.428,0,16.284,0,21.711
+    c0,7.618,0,22.854,0,30.472c0,4.952,0,14.854,0,19.807C104.812,96.292,104.812,107.576,104.812,113.216z">
+                                    <animate id="crema_right_s2" attributeName="d" calcMode="spline"
+                                        keySplines="0 0 1 1; 0 0 1 1; 0 0 1 1; 0.25 0 1 1; 0 0 1 1; 0 0 0.58 1"
+                                        begin="bizcocho_3_right_s2.end" dur="4s" fill="freeze" values="
+                            M104.812,113.216c0,3.119-2.164,5.67-4.812,5.67c-2.646,0-4.812-2.551-4.812-5.67c0-5.594,0-16.782,0-22.375
+    c0-5.143,0-15.427,0-20.568c0-7.333,0-21.998,0-29.33c0-5.523,0-16.569,0-22.092c0-3.295,0-9.885,0-13.181
+    C95.188,2.551,97.353,0,100,0c2.648,0,4.812,2.551,4.812,5.669c0,3.248,0,9.743,0,12.991c0,5.428,0,16.284,0,21.711
+    c0,7.618,0,22.854,0,30.472c0,4.952,0,14.854,0,19.807C104.812,96.292,104.812,107.576,104.812,113.216z
+                            ;
+                            M104.812,405.897c0,3.119-2.164,5.67-4.812,5.67c-2.646,0-4.812-2.551-4.812-5.67c0-5.594,0-16.782,0-22.376
+    c0-5.143,0-15.426,0-20.568c0-7.332,0-21.997,0-29.33c0-5.522,0-16.568,0-22.092c0-3.295,0-9.885,0-13.181
+    c0-3.118,2.165-5.669,4.812-5.669c2.648,0,4.812,2.551,4.812,5.669c0,3.247,0,9.743,0,12.991c0,5.428,0,16.283,0,21.711
+    c0,7.618,0,22.854,0,30.473c0,4.951,0,14.854,0,19.807C104.812,388.972,104.812,400.256,104.812,405.897z
+                            ;
+                            M111.873,411.567c-3.119,0-9.226,0-11.874,0c-2.646,0-7.748,0-10.867,0c-7.086,0-12.698,0-18.292,0
+    c-6.592,0-12.871,7.371-19.166,3.008c-10.043-6.961-7.776-10.169,2.991-17.745c12.61-8.873,27.713,1.994,25.919-7.531
+    c-2.589-13.742,11.008-14.513,11.365-17.789c0.441-4.051,4.235-11.107,8.051-8.175c3.113,2.393,1.007,8.008,0,13.159
+    c-1.871,9.569,8.058,2.113,9.494,14.155c2.592,21.732,21.184-0.675,29.309,7.976c5.216,5.553,18.413,5.552,15.426,12.942
+    c-3.131,7.745-15.825-4.369-23.8,2.903C126.261,418.271,118.301,411.567,111.873,411.567z
+                            ;
+                            M111.873,411.567c-3.119,0-9.226,0-11.874,0c-2.646,0-9.734,4.069-12.853,4.069
+    c-7.086,0-10.712-4.069-16.306-4.069c-6.592,0-12.12,6.013-19.166,3.008c-7.053-3.008-7.458,2.026-18.659,1.165
+    c-6.832-0.525-7.522-3.034-7.533-6.265c-0.037-10.336,22.073-2.452,36.613-2.628c10.234-0.124,19.856-1.439,37.905-2.102
+    c16.642-0.61,32.699,1.552,46.009,1.927c12.438,0.351,29.663-8.99,31.532,3.315c0.773,5.093-5.605,3.342-11.211,9.579
+    c-5.093,5.667-7.59-4.605-12.965-3.832c-8.269,1.189-14.962-8.537-22.937-1.265C126.261,418.271,118.301,411.567,111.873,411.567z
+                            ;
+                            M110.946,413.652c-2.904-1.137-8.405-2.748-12.446-0.97c-6.099,2.685-7.273,10.358-13.253,8.242
+    c-7.843-2.775-8.953-5.008-14.546-5.01c-24.653-0.011-4.849,26.507-18.264,26.507c-12.377,0,5.791-33.537-19.422-26.682
+    c-7.703,2.095-9.806-0.942-9.817-4.173c-0.037-10.336,24.357-4.544,38.897-4.72c10.234-0.124,19.856-1.439,37.905-2.102
+    c16.642-0.61,32.699,1.552,46.009,1.927c12.438,0.351,28.973-8.865,31.532,3.315c1.449,6.896,0.318,15.624-3.874,15.624
+    c-7.619,0-1.788-15.192-19.243-7.111c-7.581,3.51-15.963-9.738-26.669,1.066C120.644,426.744,118.381,416.561,110.946,413.652z
+                            ;
+                            M111.547,413.9c-2.969-0.956-8.775-0.949-13.167-0.5c-14.667,1.5-8.325,16.508-14.667,16.666
+    c-6.667,0.166-0.167-13.5-13.013-14.151c-30.471-1.545-5.572,46.651-18.987,46.651c-12.377,0,10.333-50.166-18.667-44.5
+    c-7.835,1.531-9.537-1.417-9.548-4.647c-0.037-10.336,23.675-5.177,38.215-5.353c10.234-0.124,20.618-1.671,38.667-2.333
+    c16.642-0.61,32.023,1.458,45.333,1.833c12.438,0.351,33.819-8.431,33.199,4.001c-0.532,10.666,0.414,26.166-5.245,25.833
+    c-7.606-0.447-2.954-31.5-19.243-18.899c-7.985,6.177-17.658-5.969-27.377,5.732C118.88,434.066,121.38,417.067,111.547,413.9z
+                            ;
+                            M111.547,415.233c-6.667-0.834-9.667,4.667-13.833,3.333c-19.649-6.291-8.158,22.176-14.5,22.334
+    c-6.667,0.166,2.833-18-13.333-22.167c-29.544-7.615-9.667,43.833-20.167,43.833c-10.333,0,8.004-55.006-16.833-39
+    c-7.5,4.833-9.508-3.78-9.299-7.004c0.799-12.329,23.592-7.153,38.132-7.329c10.234-0.124,20.238-1.505,38.287-2.167
+    c16.642-0.61,32.903,1.125,46.213,1.5c12.438,0.351,35.058-5.579,31.863,6.451c-5.532,20.833,1.25,28.216-4.409,27.883
+    c-7.606-0.447-6.058-37.895-20.62-23.333c-10.167,10.166-15.972-0.747-25,12C119.547,443.568,121.798,416.515,111.547,415.233z
+                            " />
+                                </path>
+                                <rect x="10" y="475.571" fill="#fefae9" width="180" height="4" />
+                            </svg>
+                        </div>
+                    </div>
 
-        // DOM Elements
-        const mainContainer = document.getElementById('main-container');
-        const candleWrapper = document.querySelector('.candle-wrapper');
-        const candleFlame = document.getElementById('candle-flame');
-        const ambientCandleGlow = document.querySelector('.ambient-candle-glow');
-        const lighterWrapper = document.querySelector('.lighter-wrapper');
-        const lighterFlame = document.getElementById('lighter-flame');
-        const lighterLid = document.getElementById('lighter-lid');
-        const lighterTip = document.querySelector('.lighter-tip');
-        const scene1 = document.getElementById('scene-1');
-        const scene2 = document.getElementById('scene-2');
-        const scene3 = document.getElementById('scene-3');
-        const sliceTip = document.querySelector('.slice-tip');
-        const knifeWrapper = document.querySelector('.knife-wrapper');
-        const cakeLeft = document.querySelector('.lux-left');
-        const cakeRight = document.querySelector('.lux-right');
+                    <div class="knife-wrapper">
+                        <svg class="knife-lux" viewBox="0 0 30 220" xmlns="http://www.w3.org/2000/svg">
+                            <!-- Elegant Handle -->
+                            <rect x="8" y="140" width="14" height="70" rx="4" fill="#111" />
+                            <rect x="7" y="140" width="16" height="5" fill="#d4af37" />
+                            <rect x="7" y="205" width="16" height="5" fill="#d4af37" />
+                            <!-- Shiny Blade -->
+                            <path d="M15 0 L22 20 L22 140 L8 140 L8 20 Z" fill="url(#metalGrad)"
+                                filter="drop-shadow(2px 5px 5px rgba(0,0,0,0.3))" />
+                            <path d="M15 0 L20 20 L20 140 L15 140 Z" fill="#fff" opacity="0.3" />
+                            <!-- specular highlight -->
+                        </svg>
+                    </div>
+                </div>
 
-        // Audio Elements
-        const sfxLighterOpen = document.getElementById('sfx-lighter-open');
-        const sfxLighterSpark = document.getElementById('sfx-lighter-spark');
-        const sfxFlame = document.getElementById('sfx-flame');
-        const sfxSlice = document.getElementById('sfx-slice');
-        const sfxPop = document.getElementById('sfx-pop');
-        const ambientMusic = document.getElementById('ambient-music');
+                <!-- Scene 4: Premium Celebration Message -->
+                <div id="scene-3" class="scene" style="display: none; opacity: 0;">
+                    <div class="scene-3-background"></div>
 
-        // State
-        let isCandleLit = false;
+                    <div id="firebase-data-container" class="message-box">
+                        <div class="receiver-info">
+                            <h1 id="receiver-name" class="lux-title" data-receiver>Happy Birthday</h1>
+                            <div id="receiver-photo-container" class="photo-container">
+                                <img id="receiver-photo" data-photo src="" alt="Receiver Photo" class="receiver-photo"
+                                    style="display: none;">
+                                <div id="photo-placeholder" class="photo-placeholder">Photo</div>
+                            </div>
+                        </div>
+                        <div id="custom-message" class="custom-message" data-message></div>
+                        <div id="sender-name" class="sender-name" data-sender></div>
 
-        // Helpers: Play Audio (Fail-safe for browser autoplay policies)
-        function playAudio(element, volume = 1) {
-            element.volume = volume;
-            try {
-                let playPromise = element.play();
-                if (playPromise !== undefined) {
-                    playPromise.catch(error => { console.log('Audio playback prevented'); });
-                }
-            } catch (e) { }
-        }
+                        <div class="flex flex-col gap-3 w-full max-w-[240px] mx-auto mt-6">
+                            <button id="save-image-btn" class="lux-button w-full">
+                                <i class="ph ph-download-simple mr-2"></i>
+                                <span>Save to Gallery</span>
+                            </button>
+                            <button id="instagram-story-btn" class="lux-button w-full border-[#E1306C] text-[#E1306C] hover:bg-[#E1306C] hover:text-white" style="display: none;">
+                                <svg class="instagram-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="width: 18px; height: 18px; fill: currentColor; margin-right: 8px;"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+                                <span>Share to Story</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
 
-        function stopAudio(element) {
-            element.pause();
-            element.currentTime = 0;
-        }
+                <!-- Hidden Static Scene for Capture (Hidden 9:16 Frame) -->
+                <div id="scene-3-static" style="position: fixed; top: -3000px; left: -3000px; width: 360px; height: 640px; background: #0d0c13; overflow: hidden; z-index: -1; display: block !important;">
+                    <!-- Replicate Vignette & Background -->
+                    <div style="position: absolute; top: 0; left: 0; width: 360px; height: 640px; z-index: 5; background: radial-gradient(ellipse at center, transparent 60%, rgba(0, 0, 0, 0.6) 100%);"></div>
+                    <div class="scene-3-background" style="position: absolute; top: 0; left: 0; width: 360px; height: 640px; z-index: 10; opacity: 1; background: radial-gradient(circle at center, rgba(212, 175, 55, 0.2), rgba(166, 209, 244, 0.1) 50%, transparent 80%);"></div>
+                    
+                    <!-- Main Card (No Translates, Absolute positioned centrally) -->
+                    <div style="position: absolute; top: 80px; left: 20px; z-index: 20; width: 320px; text-align: center; padding: 25px 0; border-radius: 20px; background: rgba(30, 30, 40, 0.85); border: 1px solid rgba(255, 255, 255, 0.15); box-sizing: border-box; display: block;">
+                        
+                        <!-- Title (No background-clip text, pure solid color) -->
+                        <h1 id="static-receiver-name" style="font-family: 'Playfair Display', serif; font-size: 32px; font-style: italic; font-weight: 700; color: #d4af37; margin: 0 0 20px 0; line-height: 1.1; text-shadow: 1px 1px 3px rgba(0,0,0,0.8); text-align: center;">Happy Birthday</h1>
+                        
+                        <!-- Photo -->
+                        <div style="width: 160px; height: 160px; border-radius: 12px; overflow: hidden; border: 3px solid rgba(255, 255, 255, 0.2); background: rgba(255, 255, 255, 0.1); margin: 0 auto 20px auto; position: relative; display: block; box-sizing: border-box;">
+                            <img id="static-photo" src="" style="width: 160px; height: 160px; object-fit: cover; display: none;">
+                            <!-- Placeholder uses explicit padding/line-height for centering in html2canvas -->
+                            <div id="static-placeholder" style="width: 160px; height: 160px; text-align: center; line-height: 160px; font-family: 'Montserrat', sans-serif; font-size: 14px; color: #d1d5db; background: rgba(255, 255, 255, 0.05); margin: 0; padding: 0;">Photo</div>
+                        </div>
+                        
+                        <!-- Custom Message -->
+                        <div id="static-message" style="font-family: 'Playfair Display', serif; font-size: 18px; color: #fff; margin: 0 20px 16px 20px; line-height: 1.5; text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5); text-align: center; word-wrap: break-word;"></div>
+                        
+                        <!-- Sender Name -->
+                        <div id="static-sender" style="font-family: 'Montserrat', sans-serif; font-size: 14px; color: #d1d5db; font-style: italic; margin: 0 0 30px 0; text-align: center;"></div>
+                        
+                    </div>
 
-        // Particle System - Ambient Background
-        const canvas = document.getElementById('particles-canvas');
-        const ctx = canvas.getContext('2d');
-        let width, height, particles = [];
+                    <!-- Branding (Safe CSS for Capture) -->
+                    <div class="static-branding">
+                        <img src="../../../logo.png" alt="Logo" class="static-logo">
+                        <div class="static-text">GiftOnScreen</div>
+                    </div>
+                </div>
+                <!-- Branding Footer (Live) -->
+                <div class="branding-footer">
+                    <img src="../../../logo.png" alt="GiftOnScreen Logo" class="branding-logo">
+                    <span class="branding-text">GiftOnScreen</span>
+                </div>
+            </div> <!-- end main-container -->
 
-        function resizeCanvas() {
-            width = canvas.width = window.innerWidth;
-            height = canvas.height = window.innerHeight;
-        }
-        window.addEventListener('resize', resizeCanvas);
-        resizeCanvas();
+            <!-- Audio Elements -->
+          <audio id="sfx-lighter-open" src="https://assets.mixkit.co/active_storage/sfx/228/228-preview.mp3"></audio>
+    <audio id="sfx-lighter-spark" src="https://assets.mixkit.co/active_storage/sfx/2049/2049-preview.mp3"></audio>
+    <audio id="sfx-flame" src="https://assets.mixkit.co/active_storage/sfx/611/611-preview.mp3"></audio> <!-- Potential 'breathing' culprit -->
+    <audio id="sfx-slice" src="https://assets.mixkit.co/active_storage/sfx/1120/1120-preview.mp3"></audio>
+    <audio id="sfx-surprise" src="https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3"></audio>
+    <audio id="sfx-cake-build" src="https://assets.mixkit.co/active_storage/sfx/2040/2040-preview.mp3"></audio>
+            <!-- Scripts -->
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/Draggable.min.js"></script>
+            <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+            <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+            <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
 
-        class Particle {
-            constructor() {
-                this.x = Math.random() * width;
-                this.y = Math.random() * height;
-                this.size = Math.random() * 2 + 0.5;
-                this.speedY = Math.random() * -0.5 - 0.1; /* Float up */
-                this.speedX = (Math.random() - 0.5) * 0.5;
-                this.opacity = Math.random() * 0.5 + 0.1;
-            }
-            update() {
-                this.y += this.speedY;
-                this.x += this.speedX;
-                if (this.y < 0) {
-                    this.y = height;
-                    this.x = Math.random() * width;
-                }
-            }
-            draw() {
-                ctx.fillStyle = `rgba(255, 235, 180, ${this.opacity})`;
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                ctx.fill();
-            }
-        }
-        function initParticles() {
-            for (let i = 0; i < 100; i++) particles.push(new Particle());
-        }
-        function animateParticles() {
-            ctx.clearRect(0, 0, width, height);
-            particles.forEach(p => { p.update(); p.draw(); });
-            requestAnimationFrame(animateParticles);
-        }
-        initParticles();
-        animateParticles();
-
-        // --- INIT TIMELINE ---
-        const initTl = gsap.timeline();
-        initTl.to(lighterWrapper, {
-            y: -250, /* Move into frame */
-            duration: 2,
-            ease: "power3.out",
-            delay: 0.5
-        });
-
-        // --- SCENE 1: LIGHTER INTERACTION ---
-        lighterWrapper.addEventListener('click', () => {
-            if (isCandleLit) return;
-            isCandleLit = true;
-
-            // Start ambient music
-            playAudio(ambientMusic, 0.4);
-
-            // Hide tip
-            gsap.to(lighterTip, { opacity: 0, duration: 0.5 });
-
-            const tl = gsap.timeline();
-
-            // 1. Mechanical Lid Open
-            tl.call(() => playAudio(sfxLighterOpen))
-                .to(lighterLid, { rotation: -110, transformOrigin: "-50px -45px", duration: 0.3, ease: "power2.inOut" })
-                .to(lighterWrapper, { y: "-=10", duration: 0.1, yoyo: true, repeat: 1 }, "<"); // slight recoil
-
-            // 2. Strike & Ignite Lighter
-            tl.call(() => playAudio(sfxLighterSpark), null, "+=0.2")
-                .to(lighterFlame, { opacity: 1, duration: 0.1, ease: "rough" })
-                .to(lighterFlame, { scaleY: 1.2, scaleX: 1.1, transformOrigin: "bottom center", yoyo: true, repeat: 5, duration: 0.05 }, "<");
-
-            // 3. Smooth Move towards Candle
-            tl.to(lighterWrapper, {
-                x: -40,  /* Move left */
-                y: "-=220", /* Move up to wick */
-                duration: 1.5,
-                ease: "power2.inOut"
-            });
-
-            // 4. Ignite Candle
-            tl.to(candleFlame, { opacity: 1, duration: 0.5 }, "-=0.2")
-                .to(ambientCandleGlow, { opacity: 1, duration: 1.5 }, "<")
-                .call(() => {
-                    document.body.classList.add('lit-environment');
-                    playAudio(sfxFlame, 0.2); // ambient fire sound
-
-                    // Candle flicker loop
-                    gsap.to(candleFlame, {
-                        scaleY: 1.05, scaleX: 1.02, rotation: () => Math.random() * 2 - 1,
-                        transformOrigin: "bottom center", duration: 0.1,
-                        yoyo: true, repeat: -1, ease: "none"
-                    });
-                    gsap.to(ambientCandleGlow, {
-                        scale: 1.05, opacity: 0.8, yoyo: true, repeat: -1, duration: 0.8, ease: "sine.inOut"
-                    });
-                });
-
-            // 5. Lighter Exit
-            tl.to(lighterFlame, { opacity: 0, duration: 0.2 }, "+=0.5")
-                .to(lighterLid, { rotation: 0, duration: 0.3 }, "<")
-                .to(lighterWrapper, { y: "+=600", opacity: 0, duration: 1.5, ease: "power3.in" });
-
-            // 6. Camera Zoom Out & Cake Reveal
-            tl.to(mainContainer, { scale: 0.8, y: -50, duration: 2, ease: "power2.inOut" }, "+=0.5")
-                .to(candleWrapper, { top: '35%', scale: 0.6, duration: 2, ease: "power3.inOut" }, "<") /* move candle up to rest on cake */
-                .to(scene1, { pointerEvents: "none" }, "<")
-                .to(scene2, { display: "flex", opacity: 1, duration: 1.5 }, "-=1")
-                .call(() => {
-                    const leftAnim = document.getElementById('bizcocho_1_left_s2');
-                    const rightAnim = document.getElementById('bizcocho_1_right_s2');
-                    if (leftAnim) leftAnim.beginElement();
-                    if (rightAnim) rightAnim.beginElement();
-                }, null, "-=0.5")
-                .to(knifeWrapper, { opacity: 1, left: '50%', duration: 1.2, ease: "back.out(1.4)" }, "+=8.5")
-                .call(initKnifeDrag);
-        });
-
-        // --- SCENE 2: KNIFE DRAGGING ---
-        function initKnifeDrag() {
-            gsap.to(knifeWrapper, { y: 15, yoyo: true, repeat: -1, duration: 1.5, ease: "sine.inOut" });
-
-            // Calculate cake bounds for precise center slicing
-            const isMobile = window.innerWidth <= 768;
-            const bounds = isMobile ? {
-                top: -100,
-                bottom: 200,
-                left: -20,
-                right: 20
-            } : {
-                top: -150,
-                bottom: 250,
-                left: -30,
-                right: 30
-            };
-
-            Draggable.create(knifeWrapper, {
-                type: "y",
-                bounds: bounds,
-                trigger: knifeWrapper,
-                onPress: function () {
-                    gsap.killTweensOf(knifeWrapper); // stop bounce
-                    gsap.to(sliceTip, { opacity: 0, duration: 0.3 });
-                    playAudio(sfxSlice, 0.5); // subtle start sound
-                },
-                onDragEnd: function () {
-                    if (this.y > 100) {
-                        this.disable();
-
-                        // Hide knife
-                        gsap.to(knifeWrapper, { y: "+=150", opacity: 0, duration: 0.6, ease: "power2.in" });
-
-                        // Split Cake
-                        const splitTl = gsap.timeline();
-
-                        // Extinguish candle softly
-                        splitTl.to(candleFlame, { opacity: 0, scale: 0, duration: 0.2 })
-                            .to(ambientCandleGlow, { opacity: 0, duration: 0.5 }, "<")
-                            .call(() => stopAudio(sfxFlame))
-                            .to(candleWrapper, { opacity: 0, y: "-=30", duration: 0.5 }, "<");
-
-                        // Halves separate
-                        splitTl.to(cakeLeft, { x: -80, rotation: -3, duration: 1.2, ease: "elastic.out(1, 0.7)" }, "<")
-                            .to(cakeRight, { x: 80, rotation: 3, duration: 1.2, ease: "elastic.out(1, 0.7)" }, "<")
-                            .to('.cake-stand', { scaleX: 1.1, opacity: 0.5, duration: 1 }, "<");
-
-                        // Enter Celebration
-                        splitTl.call(firePremiumCelebration, null, "-=0.8");
-
-                        // Show Message with cake behind
-                        splitTl.to(scene3, { display: "flex", opacity: 1, pointerEvents: "auto", duration: 1.5 }, "+=0.2")
-                            .fromTo('.message-box', { y: 50, scale: 0.9, opacity: 0 }, { y: 0, scale: 1, opacity: 1, duration: 1.5, ease: "power3.out" }, "<")
-                            .fromTo('.cake-behind', { y: 100, opacity: 0 }, { y: 0, opacity: 0.8, duration: 1.5, ease: "power3.out" }, "<")
-                            .fromTo('.cake-stand-behind', { y: 100, opacity: 0 }, { y: 0, opacity: 0.6, duration: 1.5, ease: "power3.out" }, "<")
-                            .fromTo('#firebase-data-container', { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 1.5, ease: "power3.out" }, "-=1")
-                            .call(displayFirebaseData, null, "-=1");
-                    } else {
-                        // Snap back
-                        gsap.to(knifeWrapper, { y: 0, duration: 0.8, ease: "elastic.out(1, 0.5)" });
-                        gsap.to(knifeWrapper, { y: 15, yoyo: true, repeat: -1, duration: 1.5, ease: "sine.inOut", delay: 0.8 });
-                        gsap.to(sliceTip, { opacity: 1, duration: 0.3 });
+            <script>
+                // --- GLOBAL SCALING LOGIC ---
+                function updateLayoutScale() {
+                    const widthLimit = window.innerWidth / 360;
+                    const heightLimit = window.innerHeight / 640;
+                    const scale = Math.min(widthLimit, heightLimit);
+                    const mainContainer = document.getElementById('main-container');
+                    if (mainContainer) {
+                        mainContainer.style.transform = `translate(-50%, -50%) scale(${scale})`;
                     }
                 }
-            });
-        }
 
-        // --- SCENE 4: ADVANCED CONFETTI ---
-        function firePremiumCelebration() {
-            playAudio(sfxPop);
+                window.addEventListener('resize', updateLayoutScale);
+                window.addEventListener('load', updateLayoutScale);
+                updateLayoutScale();
 
-            const duration = 5000;
-            const end = Date.now() + duration;
+                // Register GSAP Plugins
+                gsap.registerPlugin(Draggable);
 
-            // Golden & Pastel theme confetti
-            const colors = ['#d4af37', '#fcf6ba', '#ffb6c1', '#add8e6', '#ffffff'];
+                // DOM Elements
+                const mainContainer = document.getElementById('main-container');
+                const candleWrapper = document.querySelector('.candle-wrapper');
+                const candleFlame = document.getElementById('candle-flame');
+                const ambientCandleGlow = document.querySelector('.ambient-candle-glow');
+                const lighterWrapper = document.querySelector('.lighter-wrapper');
+                const lighterFlame = document.getElementById('lighter-flame');
+                const lighterLid = document.getElementById('lighter-lid');
+                const lighterTip = document.querySelector('.lighter-tip');
+                const scene1 = document.getElementById('scene-1');
+                const scene2 = document.getElementById('scene-2');
+                const scene3 = document.getElementById('scene-3');
+                const sliceTip = document.querySelector('.slice-tip');
+                const knifeWrapper = document.querySelector('.knife-wrapper');
+                const cakeLeft = document.querySelector('.lux-left');
+                const cakeRight = document.querySelector('.lux-right');
 
-            (function frame() {
-                confetti({
-                    particleCount: 5,
-                    angle: 60,
-                    spread: 80,
-                    origin: { x: 0, y: 0.9 },
-                    colors: colors,
-                    zIndex: 100
+                // Audio Elements
+                const sfxLighterOpen = document.getElementById('sfx-lighter-open');
+                const sfxLighterSpark = document.getElementById('sfx-lighter-spark');
+                const sfxFlame = document.getElementById('sfx-flame');
+                const sfxSlice = document.getElementById('sfx-slice');
+                const sfxPop = document.getElementById('sfx-pop');
+                const sfxCakeBuild = document.getElementById('sfx-cake-build');
+                const sfxSurprise = document.getElementById('sfx-surprise');
+                const replayBtn = document.getElementById('replay-btn');
+
+                // Firebase Config (Local Fallback)
+                const firebaseConfig = {
+                    apiKey: "AIzaSyDDnD8UUvRJnjwU9-Ee2-5uh0ybG7pkutE",
+                    authDomain: "giftonscreen.firebaseapp.com",
+                    projectId: "giftonscreen",
+                    storageBucket: "giftonscreen.firebasestorage.app",
+                    messagingSenderId: "984262120605",
+                    appId: "1:984262120605:web:df7aa8c601c2f7f10bf074",
+                    measurementId: "G-6QKJGDW5Z6"
+                };
+
+                // Initialize Firebase
+                if (!firebase.apps.length) {
+                    firebase.initializeApp(firebaseConfig);
+                }
+                const db = firebase.firestore();
+
+                // State
+                let isCandleLit = false;
+
+                // Helpers: Play Audio (Fail-safe for browser autoplay policies)
+                function playAudio(element, volume = 1) {
+                    element.volume = volume;
+                    try {
+                        let playPromise = element.play();
+                        if (playPromise !== undefined) {
+                            playPromise.catch(error => { console.log('Audio playback prevented'); });
+                        }
+                    } catch (e) { }
+                }
+
+                function stopAudio(element) {
+                    element.pause();
+                    element.currentTime = 0;
+                }
+
+                // Particle System - Ambient Background
+                const canvas = document.getElementById('particles-canvas');
+                const ctx = canvas.getContext('2d');
+                let width, height, particles = [];
+
+                function resizeCanvas() {
+                    width = canvas.width = window.innerWidth;
+                    height = canvas.height = window.innerHeight;
+                }
+                window.addEventListener('resize', resizeCanvas);
+                resizeCanvas();
+
+                class Particle {
+                    constructor() {
+                        this.x = Math.random() * width;
+                        this.y = Math.random() * height;
+                        this.size = Math.random() * 2 + 0.5;
+                        this.speedY = Math.random() * -0.5 - 0.1; /* Float up */
+                        this.speedX = (Math.random() - 0.5) * 0.5;
+                        this.opacity = Math.random() * 0.5 + 0.1;
+                    }
+                    update() {
+                        this.y += this.speedY;
+                        this.x += this.speedX;
+                        if (this.y < 0) {
+                            this.y = height;
+                            this.x = Math.random() * width;
+                        }
+                    }
+                    draw() {
+                        ctx.fillStyle = `rgba(255, 235, 180, ${this.opacity})`;
+                        ctx.beginPath();
+                        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                }
+                function initParticles() {
+                    for (let i = 0; i < 100; i++) particles.push(new Particle());
+                }
+                function animateParticles() {
+                    ctx.clearRect(0, 0, width, height);
+                    particles.forEach(p => { p.update(); p.draw(); });
+                    requestAnimationFrame(animateParticles);
+                }
+                initParticles();
+                animateParticles();
+
+                // --- INIT TIMELINE ---
+                const initTl = gsap.timeline();
+                initTl.to(lighterWrapper, {
+                    y: -180, /* Move into frame - adjusted for new layout */
+                    duration: 2,
+                    ease: "power3.out",
+                    delay: 0.5
                 });
-                confetti({
-                    particleCount: 5,
-                    angle: 120,
-                    spread: 80,
-                    origin: { x: 1, y: 0.9 },
-                    colors: colors,
-                    zIndex: 100
+
+                // --- SCENE 1: LIGHTER INTERACTION ---
+                lighterWrapper.addEventListener('click', () => {
+                    if (isCandleLit) return;
+                    isCandleLit = true;
+
+                    // Hide tip
+                    gsap.to(lighterTip, { opacity: 0, duration: 0.5 });
+
+                    const tl = gsap.timeline();
+
+                    // 1. Mechanical Lid Open
+                    tl.call(() => playAudio(sfxLighterOpen))
+                        .to(lighterLid, { rotation: -110, transformOrigin: "-50px -45px", duration: 0.3, ease: "power2.inOut" })
+                        .to(lighterWrapper, { y: "-=10", duration: 0.1, yoyo: true, repeat: 1 }, "<"); // slight recoil
+
+                    // 2. Strike & Ignite Lighter
+                    tl.call(() => playAudio(sfxLighterSpark), null, "+=0.2")
+                        .to(lighterFlame, { opacity: 1, duration: 0.1, ease: "rough" })
+                        .to(lighterFlame, { scaleY: 1.2, scaleX: 1.1, transformOrigin: "bottom center", yoyo: true, repeat: 5, duration: 0.05 }, "<");
+
+                    // 3. Smooth Move towards Candle (Organic Arc)
+                    tl.to(lighterWrapper, {
+                        x: -40,  /* Move left */
+                        duration: 1.5,
+                        ease: "sine.inOut"
+                    }, "moveArc")
+                    .to(lighterWrapper, {
+                        y: "-=220", /* Move up to wick */
+                        duration: 1.5,
+                        ease: "power2.out"
+                    }, "moveArc");
+
+                    // 4. Ignite Candle
+                    tl.to(candleFlame, { opacity: 1, duration: 0.5 }, "-=0.2")
+                        .to(ambientCandleGlow, { opacity: 1, duration: 1.5 }, "<")
+                        .call(() => {
+                            document.body.classList.add('lit-environment');
+                            // playAudio(sfxFlame, 0.2); // Removed ambient breathing/fire sound per request
+                            // stopAudio(sfxFlame);
+
+                            // Spawn Smoke/Sparkles
+                            spawnSparkles();
+
+                            // Candle flicker loop
+                            gsap.to(candleFlame, {
+                                scaleY: 1.05, scaleX: 1.02, rotation: () => Math.random() * 2 - 1,
+                                transformOrigin: "bottom center", duration: 0.1,
+                                yoyo: true, repeat: -1, ease: "none"
+                            });
+                            gsap.to(ambientCandleGlow, {
+                                scale: 1.05, opacity: 0.8, yoyo: true, repeat: -1, duration: 0.8, ease: "sine.inOut"
+                            });
+                        });
+
+                    // 5. Lighter Exit
+                    tl.to(lighterFlame, { opacity: 0, duration: 0.2 }, "+=0.5")
+                        .to(lighterLid, { rotation: 0, duration: 0.3 }, "<")
+                        .to(lighterWrapper, { y: "+=600", opacity: 0, duration: 1.5, ease: "power3.in" });
+
+                    // 6. Camera Zoom Out & Cake Reveal (Cinematic)
+                    tl.to(ambientCandleGlow, { scale: 1.5, opacity: 1, duration: 0.5, yoyo: true, repeat: 1, ease: "power1.inOut" }, "+=0.2") // Light pulse
+                        .to(mainContainer, { scale: 0.85, y: -40, duration: 2.5, ease: "power3.inOut" }, "<")
+                        .to(candleWrapper, { top: '30%', scale: 0.5, duration: 2.5, ease: "power3.inOut" }, "<") /* move candle further up for cake build */
+                        .to(scene1, { pointerEvents: "none" }, "<")
+                        .to(scene2, { display: "flex", opacity: 0 }, "-=1")
+                        .call(() => playAudio(sfxCakeBuild, 0.7), null, "<")
+                        .to(scene2, { opacity: 1, duration: 2, ease: "sine.inOut" }, "<") // gradual fade in
+                        .call(() => {
+                            const leftAnim = document.getElementById('bizcocho_1_left_s2');
+                            const rightAnim = document.getElementById('bizcocho_1_right_s2');
+                            if (leftAnim) leftAnim.beginElement();
+                            if (rightAnim) rightAnim.beginElement();
+                        }, null, "-=0.5")
+                        .to(knifeWrapper, { opacity: 1, y: 0, duration: 1.5, ease: "power3.out" }, "+=6") /* knife appears earlier but still after major build */
+                        .call(initKnifeDrag);
                 });
 
-                // Add some random bursts in the middle
-                if (Math.random() > 0.8) {
-                    confetti({
-                        particleCount: 15,
-                        spread: 100,
-                        origin: { x: 0.5, y: 0.5 },
-                        colors: colors,
-                        zIndex: 100
+                // --- SCENE 2: KNIFE DRAGGING ---
+                function initKnifeDrag() {
+                    gsap.to(sliceTip, { opacity: 1, duration: 1, delay: 0.5 }); // Explicitly show tip
+                    gsap.to(knifeWrapper, { y: 1.5, yoyo: true, repeat: -1, duration: 1.5, ease: "sine.inOut" });
+
+                    // Calculate cake bounds for precise center slicing
+                    const isMobile = window.innerWidth <= 768;
+                    const bounds = {
+                        top: -100,
+                        bottom: 150,
+                        left: 0,
+                        right: 0
+                    };
+
+                    Draggable.create(knifeWrapper, {
+                        type: "y",
+                        bounds: bounds,
+                        trigger: knifeWrapper,
+                        onPress: function () {
+                            gsap.killTweensOf(knifeWrapper); // stop bounce
+                            gsap.to(knifeWrapper, { scale: 6.2, duration: 0.2 }); // Tactile feedback
+                            gsap.to(sliceTip, { opacity: 0, duration: 0.3 });
+                            playAudio(sfxSlice, 0.5); // subtle start sound
+                        },
+                        onDrag: function () {
+                            // Dynamic shadow based on drag distance
+                            const progress = Math.min(Math.max(this.y / 100, 0), 1);
+                            gsap.set(knifeWrapper, { filter: `drop-shadow(0 ${15 + progress * 20}px ${15 + progress * 10}px rgba(0,0,0,${0.4 + progress * 0.4}))` });
+                        },
+                        onDragEnd: function () {
+                            gsap.to(knifeWrapper, { scale: 6.0, duration: 0.2 });
+                            if (this.y > 30) {
+                                this.disable();
+
+                                // Hide knife
+                                gsap.to(knifeWrapper, { y: "+=150", opacity: 0, duration: 0.6, ease: "power2.in" });
+
+                                // Split Cake
+                                const splitTl = gsap.timeline();
+
+                                // Pre-split vibration
+                                splitTl.to(".cake-wrapper", { x: 3, yoyo: true, repeat: 5, duration: 0.04, ease: "sine.inOut" })
+                                    .to(candleFlame, { opacity: 0, scale: 0, duration: 0.2 }, "+=0.1")
+                                    .to(ambientCandleGlow, { opacity: 0, duration: 0.5 }, "<")
+                                    .call(() => stopAudio(sfxFlame))
+                                    .to(candleWrapper, { opacity: 0, y: "-=30", duration: 0.5 }, "<");
+
+                                // Halves separate cleanly with spring back
+                                splitTl.to(cakeLeft, { x: -80, rotation: -3, duration: 1.2, ease: "back.out(1.4)" }, "<")
+                                    .to(cakeRight, { x: 80, rotation: 3, duration: 1.2, ease: "back.out(1.4)" }, "<")
+                                    .to('.cake-stand', { scaleX: 1.1, opacity: 0.5, duration: 1 }, "<");
+
+                                // Enter Celebration
+                                splitTl.call(firePremiumCelebration, null, "-=0.8");
+
+                                // Hide Scene 2 (Cake)
+                                splitTl.to(scene2, { opacity: 0, duration: 1, ease: "power2.inOut" }, "-=0.5")
+                                    .set(scene2, { display: "none" });
+
+                                // Show Message
+                                splitTl.to(scene3, { display: "flex", opacity: 1, pointerEvents: "auto", duration: 1.5 }, "+=0.2")
+                                    .call(() => playAudio(sfxSurprise, 0.8), null, "<")
+                                    .fromTo('.message-box', { y: 40, opacity: 0, scale: 0.9, filter: "blur(10px)" }, { y: 0, opacity: 1, scale: 1, filter: "blur(0px)", duration: 1.8, ease: "power3.out" }, "-=1")
+                                    .call(displayFirebaseData, null, "-=1");
+                            } else {
+                                // Snap back smoothly
+                                gsap.to(knifeWrapper, { y: 0, duration: 0.6, ease: "back.out(1.7)" });
+                                gsap.to(knifeWrapper, { filter: "drop-shadow(0 0 15px rgba(0,0,0,0.4))", duration: 0.6 });
+                                gsap.to(knifeWrapper, { y: 5, yoyo: true, repeat: -1, duration: 1.5, ease: "sine.inOut", delay: 0.6 });
+                                gsap.to(sliceTip, { opacity: 1, duration: 0.3 });
+                            }
+                        }
                     });
                 }
 
-                if (Date.now() < end) {
-                    requestAnimationFrame(frame);
+                // --- SCENE 4: ADVANCED CONFETTI & BALLOONS ---
+                function spawnBalloons() {
+                    const colors = ['#d4af37', '#ffb6c1', '#add8e6'];
+                    for (let i = 0; i < 6; i++) {
+                        const balloon = document.createElement('div');
+                        balloon.className = 'balloon';
+                        balloon.style.background = colors[i % colors.length];
+                        balloon.style.left = Math.random() * 80 + 10 + '%';
+                        balloon.style.animationDelay = Math.random() * 1.5 + 's';
+                        document.getElementById('scene-3').appendChild(balloon);
+                    }
                 }
-            }());
-        }
 
-        // --- STATIC DATA HANDLING ---
-        function fetchStaticData() {
-            // Priority 1: Injected by app.js (Standard across templates)
-            if (window.GOS_DATA) {
-                return {
-                    receiverName: window.GOS_DATA.receiver || 'Friend',
-                    photoUrl: window.GOS_DATA.photoUrl || null,
-                    message: window.GOS_DATA.message || 'Wishing you a wonderful birthday!',
-                    senderName: window.GOS_DATA.sender || 'Your Friend'
-                };
-            }
+                function spawnSparkles() {
+                    const sparkContainer = document.createElement('div');
+                    sparkContainer.className = 'spark-container';
+                    document.querySelector('.candle-wrapper').appendChild(sparkContainer);
+                    for (let i = 0; i < 10; i++) {
+                        const spark = document.createElement('div');
+                        spark.className = 'sparkle';
+                        spark.style.left = (Math.random() * 40 - 20) + 'px';
+                        spark.style.animationDelay = Math.random() * 2 + 's';
+                        sparkContainer.appendChild(spark);
+                    }
+                }
 
-            // Fallback for standalone viewing / URL params
-            const urlParams = new URLSearchParams(window.location.search);
-            if (urlParams.has('name') || urlParams.has('msg')) {
-                return {
-                    receiverName: urlParams.get('name') || 'Friend',
-                    photoUrl: urlParams.get('photo') || null,
-                    message: urlParams.get('msg') || 'Wishing you a wonderful birthday!',
-                    senderName: urlParams.get('from') || 'Your Friend'
-                };
-            }
+                function firePremiumCelebration() {
+                    playAudio(sfxPop);
+                    spawnBalloons();
 
-            // Default fallback
-            return {
-                receiverName: 'Friend',
-                photoUrl: null,
-                message: 'Wishing you a wonderful birthday!',
-                senderName: 'Your Friend'
-            };
-        }
+                    const duration = 5000;
+                    const end = Date.now() + duration;
 
-        async function displayFirebaseData() {
-            const data = fetchStaticData();
+                    // Golden & Pastel theme confetti
+                    const colors = ['#d4af37', '#fcf6ba', '#ffb6c1', '#add8e6', '#ffffff'];
 
-            // Update receiver name
-            const receiverNameElement = document.getElementById('receiver-name');
-            if (receiverNameElement) {
-                receiverNameElement.textContent = `Happy Birthday ${data.receiverName}!`;
-            }
+                    (function frame() {
+                        confetti({
+                            particleCount: 5,
+                            angle: 60,
+                            spread: 80,
+                            origin: { x: 0, y: 0.9 },
+                            colors: colors,
+                            zIndex: 100
+                        });
+                        confetti({
+                            particleCount: 5,
+                            angle: 120,
+                            spread: 80,
+                            origin: { x: 1, y: 0.9 },
+                            colors: colors,
+                            zIndex: 100
+                        });
 
-            // Update custom message
-            const messageElement = document.getElementById('custom-message');
-            if (messageElement) {
-                messageElement.textContent = data.message;
-            }
+                        // Add some random bursts in the middle
+                        if (Math.random() > 0.8) {
+                            confetti({
+                                particleCount: 15,
+                                spread: 100,
+                                origin: { x: 0.5, y: 0.5 },
+                                colors: colors,
+                                zIndex: 100
+                            });
+                        }
 
-            // Update sender name
-            const senderNameElement = document.getElementById('sender-name');
-            if (senderNameElement) {
-                senderNameElement.textContent = `— ${data.senderName}`;
-            }
+                        if (Date.now() < end) {
+                            requestAnimationFrame(frame);
+                        }
+                    }());
+                }
 
-            // Update photo
-            const photoElement = document.getElementById('receiver-photo');
-            const photoPlaceholder = document.getElementById('photo-placeholder');
+                // --- STATIC DATA HANDLING ---
+                function fetchStaticData() {
+                    // Priority 1: Injected by app.js (Standard across templates)
+                    if (window.GOS_DATA) {
+                        return {
+                            receiverName: window.GOS_DATA.receiver || 'Friend',
+                            photoUrl: window.GOS_DATA.photoUrl || null,
+                            message: window.GOS_DATA.message || 'Wishing you a wonderful birthday!',
+                            senderName: window.GOS_DATA.sender || 'Your Friend'
+                        };
+                    }
 
-            if (data.photoUrl && photoElement && photoPlaceholder) {
-                photoElement.src = data.photoUrl;
-                photoElement.style.display = 'block';
-                photoPlaceholder.style.display = 'none';
-            } else if (photoElement && photoPlaceholder) {
-                photoElement.style.display = 'none';
-                photoPlaceholder.style.display = 'flex';
-            }
-        }
+                    // Fallback for standalone viewing / URL params
+                    const urlParams = new URLSearchParams(window.location.search);
+                    if (urlParams.has('name') || urlParams.has('msg')) {
+                        return {
+                            receiverName: urlParams.get('name') || 'Friend',
+                            photoUrl: urlParams.get('photo') || null,
+                            message: urlParams.get('msg') || 'Wishing you a wonderful birthday!',
+                            senderName: urlParams.get('from') || 'Your Friend'
+                        };
+                    }
 
-        // --- REPLAY LOGIC ---
-        document.getElementById('replay-btn').addEventListener('click', () => {
-            // Stop all audio
-            [sfxLighterOpen, sfxLighterSpark, sfxFlame, sfxSlice, sfxPop, ambientMusic].forEach(stopAudio);
+                    // Default fallback
+                    return {
+                        receiverName: 'Friend',
+                        photoUrl: null,
+                        message: 'Wishing you a wonderful birthday!',
+                        senderName: 'Your Friend'
+                    };
+                }
 
-            // Kill all running tweens
-            gsap.killTweensOf("*");
+                async function displayFirebaseData() {
+                    let data = fetchStaticData();
 
-            // Reset styles
-            gsap.set([scene2, scene3, ambientCandleGlow, candleFlame, lighterFlame], { opacity: 0 });
-            gsap.set([scene2, scene3], { display: "none" });
-            gsap.set(scene1, { pointerEvents: "auto", opacity: 1 });
-            gsap.set(mainContainer, { scale: 1, y: 0 }); // reset zoom
+                    // If it's a default state and we have a URL ID, fetch from firestore
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const giftId = urlParams.get('id');
 
-            // Reset Lighter
-            gsap.set(lighterWrapper, { y: 0, x: -50, opacity: 1 });
-            gsap.set(lighterLid, { rotation: 0 });
-            gsap.set(lighterTip, { opacity: 1 });
+                    if (giftId && data.receiverName === 'Friend' && !window.GOS_DATA) {
+                        try {
+                            const snapshot = await db.collection("gifts").where("id", "==", giftId).get();
+                            if (!snapshot.empty) {
+                                const doc = snapshot.docs[0].data();
+                                data = {
+                                    receiverName: doc.receiver || 'Friend',
+                                    photoUrl: doc.photoUrl || doc.photoURL || null,
+                                    message: doc.message || 'Wishing you a wonderful birthday!',
+                                    senderName: doc.sender || 'Your Friend'
+                                };
+                            }
+                        } catch (e) {
+                            console.error("Firebase fetch error:", e);
+                        }
+                    }
 
-            // Reset Candle
-            gsap.set(candleWrapper, { top: '55%', scale: 1, opacity: 1, y: 0 });
+                    // Persist for capture logic
+                    window.GOS_DATA = data;
 
-            // Reset Cake
-            gsap.set([cakeLeft, cakeRight], { x: 0, rotation: 0 });
-            gsap.set('.cake-stand', { scaleX: 1, opacity: 1 });
+                    // Cloudinary Image Optimization
+                    if (data.photoUrl && data.photoUrl.includes('cloudinary.com')) {
+                        // Insert auto-format and high quality transformations
+                        // format: .../upload/v123/... -> .../upload/f_auto,q_auto,w_800/v123/...
+                        data.photoUrl = data.photoUrl.replace('/upload/', '/upload/f_auto,q_auto,w_800/');
+                    }
 
-            // Reset Knife (Horizontal)
-            gsap.set(knifeWrapper, { x: 0, y: 15, opacity: 0 });
+                    // Update receiver name
+                    const receiverNameElement = document.getElementById('receiver-name');
+                    if (receiverNameElement) {
+                        receiverNameElement.textContent = `Happy Birthday ${data.receiverName}!`;
+                    }
 
-            // Reset Env
-            document.body.classList.remove('lit-environment');
-            isCandleLit = false;
-            scene3.style.pointerEvents = "none";
+                    // Update custom message
+                    const messageElement = document.getElementById('custom-message');
+                    if (messageElement) {
+                        messageElement.textContent = data.message;
+                    }
 
-            // Re-enter lighter
-            gsap.to(lighterWrapper, { y: -250, duration: 1.5, ease: "power3.out" });
-        });
-    </script>
+                    // Update sender name
+                    const senderNameElement = document.getElementById('sender-name');
+                    if (senderNameElement) {
+                        senderNameElement.textContent = `— ${data.senderName}`;
+                    }
+
+                    // Update photo
+                    const photoElement = document.getElementById('receiver-photo');
+                    const photoPlaceholder = document.getElementById('photo-placeholder');
+
+                    if (data.photoUrl && photoElement && photoPlaceholder) {
+                        photoElement.src = data.photoUrl;
+                        photoElement.style.display = 'block';
+                    }
+                }
+                // --- IMAGE CAPTURE & SHARING ---
+                async function captureScene() {
+                    const staticScene = document.getElementById('scene-3-static');
+                    const data = fetchStaticData();
+                    
+                    // Sync data to static scene
+                    const titleEl = document.getElementById('static-receiver-name');
+                    const msgEl = document.getElementById('static-message');
+                    const senderEl = document.getElementById('static-sender');
+                    
+                    if (titleEl) titleEl.textContent = `Happy Birthday ${data.receiverName}!`;
+                    if (msgEl) msgEl.textContent = data.message;
+                    if (senderEl) senderEl.textContent = `— ${data.senderName}`;
+                    
+                    const staticPhoto = document.getElementById('static-photo');
+                    const staticPlaceholder = document.getElementById('static-placeholder');
+                    if (data.photoUrl && staticPhoto) {
+                        staticPhoto.src = data.photoUrl;
+                        staticPhoto.style.display = 'block';
+                        if (staticPlaceholder) staticPlaceholder.style.display = 'none';
+                        // Wait for image to load
+                        await new Promise(r => {
+                            if (staticPhoto.complete) r();
+                            else staticPhoto.onload = r;
+                        });
+                    } else if (staticPhoto) {
+                        staticPhoto.style.display = 'none';
+                        if (staticPlaceholder) staticPlaceholder.style.display = 'flex';
+                    }
+
+                    try {
+                        // Ensure images are fully loaded and CORS is respected
+                        const canvas = await html2canvas(staticScene, {
+                            useCORS: true,
+                            allowTaint: false,
+                            backgroundColor: '#0d0c13',
+                            scale: 3, // Premium quality
+                            logging: false,
+                            width: 360,
+                            height: 640
+                        });
+                        return canvas;
+                    } catch (err) {
+                        console.error("Capture failed:", err);
+                        return null;
+                    }
+                }
+
+                // Save to Gallery
+                const saveBtn = document.getElementById('save-image-btn');
+                if (saveBtn) {
+                  saveBtn.addEventListener('click', async function() {
+                      const btn = this;
+                      const originalText = btn.innerHTML;
+                      btn.innerHTML = '<i class="ph ph-circle-notch animate-spin mr-2"></i> Capturing...';
+                      btn.disabled = true;
+
+                      const canvas = await captureScene();
+                      if (canvas) {
+                          const link = document.createElement('a');
+                          link.download = `Birthday-Surprise-${Date.now()}.png`;
+                          link.href = canvas.toDataURL('image/png');
+                          link.click();
+                          
+                          btn.innerHTML = '<i class="ph ph-check mr-2"></i> Saved!';
+                          const instaBtn = document.getElementById('instagram-story-btn');
+                          if (instaBtn) instaBtn.style.display = 'flex';
+                      } else {
+                          btn.innerHTML = '<i class="ph ph-warning mr-2"></i> Error';
+                      }
+                      
+                      setTimeout(() => {
+                          btn.innerHTML = originalText;
+                          btn.disabled = false;
+                      }, 3000);
+                  });
+                }
+
+                // Instagram Story Share
+                const instaBtn = document.getElementById('instagram-story-btn');
+                if (instaBtn) {
+                  instaBtn.addEventListener('click', async function() {
+                      const canvas = await captureScene();
+                      if (!canvas) return;
+
+                      canvas.toBlob(async (blob) => {
+                          const file = new File([blob], "birthday-surprise.png", { type: "image/png" });
+                          
+                          if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                              try {
+                                  await navigator.share({
+                                      files: [file],
+                                      title: 'Birthday Surprise',
+                                      text: 'Check out this special surprise!'
+                                  });
+                              } catch (err) {
+                                  console.log("Sharing failed", err);
+                              }
+                          } else {
+                              // Fallback for browsers that don't support file sharing
+                              alert("Sharing not supported on this browser. Please save the image and upload manually to Instagram.");
+                          }
+                      }, 'image/png');
+                  });
+                }
+
+                                // Share Functionality
+                                const shareBtn = document.getElementById('share-btn');
+                                if (shareBtn) {
+                                    shareBtn.addEventListener('click', async () => {
+                                        const shareData = {
+                                            title: 'Gifts On Screen ✨',
+                                            text: `Check out this special birthday surprise for ${document.getElementById('receiver-name').textContent.replace('Happy Birthday ', '').replace('!', '')}!`,
+                                            url: window.location.href
+                                        };
+
+                                        try {
+                                            if (navigator.share) {
+                                                await navigator.share(shareData);
+                                            } else {
+                                                // Fallback: Copy to clipboard
+                                                await navigator.clipboard.writeText(window.location.href);
+                                                const originalSpan = shareBtn.querySelector('span');
+                                                const originalText = originalSpan.textContent;
+                                                originalSpan.textContent = 'Link Copied!';
+                                                setTimeout(() => {
+                                                    originalSpan.textContent = originalText;
+                                                }, 2000);
+                                            }
+                                        } catch (err) {
+                                            console.error('Share failed:', err);
+                                        }
+                                    });
+                                }
+
+            </script>
 </body>
 
 </html>
