@@ -719,6 +719,8 @@
     <link rel="preload" href="https://assets.mixkit.co/active_storage/sfx/228/228-preview.mp3" as="audio">
     <link rel="preload" href="https://assets.mixkit.co/active_storage/sfx/2049/2049-preview.mp3" as="audio">
 
+    <!-- Firebase SDK (Compat) - MOVED TO BOTTOM FOR PERFORMANCE -->
+
     <!-- Firebase SDK (Compat) -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
@@ -736,9 +738,7 @@
 
     <!-- === GAME VIEWPORT CONTAINER === -->
     <div class="game-viewport">
-        <div class="viewport-inner">
-            <!-- Vignette Overlay -->
-            <div class="vignette-overlay"></div>
+
 
             <!-- Main Content Container -->
             <div id="main-container">
@@ -1259,24 +1259,29 @@
                     <img src="../../../logo.png" alt="GiftOnScreen Logo" class="branding-logo">
                     <span class="branding-text">GiftOnScreen</span>
                 </div>
+                <!-- Vignette Overlay moved inside main-container -->
+                <div class="vignette-overlay"></div>
             </div> <!-- end main-container -->
+        </div> <!-- end game-viewport -->
 
             <!-- Audio Elements -->
-          <audio id="sfx-lighter-open" src="https://assets.mixkit.co/active_storage/sfx/228/228-preview.mp3"></audio>
+    <audio id="sfx-lighter-open" src="https://assets.mixkit.co/active_storage/sfx/228/228-preview.mp3"></audio>
     <audio id="sfx-lighter-spark" src="https://assets.mixkit.co/active_storage/sfx/2049/2049-preview.mp3"></audio>
-    <audio id="sfx-flame" src="https://assets.mixkit.co/active_storage/sfx/611/611-preview.mp3"></audio> <!-- Potential 'breathing' culprit -->
+    <audio id="sfx-flame" src="https://assets.mixkit.co/active_storage/sfx/611/611-preview.mp3"></audio>
     <audio id="sfx-slice" src="https://assets.mixkit.co/active_storage/sfx/1120/1120-preview.mp3"></audio>
     <audio id="sfx-surprise" src="https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3"></audio>
     <audio id="sfx-cake-build" src="https://assets.mixkit.co/active_storage/sfx/2040/2040-preview.mp3"></audio>
+    <audio id="sfx-pop" src="https://assets.mixkit.co/active_storage/sfx/2018/2018-preview.mp3"></audio>
+    <audio id="sfx-success" src="https://assets.mixkit.co/active_storage/sfx/2020/2020-preview.mp3"></audio>
             <!-- Scripts -->
             <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
             <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
             <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/Draggable.min.js"></script>
             <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-            <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
-            <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
 
             <script>
+                // Encapsulate scope to prevent collision with app.js (e.g. 'db' redeclaration)
+                (() => {
                 // --- GLOBAL SCALING LOGIC ---
                 function updateLayoutScale() {
                     const widthLimit = window.innerWidth / 360;
@@ -1292,8 +1297,12 @@
                 window.addEventListener('load', updateLayoutScale);
                 updateLayoutScale();
 
-                // Register GSAP Plugins
-                gsap.registerPlugin(Draggable);
+                // Register GSAP Plugins with Error Handling
+                try {
+                    gsap.registerPlugin(Draggable);
+                } catch (e) {
+                    console.error("GSAP Plugin Registration Failed:", e);
+                }
 
                 // DOM Elements
                 const mainContainer = document.getElementById('main-container');
@@ -1342,8 +1351,21 @@
                 // State
                 let isCandleLit = false;
 
+                // --- IMMEDIATE DATA FETCH ---
+                (function initData() {
+                    const urlParams = new URLSearchParams(window.location.search);
+                    if (urlParams.has('id')) {
+                        console.log("ID detected, initiating early fetch...");
+                        displayFirebaseData();
+                    }
+                })();
+
                 // Helpers: Play Audio (Fail-safe for browser autoplay policies)
                 function playAudio(element, volume = 1) {
+                    if (!element) {
+                        console.warn('Audio element not found');
+                        return;
+                    }
                     element.volume = volume;
                     try {
                         let playPromise = element.play();
@@ -1354,6 +1376,7 @@
                 }
 
                 function stopAudio(element) {
+                    if (!element) return;
                     element.pause();
                     element.currentTime = 0;
                 }
@@ -1670,64 +1693,80 @@
                 }
 
                 async function displayFirebaseData() {
-                    let data = fetchStaticData();
+                    console.log("displayFirebaseData triggered");
+                    
+                    // Helper to perform the actual DOM updates
+                    const updateUI = (data) => {
+                        console.log("Updating UI with data:", data);
+                        const receiverNameElement = document.getElementById('receiver-name');
+                        if (receiverNameElement) {
+                            receiverNameElement.textContent = `Happy Birthday ${data.receiverName}!`;
+                        }
 
-                    // If it's a default state and we have a URL ID, fetch from firestore
+                        const messageElement = document.getElementById('custom-message');
+                        if (messageElement) {
+                            messageElement.textContent = data.message;
+                        }
+
+                        const senderNameElement = document.getElementById('sender-name');
+                        if (senderNameElement) {
+                            senderNameElement.textContent = `— ${data.senderName}`;
+                        }
+
+                        const photoElement = document.getElementById('receiver-photo');
+                        const photoPlaceholder = document.getElementById('photo-placeholder');
+
+                        if (data.photoUrl && photoElement && photoPlaceholder) {
+                            photoElement.src = data.photoUrl;
+                            photoElement.style.display = 'block';
+                            photoPlaceholder.style.display = 'none';
+                        }
+                    };
+
+                    // 1. Immediate Update with static/local data (Priority: GOS_DATA -> URL Params)
+                    let data = fetchStaticData();
+                    updateUI(data);
+
+                    // 2. Async Firebase Fetch (if ID present)
                     const urlParams = new URLSearchParams(window.location.search);
                     const giftId = urlParams.get('id');
 
-                    if (giftId && data.receiverName === 'Friend' && !window.GOS_DATA) {
+                    if (giftId) {
+                        console.log("Attempting fresh fetch for giftId:", giftId);
                         try {
-                            const snapshot = await db.collection("gifts").where("id", "==", giftId).get();
+                            let giftDoc = null;
+                            // Query by custom 'id' field
+                            let snapshot = await db.collection("gifts").where("id", "==", giftId).get();
                             if (!snapshot.empty) {
-                                const doc = snapshot.docs[0].data();
-                                data = {
-                                    receiverName: doc.receiver || 'Friend',
-                                    photoUrl: doc.photoUrl || doc.photoURL || null,
-                                    message: doc.message || 'Wishing you a wonderful birthday!',
-                                    senderName: doc.sender || 'Your Friend'
+                                giftDoc = snapshot.docs[0].data();
+                            } else {
+                                // Fallback to direct document ID
+                                const docRef = await db.collection("gifts").doc(giftId).get();
+                                if (docRef.exists) giftDoc = docRef.data();
+                            }
+
+                            if (giftDoc) {
+                                console.log("New data fetched from Firebase:", giftDoc);
+                                const newData = {
+                                    receiver: giftDoc.receiver || giftDoc.receiverName || 'Friend',
+                                    photoUrl: giftDoc.photoUrl || giftDoc.photoURL || null,
+                                    message: giftDoc.message || 'Wishing you a wonderful birthday!',
+                                    sender: giftDoc.sender || giftDoc.senderName || 'Your Friend'
                                 };
+                                // Normalize for window.GOS_DATA to match app.js
+                                window.GOS_DATA = newData;
+                                
+                                // Map to the structure expected by updateUI
+                                updateUI({
+                                    receiverName: newData.receiver,
+                                    photoUrl: newData.photoUrl,
+                                    message: newData.message,
+                                    senderName: newData.sender
+                                });
                             }
                         } catch (e) {
-                            console.error("Firebase fetch error:", e);
+                            console.error("Firebase fetch error in template:", e);
                         }
-                    }
-
-                    // Persist for capture logic
-                    window.GOS_DATA = data;
-
-                    // Cloudinary Image Optimization
-                    if (data.photoUrl && data.photoUrl.includes('cloudinary.com')) {
-                        // Insert auto-format and high quality transformations
-                        // format: .../upload/v123/... -> .../upload/f_auto,q_auto,w_800/v123/...
-                        data.photoUrl = data.photoUrl.replace('/upload/', '/upload/f_auto,q_auto,w_800/');
-                    }
-
-                    // Update receiver name
-                    const receiverNameElement = document.getElementById('receiver-name');
-                    if (receiverNameElement) {
-                        receiverNameElement.textContent = `Happy Birthday ${data.receiverName}!`;
-                    }
-
-                    // Update custom message
-                    const messageElement = document.getElementById('custom-message');
-                    if (messageElement) {
-                        messageElement.textContent = data.message;
-                    }
-
-                    // Update sender name
-                    const senderNameElement = document.getElementById('sender-name');
-                    if (senderNameElement) {
-                        senderNameElement.textContent = `— ${data.senderName}`;
-                    }
-
-                    // Update photo
-                    const photoElement = document.getElementById('receiver-photo');
-                    const photoPlaceholder = document.getElementById('photo-placeholder');
-
-                    if (data.photoUrl && photoElement && photoPlaceholder) {
-                        photoElement.src = data.photoUrl;
-                        photoElement.style.display = 'block';
                     }
                 }
                 // --- IMAGE CAPTURE & SHARING ---
@@ -1865,6 +1904,10 @@
                                     });
                                 }
 
+                // Expose globally for app.js to call during injection
+                window.displayFirebaseData = displayFirebaseData;
+                
+                })(); // End encapsulated scope
             </script>
 </body>
 
