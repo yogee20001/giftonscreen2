@@ -393,8 +393,8 @@
         /* === SCENE 2: KNIFE (Between Candle and Cake) === */
         .knife-wrapper {
             position: absolute;
-            top: 45%;
-            /* Positioned between candle (top) and cake (bottom) */
+            top: 48%;
+            /* Midpoint between candle (30%) and cake (65%) */
             left: 50%;
             transform: translate(-50%, -50%) rotate(90deg) scale(6.0);
             width: 100%;
@@ -1571,14 +1571,14 @@
                         if (leftAnim) leftAnim.beginElement();
                         if (rightAnim) rightAnim.beginElement();
                     }, null, "-=0.5")
-                    .to(knifeWrapper, { opacity: 1, y: 0, duration: 1.5, ease: "power3.out" }, "+=6") /* knife appears earlier but still after major build */
+                    .to(knifeWrapper, { opacity: 1, duration: 1.5, ease: "power3.out" }, "+=6") /* knife appears earlier but still after major build */
                     .call(initKnifeDrag);
             });
 
             // --- SCENE 2: KNIFE DRAGGING ---
             function initKnifeDrag() {
                 gsap.to(sliceTip, { opacity: 1, duration: 1, delay: 0.5 }); // Explicitly show tip
-                gsap.to(knifeWrapper, { y: 1.5, yoyo: true, repeat: -1, duration: 1.5, ease: "sine.inOut" });
+                // gsap.to(knifeWrapper, { y: 1.5, yoyo: true, repeat: -1, duration: 1.5, ease: "sine.inOut" }); // Bobbing disabled for stability
 
                 // Calculate cake bounds for precise center slicing
                 const isMobile = window.innerWidth <= 768;
