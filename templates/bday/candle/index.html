@@ -1559,7 +1559,7 @@
 
                 // 6. Camera Zoom Out & Cake Reveal (Cinematic)
                 tl.to(ambientCandleGlow, { scale: 1.5, opacity: 1, duration: 0.5, yoyo: true, repeat: 1, ease: "power1.inOut" }, "+=0.2") // Light pulse
-                    .to(mainContainer, { scale: 0.85, y: -40, duration: 2.5, ease: "power3.inOut" }, "<")
+                    // .to(mainContainer, { scale: 0.85, y: -40, duration: 2.5, ease: "power3.inOut" }, "<") // Removed global zoom-out per request
                     .to(candleWrapper, { top: '30%', scale: 0.5, duration: 2.5, ease: "power3.inOut" }, "<") /* move candle further up for cake build */
                     .to(scene1, { pointerEvents: "none" }, "<")
                     .to(scene2, { display: "flex", opacity: 0 }, "-=1")
@@ -1571,7 +1571,7 @@
                         if (leftAnim) leftAnim.beginElement();
                         if (rightAnim) rightAnim.beginElement();
                     }, null, "-=0.5")
-                    .to(knifeWrapper, { opacity: 1, duration: 1.5, ease: "power3.out" }, "+=6") /* knife appears earlier but still after major build */
+                    .to(knifeWrapper, { opacity: 1, duration: 1.5, ease: "power3.out" }, "+=0.5") /* Knife now appears promptly */
                     .call(initKnifeDrag);
             });
 
