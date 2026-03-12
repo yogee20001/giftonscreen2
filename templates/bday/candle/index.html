@@ -1307,14 +1307,14 @@
             <div id="firebase-data-container" class="firebase-data-container">
                 <div class="receiver-info">
                     <div id="receiver-photo-container" class="photo-container">
-                        <img id="receiver-photo" src="" alt="Receiver Photo" class="receiver-photo"
+                        <img id="receiver-photo" data-photo src="" alt="Receiver Photo" class="receiver-photo"
                             style="display: none;">
                         <div id="photo-placeholder" class="photo-placeholder">Photo</div>
                     </div>
-                    <h1 id="receiver-name" class="lux-title">Happy Birthday</h1>
+                    <h1 id="receiver-name" class="lux-title" data-receiver>Happy Birthday</h1>
                 </div>
-                <div id="custom-message" class="custom-message"></div>
-                <div id="sender-name" class="sender-name"></div>
+                <div id="custom-message" class="custom-message" data-message></div>
+                <div id="sender-name" class="sender-name" data-sender></div>
             </div>
 
             <div class="message-box glass-panel">
@@ -1630,12 +1630,17 @@
 
         // --- STATIC DATA HANDLING ---
         function fetchStaticData() {
-            // Check for window.GOS_DATA (injected by app.js)
+            // Priority 1: Injected by app.js (Standard across templates)
             if (window.GOS_DATA) {
-                return window.GOS_DATA;
+                return {
+                    receiverName: window.GOS_DATA.receiver || 'Friend',
+                    photoUrl: window.GOS_DATA.photoUrl || null,
+                    message: window.GOS_DATA.message || 'Wishing you a wonderful birthday!',
+                    senderName: window.GOS_DATA.sender || 'Your Friend'
+                };
             }
 
-            // Fallback to URL parameters for standalone viewing
+            // Fallback for standalone viewing / URL params
             const urlParams = new URLSearchParams(window.location.search);
             if (urlParams.has('name') || urlParams.has('msg')) {
                 return {

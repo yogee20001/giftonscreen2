@@ -40,7 +40,7 @@ const CLOUDINARY_UPLOAD_PRESET = 'gift_photos'; // Standardized preset name (no 
 function init() {
     startHearts();
     setupTrackModal();
-    
+
     const urlParams = new URLSearchParams(window.location.search);
     const id = urlParams.get('id');
 
@@ -53,11 +53,11 @@ function init() {
 
 // -- Heart Animation System --
 function startHearts() {
-    const hearts = ["💖","✨","💫","💗","🤍"];
+    const hearts = ["💖", "✨", "💫", "💗", "🤍"];
     setInterval(() => {
         const h = document.createElement("div");
         h.className = "heart";
-        h.textContent = hearts[Math.floor(Math.random()*hearts.length)];
+        h.textContent = hearts[Math.floor(Math.random() * hearts.length)];
         h.style.left = Math.random() * 100 + "vw";
         h.style.animationDuration = 6 + Math.random() * 8 + "s";
         document.body.appendChild(h);
@@ -88,7 +88,7 @@ function renderState1() {
     clearContainer();
     const node = tplState1.content.cloneNode(true);
     const grid = node.querySelector('.grid');
-    
+
     occasions.forEach(occ => {
         const card = document.createElement('div');
         card.className = `occasion-card glass-card rounded-3xl p-6 flex flex-col items-center justify-center group transform hover:scale-105 hover:bg-white/5`;
@@ -96,7 +96,7 @@ function renderState1() {
             currentOccasion = occ;
             renderState2(occ.id, occ.label);
         };
-        
+
         card.innerHTML = `
             <div class="w-20 h-20 rounded-2xl bg-gradient-to-br ${occ.gradient} flex items-center justify-center mb-4 shadow-xl border border-white/20 group-hover:shadow-[0_0_30px_rgba(255,255,255,0.3)] transition-all">
                 <i class="${occ.icon} text-4xl text-white"></i>
@@ -106,7 +106,7 @@ function renderState1() {
         `;
         grid.appendChild(card);
     });
-    
+
     appContainer.appendChild(node);
 }
 
@@ -117,18 +117,18 @@ function renderState2(occId, occLabel) {
     clearContainer();
     const node = tplState2.content.cloneNode(true);
     node.querySelector('#theme-category-name').textContent = occLabel;
-    
+
     const grid = node.querySelector('#themes-grid');
     const themes = themeTemplates[occId] || themeTemplates['default'];
-    
+
     themes.forEach(theme => {
         const tcard = document.createElement('div');
         tcard.className = 'glass-card rounded-3xl overflow-hidden group flex flex-col transition-all hover:scale-[1.02] hover:shadow-[0_0_40px_rgba(58,108,255,0.3)] border border-white/10 hover:border-brand-blue/50 cursor-pointer';
         tcard.onclick = () => window.selectTheme(theme.id, theme.name);
-        
+
         // Mocking an image preview for a theme
-        const mockImgUrl = `https://source.unsplash.com/600x400/?${occLabel.replace(' ','')},aesthetic,${theme.id}`;
-        
+        const mockImgUrl = `https://source.unsplash.com/600x400/?${occLabel.replace(' ', '')},aesthetic,${theme.id}`;
+
         tcard.innerHTML = `
             <div class="h-48 w-full bg-gray-900 relative overflow-hidden">
                 <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent z-10"></div>
@@ -158,15 +158,15 @@ function renderState2(occId, occLabel) {
 function renderState3() {
     clearContainer();
     const node = tplState3.content.cloneNode(true);
-    
+
     node.querySelector('#current-theme-label').textContent = currentTheme.name;
-    
+
     const form = node.querySelector('#editor-form');
     const rName = node.querySelector('#receiverName');
     const sName = node.querySelector('#senderName');
     const msg = node.querySelector('#messageText');
     const pUpload = node.querySelector('#photoUpload');
-    
+
     const prevR = node.querySelector('#preview-receiver');
     const prevS = node.querySelector('#preview-sender');
     const prevM = node.querySelector('#preview-message');
@@ -183,8 +183,8 @@ function renderState3() {
     // Photo Compression Upload
     pUpload.addEventListener('change', async (e) => {
         const file = e.target.files[0];
-        if(!file) return;
-        
+        if (!file) return;
+
         const statusEl = document.getElementById('photo-status');
         statusEl.textContent = "Compressing photo...";
         statusEl.classList.remove('hidden');
@@ -194,10 +194,10 @@ function renderState3() {
             compressedPhotoDataUrl = await compressImage(file, 500);
             prevP.src = compressedPhotoDataUrl;
             prevP.classList.remove('hidden');
-            
+
             statusEl.textContent = "Photo ready!";
             statusEl.className = "text-xs text-center mt-2 text-green-400 font-bold";
-        } catch(err) {
+        } catch (err) {
             statusEl.textContent = "Compression failed.";
             statusEl.className = "text-xs text-center mt-2 text-red-500";
         }
@@ -208,7 +208,7 @@ function renderState3() {
 
     // Apply template specific mock styling to the live-preview container based on chosen theme
     const lp = node.querySelector('#live-preview');
-    if(currentTheme.id === 'neon') {
+    if (currentTheme.id === 'neon') {
         lp.className = "w-full h-full bg-black flex flex-col justify-center items-center text-center p-6 border-4 border-pink-500 shadow-[inset_0_0_20px_rgba(255,79,163,0.5)]";
         prevR.className = "font-display text-4xl text-white text-shadow-[0_0_15px_pink] mb-4";
     } else {
@@ -225,7 +225,7 @@ function renderState3() {
 async function compressImage(file, maxSizeKB) {
     const MAX_WIDTH = 1280; // 720p width for high quality
     const targetSize = maxSizeKB * 1024;
-    
+
     // 1. Load image
     const img = await new Promise((resolve, reject) => {
         const reader = new FileReader();
@@ -257,7 +257,7 @@ async function compressImage(file, maxSizeKB) {
     let quality = 0.92; // Start with high quality
     let format = 'image/webp'; // Try WebP first for better compression/quality
     let base64 = '';
-    
+
     // Check if WebP is supported, otherwise fallback to JPEG
     const isWebPSupported = canvas.toDataURL('image/webp').indexOf('data:image/webp') === 0;
     if (!isWebPSupported) format = 'image/jpeg';
@@ -267,15 +267,15 @@ async function compressImage(file, maxSizeKB) {
     for (let i = 0; i < 5; i++) { // Max 5 attempts to find sweet spot
         base64 = canvas.toDataURL(format, quality);
         const size = Math.round((base64.length * 3) / 4); // Approximate byte size from base64
-        
-        console.log(`DEBUG: Attempt ${i+1} - Size: ${Math.round(size/1024)}KB, Quality: ${quality}`);
-        
+
+        console.log(`DEBUG: Attempt ${i + 1} - Size: ${Math.round(size / 1024)}KB, Quality: ${quality}`);
+
         if (size <= targetSize) break;
-        
+
         // Reduce quality faster if far over limit
         if (size > targetSize * 2) quality -= 0.15;
         else quality -= 0.1;
-        
+
         if (quality < 0.3) break; // Don't go below trash quality
     }
 
@@ -305,13 +305,13 @@ async function uploadToCloudinary(base64Data) {
 // -- Form Logic --
 async function handleGiftSubmission(e) {
     e.preventDefault();
-    if(!currentTheme) return;
+    if (!currentTheme) return;
 
     const rName = document.getElementById('receiverName').value;
     const sName = document.getElementById('senderName').value;
     const msg = document.getElementById('messageText').value;
 
-    if(!rName || !sName) {
+    if (!rName || !sName) {
         alert("Please fill in Receiver and Sender names.");
         return;
     }
@@ -351,7 +351,7 @@ async function handleGiftSubmission(e) {
 
         if (db) {
             console.log("Saving gift metadata to Firestore...", giftData);
-            
+
             // Set a timeout warning if Firestore takes too long
             const firestoreTimeout = setTimeout(() => {
                 console.warn("Firestore is taking a long time. Check your Security Rules or Database status in Firebase Console.");
@@ -367,16 +367,16 @@ async function handleGiftSubmission(e) {
 
         const domain = window.location.origin;
         const giftUrl = `${domain}/?id=${giftId}`;
-        
+
         // Construct the WhatsApp Message
         const adminPhone = "916394460784";
-        const waMessage = `✨ *New Gift Activation Request* ✨\n\n` + 
-                          `*ID:* ${giftId}\n` +
-                          `*Template:* ${currentTheme.name}\n` +
-                          `*Recipient:* ${rName}\n` +
-                          `*Link:* ${giftUrl}\n\n` +
-                          `Please activate this gift.`;
-                          
+        const waMessage = `✨ *New Gift Activation Request* ✨\n\n` +
+            `*ID:* ${giftId}\n` +
+            `*Template:* ${currentTheme.name}\n` +
+            `*Recipient:* ${rName}\n` +
+            `*Link:* ${giftUrl}\n\n` +
+            `Please activate this gift.`;
+
         const encodedWaMessage = encodeURIComponent(waMessage);
         const waUrl = `https://wa.me/${adminPhone}?text=${encodedWaMessage}`;
 
@@ -425,7 +425,7 @@ function setupTrackModal() {
         trackModal.classList.remove('hidden');
         trackModal.classList.add('flex');
     };
-    
+
     closeBtn.onclick = () => {
         trackModal.classList.add('hidden');
         trackModal.classList.remove('flex');
@@ -436,8 +436,8 @@ function setupTrackModal() {
     submit.onclick = async () => {
         const val = input.value.trim().toUpperCase();
         res.classList.remove('hidden', 'text-green-400', 'text-yellow-400', 'text-red-400', 'bg-red-500/10', 'border-red-500/30');
-        
-        if(!val.startsWith('GIFT-')) {
+
+        if (!val.startsWith('GIFT-')) {
             res.textContent = "Invalid ID format. Must start with GIFT-.";
             res.classList.add('text-red-400');
             res.classList.remove('hidden');
@@ -447,12 +447,12 @@ function setupTrackModal() {
         res.classList.remove('hidden');
         res.classList.add('text-yellow-400');
         res.innerHTML = `<i class="ph ph-circle-notch animate-spin inline-block mr-2"></i> Querying secure database...`;
-        
+
         try {
             if (!db) throw new Error("Database not connected.");
-            
+
             const snapshot = await db.collection("gifts").where("id", "==", val).get();
-            
+
             if (snapshot.empty) {
                 res.className = "mt-6 p-4 rounded-xl border border-red-500/30 bg-red-500/10 text-center text-red-400 font-bold";
                 res.innerHTML = `<i class="ph ph-warning-circle inline-block mr-2"></i> No gift found with ID: ${val}`;
@@ -487,7 +487,7 @@ async function loadViewerMode(id) {
 
         // Fetch real data from Firestore
         const snapshot = await db.collection("gifts").where("id", "==", id).get();
-        
+
         if (snapshot.empty) {
             hideLoading();
             appContainer.innerHTML = `
@@ -521,10 +521,10 @@ async function loadViewerMode(id) {
         // Load Template
         const resp = await fetch(`./templates/${giftData.template}/index.html`);
         if (!resp.ok) throw new Error("Template file not found");
-        
+
         const html = await resp.text();
         viewerContainer.innerHTML = html;
-        
+
         // Execute scripts in the injected content with dependency handling
         const scripts = Array.from(viewerContainer.querySelectorAll('script'));
         const externalScripts = scripts.filter(s => s.src);
@@ -532,30 +532,66 @@ async function loadViewerMode(id) {
         let loadedCount = 0;
 
         const runInline = () => {
+            // Set global data object for templates that need it (like candle)
+            // IMPORTANT: Set this BEFORE inline scripts run so template can access it
+            window.GOS_DATA = {
+                receiver: giftData.receiver || 'Friend',
+                sender: giftData.sender || 'Your Friend',
+                message: giftData.message || 'Wishing you a wonderful day!',
+                // Normalize photo URL - check both cases for compatibility
+                photoUrl: giftData.photoUrl || giftData.photoURL || null
+            };
+
             inlineScripts.forEach(oldScript => {
                 const newScript = document.createElement('script');
                 newScript.appendChild(document.createTextNode(oldScript.innerHTML));
                 oldScript.parentNode.replaceChild(newScript, oldScript);
             });
-            
-            // Inject data after scripts have run
-            viewerContainer.querySelectorAll('[data-receiver]').forEach(el => el.textContent = giftData.receiver);
-            viewerContainer.querySelectorAll('[data-sender]').forEach(el => el.textContent = giftData.sender);
-            viewerContainer.querySelectorAll('[data-message]').forEach(el => el.textContent = giftData.message);
 
-            // Handle Photo if provided (Check both photoUrl and photoURL for compatibility)
-            const finalPhotoUrl = giftData.photoUrl || giftData.photoURL;
+            // Inject data directly into elements - this is the PRIMARY injection method
+            // These selectors target elements by data-* attributes in the template
+            viewerContainer.querySelectorAll('[data-receiver]').forEach(el => {
+                el.textContent = window.GOS_DATA.receiver;
+            });
+            viewerContainer.querySelectorAll('[data-sender]').forEach(el => {
+                el.textContent = window.GOS_DATA.sender;
+            });
+            viewerContainer.querySelectorAll('[data-message]').forEach(el => {
+                el.textContent = window.GOS_DATA.message;
+            });
+
+            // Handle Photo if provided
+            const finalPhotoUrl = window.GOS_DATA.photoUrl;
             if (finalPhotoUrl) {
                 viewerContainer.querySelectorAll('[data-photo]').forEach(el => {
-                    if (el.tagName === 'IMG') el.src = finalPhotoUrl;
-                    else el.style.backgroundImage = `url('${finalPhotoUrl}')`;
+                    if (el.tagName === 'IMG') {
+                        el.src = finalPhotoUrl;
+                        el.style.display = '';
+                    } else {
+                        el.style.backgroundImage = `url('${finalPhotoUrl}')`;
+                        el.style.display = '';
+                    }
                     el.classList.remove('hidden');
+                });
+            } else {
+                // If no photo, ensure data-photo elements are hidden
+                viewerContainer.querySelectorAll('[data-photo]').forEach(el => {
+                    el.classList.add('hidden');
+                    el.style.display = 'none';
                 });
             }
 
-            // If the template has an init function, call it
+            // If the template has a specific init function, call it after data injection
             if (typeof window.initRitual === 'function') {
                 window.initRitual();
+            }
+
+            // If the template has its own displayFirebaseData function, call it to ensure data is shown
+            if (typeof window.displayFirebaseData === 'function') {
+                // Small delay to ensure DOM is ready
+                setTimeout(() => {
+                    window.displayFirebaseData();
+                }, 100);
             }
         };
 
@@ -572,10 +608,10 @@ async function loadViewerMode(id) {
                 oldScript.parentNode.replaceChild(newScript, oldScript);
             });
         }
-        
+
         hideLoading();
         viewerContainer.classList.remove('hidden');
-    } catch(err) {
+    } catch (err) {
         console.error("Viewer Error:", err);
         hideLoading();
         alert("Critial Error: " + err.message);
