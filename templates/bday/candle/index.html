@@ -700,94 +700,6 @@
             z-index: 1;
         }
 
-        /* --- CSS Animation States --- */
-        .lighter-wrapper { transition: transform 1.5s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 1.5s ease; }
-        .lighter-lid { transition: transform 0.3s ease-in-out; transform-origin: -50px -45px; }
-        .lighter-flame { transition: opacity 0.1s ease; opacity: 0; }
-        .lighter-tip { transition: opacity 0.5s ease; }
-        
-        .state-init .lighter-wrapper { transform: translateY(-250px); }
-        .state-lighter-open .lighter-lid { transform: rotate(-110deg); }
-        .state-lighter-spark .lighter-flame { opacity: 1; animation: sparkFlicker 0.1s infinite alternate; }
-        .state-lighter-move .lighter-wrapper { transform: translate(-40px, -470px); }
-        
-        .candle-flame { transition: opacity 0.5s ease, transform 0.2s ease; opacity: 0; transform-origin: bottom center; }
-        .ambient-candle-glow { transition: opacity 1.5s ease; opacity: 0; }
-        .state-candle-lit .candle-flame { opacity: 1; animation: candleFlicker 0.2s infinite alternate; }
-        .state-candle-lit .ambient-candle-glow { opacity: 1; animation: glowPulse 1.6s infinite; }
-        
-        .state-lighter-exit .lighter-wrapper { transform: translate(-40px, 130px); opacity: 0; }
-        .state-lighter-exit .lighter-flame { opacity: 0; animation: none; }
-        .state-lighter-exit .lighter-lid { transform: rotate(0deg); }
-        
-        #main-container { transition: transform 2s cubic-bezier(0.2, 0.8, 0.2, 1); transform-origin: center center; }
-        .candle-wrapper { transition: top 2s cubic-bezier(0.2, 0.8, 0.2, 1), transform 2s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.5s ease; }
-        #scene-1 { transition: pointer-events 0s; }
-        #scene-2 { transition: opacity 1.5s ease; opacity: 0; }
-        
-        .state-zoom-out #main-container { transform: scale(0.8) translateY(-50px); }
-        .state-zoom-out .candle-wrapper { top: 35%; transform: scale(0.6); }
-        .state-zoom-out #scene-1 { pointer-events: none; }
-        .state-scene-2-active #scene-2 { display: flex !important; opacity: 1; pointer-events: auto; }
-        
-        .knife-wrapper { 
-            transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.6s ease, left 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
-            opacity: 0; 
-            left: -50px; 
-            transform: translateX(-50%) translateY(0); 
-            cursor: grab;
-            touch-action: none;
-        }
-        .knife-wrapper:active { cursor: grabbing; }
-        .state-knife-enter .knife-wrapper { opacity: 1; left: 50%; }
-        .knife-bounce .knife-wrapper { animation: knifeHover 1.5s infinite alternate ease-in-out; }
-        .is-dragging .knife-wrapper { transition: none; animation: none; }
-        .slice-tip { transition: opacity 0.3s ease; }
-        
-        .lux-left, .lux-right { transition: transform 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        .cake-stand { transition: transform 1s ease, opacity 1s ease; }
-        
-        body.state-cake-split .knife-wrapper { transform: translateX(-50%) translateY(150px) !important; opacity: 0; }
-        body.state-cake-split .candle-flame { opacity: 0; animation: none; transform: scale(0); transition: opacity 0.2s, transform 0.2s; }
-        body.state-cake-split .ambient-candle-glow { opacity: 0; animation: none; transition: opacity 0.5s; }
-        body.state-cake-split .candle-wrapper { transform: scale(0.6) translateY(-30px); opacity: 0; transition: transform 0.5s, opacity 0.5s; }
-        body.state-cake-split .lux-left { transform: translateX(-80px) rotate(-3deg); }
-        body.state-cake-split .lux-right { transform: translateX(80px) rotate(3deg); }
-        body.state-cake-split .cake-stand { transform: scaleX(1.1); opacity: 0.5; }
-        
-        #scene-3 { transition: opacity 1.5s ease; opacity: 0; }
-        .message-box, .cake-behind, .cake-stand-behind, #firebase-data-container { 
-            transition: transform 1.5s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 1.5s ease; 
-        }
-        .message-box { opacity: 0; transform: translateY(50px) scale(0.9); }
-        .cake-behind { opacity: 0; transform: translateY(100px); }
-        .cake-stand-behind { opacity: 0; transform: translateY(100px); }
-        #firebase-data-container { opacity: 0; transform: translateX(-50%) translateY(20px); }
-        
-        .state-scene-3-active #scene-3 { display: flex !important; opacity: 1; pointer-events: auto; }
-        .state-scene-3-active .message-box { transform: translateY(0) scale(1); opacity: 1; transition-delay: 0.2s; }
-        .state-scene-3-active .cake-behind { transform: translateY(0); opacity: 0.8; transition-delay: 0.2s; }
-        .state-scene-3-active .cake-stand-behind { transform: translateY(0); opacity: 0.6; transition-delay: 0.2s; }
-        .state-scene-3-active #firebase-data-container { transform: translateX(-50%) translateY(0); opacity: 1; transition-delay: 0.4s; }
-
-        @keyframes sparkFlicker {
-            0% { transform: scaleY(1) scaleX(1); opacity: 0.8; }
-            100% { transform: scaleY(1.2) scaleX(1.1); opacity: 1; }
-        }
-        @keyframes candleFlicker {
-            0% { transform: scaleY(1) scaleX(1) rotate(-1deg); }
-            100% { transform: scaleY(1.05) scaleX(1.02) rotate(1deg); }
-        }
-        @keyframes glowPulse {
-            0% { transform: scale(1); opacity: 0.5; }
-            50% { transform: scale(1.05); opacity: 0.8; }
-            100% { transform: scale(1); opacity: 0.5; }
-        }
-        @keyframes knifeHover {
-            0% { transform: translateY(0px) translateX(-50%); }
-            100% { transform: translateY(15px) translateX(-50%); }
-        }
-
         .firebase-data-container {
             position: absolute;
             top: 20%;
@@ -795,7 +707,8 @@
             transform: translateX(-50%);
             text-align: center;
             z-index: 40; /* Higher than message-box (35) */
-            /* Animation handled by CSS States */
+            opacity: 0;
+            /* Animation handled by GSAP */
         }
 
         .receiver-info {
@@ -1429,9 +1342,13 @@
         loop></audio>
 
     <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/Draggable.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     
     <script>
+        // Register GSAP Plugins
+        gsap.registerPlugin(Draggable);
 
         // DOM Elements
         const mainContainer = document.getElementById('main-container');
@@ -1524,128 +1441,200 @@
         initParticles();
         animateParticles();
 
-        // --- INIT: Slide lighter into view ---
-        setTimeout(() => { document.body.classList.add('state-init'); }, 500);
+        // --- INIT TIMELINE ---
+        const initTl = gsap.timeline();
+        initTl.to(lighterWrapper, {
+            y: -250, /* Move into frame */
+            duration: 2,
+            ease: "power3.out",
+            delay: 0.5
+        });
 
         // --- SCENE 1: LIGHTER INTERACTION ---
         lighterWrapper.addEventListener('click', () => {
             if (isCandleLit) return;
             isCandleLit = true;
 
+            // Start ambient music
             playAudio(ambientMusic, 0.4);
-            lighterTip.style.opacity = '0';
 
-            // Step 1: Open lid
-            playAudio(sfxLighterOpen);
-            document.body.classList.add('state-lighter-open');
+            // Hide tip
+            gsap.to(lighterTip, { opacity: 0, duration: 0.5 });
 
-            // Step 2: Spark
-            setTimeout(() => {
-                playAudio(sfxLighterSpark);
-                document.body.classList.add('state-lighter-spark');
-            }, 400);
+            const tl = gsap.timeline();
 
-            // Step 3: Move toward wick
-            setTimeout(() => { document.body.classList.add('state-lighter-move'); }, 700);
+            // 1. Mechanical Lid Open
+            tl.call(() => playAudio(sfxLighterOpen))
+                .to(lighterLid, { rotation: -110, transformOrigin: "-50px -45px", duration: 0.3, ease: "power2.inOut" })
+                .to(lighterWrapper, { y: "-=10", duration: 0.1, yoyo: true, repeat: 1 }, "<"); // slight recoil
 
-            // Step 4: Ignite candle
-            setTimeout(() => {
-                document.body.classList.add('state-candle-lit', 'lit-environment');
-                playAudio(sfxFlame, 0.2);
-            }, 2200);
+            // 2. Strike & Ignite Lighter
+            tl.call(() => playAudio(sfxLighterSpark), null, "+=0.2")
+                .to(lighterFlame, { opacity: 1, duration: 0.1, ease: "rough" })
+                .to(lighterFlame, { scaleY: 1.2, scaleX: 1.1, transformOrigin: "bottom center", yoyo: true, repeat: 5, duration: 0.05 }, "<");
 
-            // Step 5: Lighter exit
-            setTimeout(() => {
-                document.body.classList.remove('state-lighter-move', 'state-lighter-spark');
-                document.body.classList.add('state-lighter-exit');
-            }, 2800);
+            // 3. Smooth Move towards Candle
+            tl.to(lighterWrapper, {
+                x: -40,  /* Move left */
+                y: "-=220", /* Move up to wick */
+                duration: 1.5,
+                ease: "power2.inOut"
+            });
 
-            // Step 6: Zoom out + reveal cake
-            setTimeout(() => {
-                document.body.classList.add('state-zoom-out');
-                setTimeout(() => {
-                    document.body.classList.add('state-scene-2-active');
+            // 4. Ignite Candle
+            tl.to(candleFlame, { opacity: 1, duration: 0.5 }, "-=0.2")
+                .to(ambientCandleGlow, { opacity: 1, duration: 1.5 }, "<")
+                .call(() => {
+                    document.body.classList.add('lit-environment');
+                    playAudio(sfxFlame, 0.2); // ambient fire sound
+
+                    // Candle flicker loop
+                    gsap.to(candleFlame, {
+                        scaleY: 1.05, scaleX: 1.02, rotation: () => Math.random() * 2 - 1,
+                        transformOrigin: "bottom center", duration: 0.1,
+                        yoyo: true, repeat: -1, ease: "none"
+                    });
+                    gsap.to(ambientCandleGlow, {
+                        scale: 1.05, opacity: 0.8, yoyo: true, repeat: -1, duration: 0.8, ease: "sine.inOut"
+                    });
+                });
+
+            // 5. Lighter Exit
+            tl.to(lighterFlame, { opacity: 0, duration: 0.2 }, "+=0.5")
+                .to(lighterLid, { rotation: 0, duration: 0.3 }, "<")
+                .to(lighterWrapper, { y: "+=600", opacity: 0, duration: 1.5, ease: "power3.in" });
+
+            // 6. Camera Zoom Out & Cake Reveal
+            tl.to(mainContainer, { scale: 0.8, y: -50, duration: 2, ease: "power2.inOut" }, "+=0.5")
+                .to(candleWrapper, { top: '35%', scale: 0.6, duration: 2, ease: "power3.inOut" }, "<") /* move candle up to rest on cake */
+                .to(scene1, { pointerEvents: "none" }, "<")
+                .to(scene2, { display: "flex", opacity: 1, duration: 1.5 }, "-=1")
+                .call(() => {
                     const leftAnim = document.getElementById('bizcocho_1_left_s2');
                     const rightAnim = document.getElementById('bizcocho_1_right_s2');
                     if (leftAnim) leftAnim.beginElement();
                     if (rightAnim) rightAnim.beginElement();
-                }, 1000);
-            }, 4500);
-
-            // Step 7: Knife enters after cake animation (~8.5s after cake reveal)
-            setTimeout(() => {
-                document.body.classList.add('state-knife-enter');
-                setTimeout(() => {
-                    document.body.classList.add('knife-bounce');
-                    initKnifeDrag();
-                }, 1300);
-            }, 14000);
+                }, null, "-=0.5")
+                .to(knifeWrapper, { opacity: 1, left: '50%', duration: 1.2, ease: "back.out(1.4)" }, "+=8.5")
+                .call(initKnifeDrag);
         });
 
-        // --- SCENE 2: KNIFE DRAGGING (Vanilla Pointer Events) ---
+        // --- SCENE 2: KNIFE DRAGGING ---
         function initKnifeDrag() {
-            let startY = 0, currentY = 0, dragging = false, dragTriggered = false;
+            gsap.to(knifeWrapper, { y: 15, yoyo: true, repeat: -1, duration: 1.5, ease: "sine.inOut" });
 
-            knifeWrapper.addEventListener('pointerdown', (e) => {
-                if (dragTriggered) return;
-                dragging = true;
-                startY = e.clientY;
-                document.body.classList.remove('knife-bounce');
-                document.body.classList.add('is-dragging');
-                sliceTip.style.opacity = '0';
-                playAudio(sfxSlice, 0.5);
-                knifeWrapper.setPointerCapture(e.pointerId);
-            });
+            // Calculate cake bounds for precise center slicing
+            const isMobile = window.innerWidth <= 768;
+            const bounds = isMobile ? {
+                top: -100,
+                bottom: 200,
+                left: -20,
+                right: 20
+            } : {
+                top: -150,
+                bottom: 250,
+                left: -30,
+                right: 30
+            };
 
-            knifeWrapper.addEventListener('pointermove', (e) => {
-                if (!dragging) return;
-                currentY = Math.max(0, e.clientY - startY);
-                knifeWrapper.style.transform = `translateX(-50%) translateY(${currentY}px)`;
-            });
+            Draggable.create(knifeWrapper, {
+                type: "y",
+                bounds: bounds,
+                trigger: knifeWrapper,
+                onPress: function () {
+                    gsap.killTweensOf(knifeWrapper); // stop bounce
+                    gsap.to(sliceTip, { opacity: 0, duration: 0.3 });
+                    playAudio(sfxSlice, 0.5); // subtle start sound
+                },
+                onDragEnd: function () {
+                    if (this.y > 100) {
+                        this.disable();
 
-            knifeWrapper.addEventListener('pointerup', () => {
-                if (!dragging) return;
-                dragging = false;
-                document.body.classList.remove('is-dragging');
-                if (currentY > 100) {
-                    dragTriggered = true;
-                    triggerCakeSplit();
-                } else {
-                    knifeWrapper.style.transform = '';
-                    sliceTip.style.opacity = '1';
-                    setTimeout(() => { document.body.classList.add('knife-bounce'); }, 800);
+                        // Hide knife
+                        gsap.to(knifeWrapper, { y: "+=150", opacity: 0, duration: 0.6, ease: "power2.in" });
+
+                        // Split Cake
+                        const splitTl = gsap.timeline();
+
+                        // Extinguish candle softly
+                        splitTl.to(candleFlame, { opacity: 0, scale: 0, duration: 0.2 })
+                            .to(ambientCandleGlow, { opacity: 0, duration: 0.5 }, "<")
+                            .call(() => stopAudio(sfxFlame))
+                            .to(candleWrapper, { opacity: 0, y: "-=30", duration: 0.5 }, "<");
+
+                        // Halves separate
+                        splitTl.to(cakeLeft, { x: -80, rotation: -3, duration: 1.2, ease: "elastic.out(1, 0.7)" }, "<")
+                            .to(cakeRight, { x: 80, rotation: 3, duration: 1.2, ease: "elastic.out(1, 0.7)" }, "<")
+                            .to('.cake-stand', { scaleX: 1.1, opacity: 0.5, duration: 1 }, "<");
+
+                        // Enter Celebration
+                        splitTl.call(firePremiumCelebration, null, "-=0.8");
+
+                        // Show Message with cake behind
+                        splitTl.to(scene3, { display: "flex", opacity: 1, pointerEvents: "auto", duration: 1.5 }, "+=0.2")
+                            .fromTo('.message-box', { y: 50, scale: 0.9, opacity: 0 }, { y: 0, scale: 1, opacity: 1, duration: 1.5, ease: "power3.out" }, "<")
+                            .fromTo('.cake-behind', { y: 100, opacity: 0 }, { y: 0, opacity: 0.8, duration: 1.5, ease: "power3.out" }, "<")
+                            .fromTo('.cake-stand-behind', { y: 100, opacity: 0 }, { y: 0, opacity: 0.6, duration: 1.5, ease: "power3.out" }, "<")
+                            .fromTo('#firebase-data-container', { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 1.5, ease: "power3.out" }, "-=1")
+                            .call(displayFirebaseData, null, "-=1");
+                    } else {
+                        // Snap back
+                        gsap.to(knifeWrapper, { y: 0, duration: 0.8, ease: "elastic.out(1, 0.5)" });
+                        gsap.to(knifeWrapper, { y: 15, yoyo: true, repeat: -1, duration: 1.5, ease: "sine.inOut", delay: 0.8 });
+                        gsap.to(sliceTip, { opacity: 1, duration: 0.3 });
+                    }
                 }
-                currentY = 0;
             });
         }
 
-        function triggerCakeSplit() {
-            document.body.classList.add('state-cake-split');
-            stopAudio(sfxFlame);
-            setTimeout(firePremiumCelebration, 400);
-            setTimeout(() => {
-                scene3.style.display = 'flex';
-                scene3.getBoundingClientRect(); // force reflow for transition
-                document.body.classList.add('state-scene-3-active');
-                displayFirebaseData();
-            }, 1200);
-        }
-
-        // --- CONFETTI ---
+        // --- SCENE 4: ADVANCED CONFETTI ---
         function firePremiumCelebration() {
             playAudio(sfxPop);
+
+            const duration = 5000;
+            const end = Date.now() + duration;
+
+            // Golden & Pastel theme confetti
             const colors = ['#d4af37', '#fcf6ba', '#ffb6c1', '#add8e6', '#ffffff'];
-            const end = Date.now() + 5000;
+
             (function frame() {
-                confetti({ particleCount: 5, angle: 60, spread: 80, origin: { x: 0, y: 0.9 }, colors, zIndex: 100 });
-                confetti({ particleCount: 5, angle: 120, spread: 80, origin: { x: 1, y: 0.9 }, colors, zIndex: 100 });
-                if (Math.random() > 0.8) confetti({ particleCount: 15, spread: 100, origin: { x: 0.5, y: 0.5 }, colors, zIndex: 100 });
-                if (Date.now() < end) requestAnimationFrame(frame);
+                confetti({
+                    particleCount: 5,
+                    angle: 60,
+                    spread: 80,
+                    origin: { x: 0, y: 0.9 },
+                    colors: colors,
+                    zIndex: 100
+                });
+                confetti({
+                    particleCount: 5,
+                    angle: 120,
+                    spread: 80,
+                    origin: { x: 1, y: 0.9 },
+                    colors: colors,
+                    zIndex: 100
+                });
+
+                // Add some random bursts in the middle
+                if (Math.random() > 0.8) {
+                    confetti({
+                        particleCount: 15,
+                        spread: 100,
+                        origin: { x: 0.5, y: 0.5 },
+                        colors: colors,
+                        zIndex: 100
+                    });
+                }
+
+                if (Date.now() < end) {
+                    requestAnimationFrame(frame);
+                }
             }());
         }
 
         // --- STATIC DATA HANDLING ---
         function fetchStaticData() {
+            // Priority 1: Injected by app.js (Standard across templates)
             if (window.GOS_DATA) {
                 return {
                     receiverName: window.GOS_DATA.receiver || 'Friend',
@@ -1654,6 +1643,8 @@
                     senderName: window.GOS_DATA.sender || 'Your Friend'
                 };
             }
+
+            // Fallback for standalone viewing / URL params
             const urlParams = new URLSearchParams(window.location.search);
             if (urlParams.has('name') || urlParams.has('msg')) {
                 return {
@@ -1663,48 +1654,87 @@
                     senderName: urlParams.get('from') || 'Your Friend'
                 };
             }
-            return { receiverName: 'Friend', photoUrl: null, message: 'Wishing you a wonderful birthday!', senderName: 'Your Friend' };
+
+            // Default fallback
+            return {
+                receiverName: 'Friend',
+                photoUrl: null,
+                message: 'Wishing you a wonderful birthday!',
+                senderName: 'Your Friend'
+            };
         }
 
-        function displayFirebaseData() {
+        async function displayFirebaseData() {
             const data = fetchStaticData();
-            const receiverNameEl = document.getElementById('receiver-name');
-            const messageEl = document.getElementById('custom-message');
-            const senderEl = document.getElementById('sender-name');
-            const photoEl = document.getElementById('receiver-photo');
-            const placeholderEl = document.getElementById('photo-placeholder');
 
-            if (receiverNameEl) receiverNameEl.textContent = `Happy Birthday ${data.receiverName}!`;
-            if (messageEl) messageEl.textContent = data.message;
-            if (senderEl) senderEl.textContent = `— ${data.senderName}`;
+            // Update receiver name
+            const receiverNameElement = document.getElementById('receiver-name');
+            if (receiverNameElement) {
+                receiverNameElement.textContent = `Happy Birthday ${data.receiverName}!`;
+            }
 
-            if (data.photoUrl && photoEl && placeholderEl) {
-                photoEl.src = data.photoUrl;
-                photoEl.style.display = 'block';
-                placeholderEl.style.display = 'none';
-            } else if (photoEl && placeholderEl) {
-                photoEl.style.display = 'none';
-                placeholderEl.style.display = 'flex';
+            // Update custom message
+            const messageElement = document.getElementById('custom-message');
+            if (messageElement) {
+                messageElement.textContent = data.message;
+            }
+
+            // Update sender name
+            const senderNameElement = document.getElementById('sender-name');
+            if (senderNameElement) {
+                senderNameElement.textContent = `— ${data.senderName}`;
+            }
+
+            // Update photo
+            const photoElement = document.getElementById('receiver-photo');
+            const photoPlaceholder = document.getElementById('photo-placeholder');
+
+            if (data.photoUrl && photoElement && photoPlaceholder) {
+                photoElement.src = data.photoUrl;
+                photoElement.style.display = 'block';
+                photoPlaceholder.style.display = 'none';
+            } else if (photoElement && photoPlaceholder) {
+                photoElement.style.display = 'none';
+                photoPlaceholder.style.display = 'flex';
             }
         }
 
-        // --- REPLAY ---
+        // --- REPLAY LOGIC ---
         document.getElementById('replay-btn').addEventListener('click', () => {
+            // Stop all audio
             [sfxLighterOpen, sfxLighterSpark, sfxFlame, sfxSlice, sfxPop, ambientMusic].forEach(stopAudio);
 
-            ['state-init','state-lighter-open','state-lighter-spark','state-lighter-move',
-             'state-candle-lit','lit-environment','state-lighter-exit',
-             'state-zoom-out','state-scene-2-active',
-             'state-knife-enter','knife-bounce','is-dragging',
-             'state-cake-split','state-scene-3-active'].forEach(cls => document.body.classList.remove(cls));
+            // Kill all running tweens
+            gsap.killTweensOf("*");
 
-            knifeWrapper.style.transform = '';
-            sliceTip.style.opacity = '1';
-            lighterTip.style.opacity = '1';
-            scene3.style.display = 'none';
+            // Reset styles
+            gsap.set([scene2, scene3, ambientCandleGlow, candleFlame, lighterFlame], { opacity: 0 });
+            gsap.set([scene2, scene3], { display: "none" });
+            gsap.set(scene1, { pointerEvents: "auto", opacity: 1 });
+            gsap.set(mainContainer, { scale: 1, y: 0 }); // reset zoom
+
+            // Reset Lighter
+            gsap.set(lighterWrapper, { y: 0, x: -50, opacity: 1 });
+            gsap.set(lighterLid, { rotation: 0 });
+            gsap.set(lighterTip, { opacity: 1 });
+
+            // Reset Candle
+            gsap.set(candleWrapper, { top: '55%', scale: 1, opacity: 1, y: 0 });
+
+            // Reset Cake
+            gsap.set([cakeLeft, cakeRight], { x: 0, rotation: 0 });
+            gsap.set('.cake-stand', { scaleX: 1, opacity: 1 });
+
+            // Reset Knife (Horizontal)
+            gsap.set(knifeWrapper, { x: 0, y: 15, opacity: 0 });
+
+            // Reset Env
+            document.body.classList.remove('lit-environment');
             isCandleLit = false;
+            scene3.style.pointerEvents = "none";
 
-            setTimeout(() => { document.body.classList.add('state-init'); }, 100);
+            // Re-enter lighter
+            gsap.to(lighterWrapper, { y: -250, duration: 1.5, ease: "power3.out" });
         });
     </script>
 </body>
