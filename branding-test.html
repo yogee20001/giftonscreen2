@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Branding CSS Test</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="branding.css">
+</head>
+
+<body class="brand-bg">
+    <!-- Navbar Test -->
+    <nav class="navbar">
+        <a href="#" class="navbar-brand">
+            <img src="logo.webp" alt="Logo" class="navbar-logo">
+            <span class="navbar-title">GiftOnScreen</span>
+        </a>
+        <button class="navbar-toggle" aria-label="Toggle navigation">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+        <ul class="navbar-nav">
+            <li><a href="#" class="navbar-link">Home</a></li>
+            <li><a href="#" class="navbar-link">Features</a></li>
+            <li><a href="#" class="navbar-link">Templates</a></li>
+            <li><a href="#" class="navbar-link">Pricing</a></li>
+            <li><a href="#" class="btn btn-primary btn-sm">Get Started</a></li>
+        </ul>
+    </nav>
+
+    <main style="padding-top: 80px;">
+        <div class="container">
+            <!-- Typography Test -->
+            <section class="p-6 mt-4">
+                <h1 class="text-center mb-4">Branding CSS Test Page</h1>
+                <p class="text-center text-muted">Testing all branding components and utilities</p>
+            </section>
+
+            <!-- Text Utilities -->
+            <section class="card p-6 mb-4">
+                <h2 class="mb-4">Typography</h2>
+                <div class="flex flex-col gap-4">
+                    <h1>H1 - Playfair Display Heading</h1>
+                    <h2>H2 - Playfair Display Heading</h2>
+                    <h3>H3 - Playfair Display Heading</h3>
+                    <h4>H4 - Playfair Display Heading</h4>
+                    <h5>H5 - Playfair Display Heading</h5>
+                    <h6>H6 - Playfair Display Heading</h6>
+                    <p class="text-gradient">Gradient Text Effect</p>
+                    <p class="text-glow">Glowing Text Effect</p>
+                </div>
+            </section>
+
+            <!-- Buttons Test -->
+            <section class="card p-6 mb-4">
+                <h2 class="mb-4">Buttons</h2>
+                <div class="flex flex-col gap-4">
+                    <div class="flex gap-4 items-center flex-wrap">
+                        <button class="btn btn-primary">Primary Button</button>
+                        <button class="btn btn-secondary">Secondary Button</button>
+                        <button class="btn btn-ghost">Ghost Button</button>
+                    </div>
+                    <div class="flex gap-4 items-center flex-wrap">
+                        <button class="btn btn-primary btn-sm">Small Primary</button>
+                        <button class="btn btn-secondary btn-sm">Small Secondary</button>
+                        <button class="btn btn-ghost btn-sm">Small Ghost</button>
+                    </div>
+                    <div class="flex gap-4 items-center flex-wrap">
+                        <button class="btn btn-primary btn-lg">Large Primary</button>
+                        <button class="btn btn-secondary btn-lg">Large Secondary</button>
+                        <button class="btn btn-ghost btn-lg">Large Ghost</button>
+                    </div>
+                    <div class="flex gap-4 items-center flex-wrap">
+                        <button class="btn btn-primary" disabled>Disabled</button>
+                        <button class="btn btn-secondary" disabled>Disabled</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Forms Test -->
+            <section class="card p-6 mb-4">
+                <h2 class="mb-4">Forms</h2>
+                <div class="flex flex-col gap-4" style="max-width: 400px;">
+                    <div class="form-group">
+                        <label class="form-label" for="text-input">Text Input</label>
+                        <input type="text" id="text-input" class="form-input" placeholder="Enter text...">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="email-input">Email Input</label>
+                        <input type="email" id="email-input" class="form-input" placeholder="email@example.com">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="password-input">Password Input</label>
+                        <input type="password" id="password-input" class="form-input" placeholder="Enter password...">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="textarea">Textarea</label>
+                        <textarea id="textarea" class="form-textarea" rows="3"
+                            placeholder="Enter message..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="select">Select</label>
+                        <select id="select" class="form-select">
+                            <option>Option 1</option>
+                            <option>Option 2</option>
+                            <option>Option 3</option>
+                        </select>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Cards Test -->
+            <section class="mb-4">
+                <h2 class="mb-4">Cards</h2>
+                <div class="grid gap-6" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));">
+                    <div class="card p-6">
+                        <h3 class="mb-4">Basic Card</h3>
+                        <p class="text-muted">This is a basic card with the default glassmorphism effect.</p>
+                    </div>
+                    <div class="card card-hover p-6">
+                        <h3 class="mb-4">Hover Card</h3>
+                        <p class="text-muted">Hover over this card to see the interactive effect.</p>
+                    </div>
+                    <div class="card p-6">
+                        <h3 class="mb-4">Glass Card</h3>
+                        <p class="text-muted">Cards use the glassmorphism effect with backdrop blur.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Utility Classes Test -->
+            <section class="card p-6 mb-4">
+                <h2 class="mb-4">Utility Classes</h2>
+                <div class="flex flex-col gap-4">
+                    <div class="flex gap-4 flex-wrap">
+                        <span class="text-success">Success Text</span>
+                        <span class="text-warning">Warning Text</span>
+                        <span class="text-error">Error Text</span>
+                        <span class="text-info">Info Text</span>
+                    </div>
+                    <div class="flex gap-4 flex-wrap">
+                        <span class="bg-success text-white px-4 py-2 rounded-lg">Success BG</span>
+                        <span class="bg-warning text-black px-4 py-2 rounded-lg">Warning BG</span>
+                        <span class="bg-error text-white px-4 py-2 rounded-lg">Error BG</span>
+                        <span class="bg-info text-white px-4 py-2 rounded-lg">Info BG</span>
+                    </div>
+                    <div class="flex gap-4 flex-wrap items-center">
+                        <span class="opacity-50">Opacity 50%</span>
+                        <span class="opacity-75">Opacity 75%</span>
+                        <span class="opacity-100">Opacity 100%</span>
+                    </div>
+                    <div class="flex gap-4 flex-wrap items-center">
+                        <button class="btn btn-secondary cursor-pointer">Cursor Pointer</button>
+                        <button class="btn btn-secondary cursor-not-allowed" disabled>Cursor Not Allowed</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Animations Test -->
+            <section class="card p-6 mb-4">
+                <h2 class="mb-4">Animations</h2>
+                <div class="flex gap-6 items-center flex-wrap">
+                    <div class="w-full h-full rounded-lg bg-success animate-fadeIn" style="width: 60px; height: 60px;">
+                    </div>
+                    <div class="w-full h-full rounded-lg bg-info animate-float" style="width: 60px; height: 60px;">
+                    </div>
+                    <div class="w-full h-full rounded-lg bg-warning animate-pulse" style="width: 60px; height: 60px;">
+                    </div>
+                    <div class="w-full h-full rounded-lg bg-error animate-spin" style="width: 60px; height: 60px;">
+                    </div>
+                </div>
+            </section>
+
+            <!-- Glassmorphism Test -->
+            <section class="mb-4">
+                <h2 class="mb-4">Glassmorphism</h2>
+                <div class="grid gap-6" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));">
+                    <div class="glass p-6 rounded-2xl">
+                        <h3 class="mb-4">Glass Effect</h3>
+                        <p class="text-muted">Standard glass effect with blur.</p>
+                    </div>
+                    <div class="glass-light p-6 rounded-2xl">
+                        <h3 class="mb-4">Light Glass Effect</h3>
+                        <p class="text-muted">Lighter glass effect variant.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Spacing Test -->
+            <section class="card p-6 mb-4">
+                <h2 class="mb-4">Spacing Utilities</h2>
+                <div class="flex flex-col gap-4">
+                    <div class="flex items-center gap-4">
+                        <div class="bg-info p-4 rounded">p-4</div>
+                        <div class="bg-info p-6 rounded">p-6</div>
+                        <div class="bg-info px-4 py-4 rounded">px-4 py-4</div>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <div class="bg-info rounded-lg">rounded-lg</div>
+                        <div class="bg-info rounded-xl">rounded-xl</div>
+                        <div class="bg-info rounded-2xl">rounded-2xl</div>
+                        <div class="bg-info rounded-full w-full" style="width: 60px; height: 60px;"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Shadow Test -->
+            <section class="card p-6 mb-4">
+                <h2 class="mb-4">Shadows</h2>
+                <div class="flex gap-6 flex-wrap">
+                    <div class="bg-surface rounded-xl p-6 shadow" style="background: var(--color-surface);">Shadow</div>
+                    <div class="bg-surface rounded-xl p-6 shadow-lg" style="background: var(--color-surface);">Shadow-lg
+                    </div>
+                    <div class="bg-surface rounded-xl p-6 shadow-xl" style="background: var(--color-surface);">Shadow-xl
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Footer Test -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>Product</h4>
+                <ul>
+                    <li><a href="#">Features</a></li>
+                    <li><a href="#">Pricing</a></li>
+                    <li><a href="#">Templates</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Company</h4>
+                <ul>
+                    <li><a href="#">About</a></li>
+                    <li><a href="#">Blog</a></li>
+                    <li><a href="#">Careers</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Support</h4>
+                <ul>
+                    <li><a href="#">Help Center</a></li>
+                    <li><a href="#">Contact</a></li>
+                    <li><a href="#">Status</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Legal</h4>
+                <ul>
+                    <li><a href="#">Privacy</a></li>
+                    <li><a href="#">Terms</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 GiftOnScreen. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Navbar scroll effect
+        const navbar = document.querySelector('.navbar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                navbar.classList.add('navbar-scrolled');
+            } else {
+                navbar.classList.remove('navbar-scrolled');
+            }
+        });
+
+        // Mobile menu toggle
+        const toggle = document.querySelector('.navbar-toggle');
+        const nav = document.querySelector('.navbar-nav');
+        toggle.addEventListener('click', () => {
+            nav.classList.toggle('active');
+        });
+    </script>
+</body>
+
+</html>

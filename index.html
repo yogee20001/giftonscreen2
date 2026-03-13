@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>GiftOnScreen - Premium Expressions</title>
-    
+    <title>GiftOnScreen - Premium Digital Gift Expressions</title>
+
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -18,17 +19,38 @@
                         brand: {
                             blue: '#3a6cff',
                             pink: '#ff4fa3',
-                            dark: '#06060c'
+                            dark: '#06060c',
+                            purple: '#8b5cf6',
+                            cyan: '#06b6d4'
                         }
                     },
                     animation: {
                         'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
                         'float': 'float 3s ease-in-out infinite',
+                        'float-delayed': 'float 3s ease-in-out 1.5s infinite',
+                        'float-delayed-2': 'float 3s ease-in-out 3s infinite',
+                        'shimmer': 'shimmer 2s linear infinite',
+                        'gradient': 'gradient 8s ease infinite',
+                        'blob': 'blob 7s infinite',
                     },
                     keyframes: {
                         float: {
                             '0%, 100%': { transform: 'translateY(0)' },
                             '50%': { transform: 'translateY(-10px)' },
+                        },
+                        shimmer: {
+                            '0%': { backgroundPosition: '-200% 0' },
+                            '100%': { backgroundPosition: '200% 0' },
+                        },
+                        gradient: {
+                            '0%, 100%': { backgroundPosition: '0% 50%' },
+                            '50%': { backgroundPosition: '100% 50%' },
+                        },
+                        blob: {
+                            '0%': { transform: 'translate(0px, 0px) scale(1)' },
+                            '33%': { transform: 'translate(30px, -50px) scale(1.1)' },
+                            '66%': { transform: 'translate(-20px, 20px) scale(0.9)' },
+                            '100%': { transform: 'translate(0px, 0px) scale(1)' },
                         }
                     }
                 }
@@ -38,36 +60,893 @@
     <link rel="stylesheet" href="style.css">
     <!-- Phosphor Icons -->
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <style>
+        /* Premium Landing Page Styles */
+        @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700;800&display=swap');
+
+        :root {
+            --ink: #06060c;
+            --night: #0b1024;
+            --midnight: #111432;
+            --blue: #3a6cff;
+            --blue-soft: #8cb6ff;
+            --pink: #ff4fa3;
+            --pink-soft: #ff9acb;
+            --purple: #8b5cf6;
+            --cyan: #06b6d4;
+            --text: #e3dfe4;
+            --text-muted: #9ca3af;
+            --stroke: rgba(255, 255, 255, 0.12);
+        }
+
+        * {
+            scrollbar-width: thin;
+            scrollbar-color: var(--blue) transparent;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0b1024 0%, #111432 50%, #1a1025 100%);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Animated Background */
+        .bg-mesh {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .bg-mesh::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background:
+                radial-gradient(ellipse at 20% 20%, rgba(58, 108, 255, 0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 80%, rgba(255, 79, 163, 0.12) 0%, transparent 50%),
+                radial-gradient(ellipse at 60% 10%, rgba(139, 92, 246, 0.1) 0%, transparent 40%),
+                radial-gradient(ellipse at 10% 60%, rgba(6, 182, 212, 0.08) 0%, transparent 40%);
+            animation: gradient 15s ease infinite;
+            background-size: 200% 200%;
+        }
+
+        /* Floating Orbs */
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(60px);
+            opacity: 0.5;
+            animation: blob 7s infinite;
+        }
+
+        .orb-1 {
+            width: 400px;
+            height: 400px;
+            background: var(--blue);
+            top: 10%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .orb-2 {
+            width: 300px;
+            height: 300px;
+            background: var(--pink);
+            top: 60%;
+            right: 10%;
+            animation-delay: -2s;
+        }
+
+        .orb-3 {
+            width: 250px;
+            height: 250px;
+            background: var(--purple);
+            bottom: 20%;
+            left: 30%;
+            animation-delay: -4s;
+        }
+
+        /* Glass Morphism */
+        .glass {
+            background: rgba(17, 20, 50, 0.4);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--stroke);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .glass-light {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Gradient Text */
+        .text-gradient {
+            background: linear-gradient(135deg, var(--blue-soft) 0%, var(--pink-soft) 50%, var(--purple) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            background-size: 200% 200%;
+            animation: gradient 4s ease infinite;
+        }
+
+        .text-gradient-subtle {
+            background: linear-gradient(120deg, var(--blue-soft), var(--pink-soft));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        /* Glow Effects */
+        .glow-blue {
+            box-shadow: 0 0 40px rgba(58, 108, 255, 0.3);
+        }
+
+        .glow-pink {
+            box-shadow: 0 0 40px rgba(255, 79, 163, 0.3);
+        }
+
+        .glow-text {
+            text-shadow: 0 0 30px rgba(255, 79, 163, 0.5), 0 0 60px rgba(58, 108, 255, 0.3);
+        }
+
+        /* Button Styles */
+        .btn-primary {
+            background: linear-gradient(135deg, var(--blue) 0%, var(--pink) 100%);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .btn-primary:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 20px 40px rgba(58, 108, 255, 0.4), 0 0 60px rgba(255, 79, 163, 0.2);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.4);
+            transform: translateY(-2px);
+        }
+
+        /* Card Hover Effects */
+        .feature-card {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(58, 108, 255, 0.1), rgba(255, 79, 163, 0.1));
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(255, 79, 163, 0.3);
+        }
+
+        .feature-card:hover::before {
+            opacity: 1;
+        }
+
+        /* Nav Link Hover */
+        .nav-link {
+            position: relative;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--blue), var(--pink));
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        /* Scroll Animations */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Stagger Animation Delays */
+        .delay-100 {
+            transition-delay: 100ms;
+        }
+
+        .delay-200 {
+            transition-delay: 200ms;
+        }
+
+        .delay-300 {
+            transition-delay: 300ms;
+        }
+
+        .delay-400 {
+            transition-delay: 400ms;
+        }
+
+        .delay-500 {
+            transition-delay: 500ms;
+        }
+
+        /* Mobile Menu */
+        .mobile-menu {
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+        }
+
+        .mobile-menu.active {
+            transform: translateX(0);
+        }
+
+        /* Pulse Ring */
+        .pulse-ring {
+            animation: pulse-ring 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+
+        @keyframes pulse-ring {
+
+            0%,
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+
+            50% {
+                transform: scale(1.1);
+                opacity: 0.8;
+            }
+        }
+
+        /* Floating Particles */
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            animation: float-particle 15s infinite linear;
+        }
+
+        @keyframes float-particle {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+
+            10% {
+                opacity: 1;
+            }
+
+            90% {
+                opacity: 1;
+            }
+
+            100% {
+                transform: translateY(-100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+    </style>
 </head>
+
 <body class="font-sans antialiased relative">
 
+    <!-- Animated Background -->
+    <div class="bg-mesh">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+    </div>
+
+    <!-- Floating Particles -->
+    <div class="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+        <div class="particle" style="left: 10%; animation-delay: 0s; animation-duration: 15s;"></div>
+        <div class="particle" style="left: 20%; animation-delay: 2s; animation-duration: 18s;"></div>
+        <div class="particle" style="left: 35%; animation-delay: 4s; animation-duration: 12s;"></div>
+        <div class="particle" style="left: 50%; animation-delay: 1s; animation-duration: 20s;"></div>
+        <div class="particle" style="left: 65%; animation-delay: 3s; animation-duration: 16s;"></div>
+        <div class="particle" style="left: 80%; animation-delay: 5s; animation-duration: 14s;"></div>
+        <div class="particle" style="left: 90%; animation-delay: 2.5s; animation-duration: 17s;"></div>
+    </div>
+
     <!-- Top Navigation -->
-    <nav class="fixed w-full z-50 top-0 transition-all duration-300 glass-card border-x-0 border-t-0 border-b border-white/10 px-6 py-4 flex justify-between items-center">
-        <div class="flex items-center gap-2 cursor-pointer" onclick="goHome()">
-            <i class="ph-fill ph-gift text-brand-pink text-2xl animate-pulse"></i>
-            <span class="font-display font-bold text-xl tracking-wide text-white">GiftOnScreen</span>
+    <nav class="fixed w-full z-50 top-0 transition-all duration-300 glass border-b border-white/5 px-4 md:px-8 py-4"
+        id="navbar">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <!-- Logo -->
+            <div class="flex items-center gap-3 cursor-pointer" onclick="scrollToTop()">
+                <div class="relative">
+                    <div
+                        class="w-10 h-10 rounded-xl bg-gradient-to-br from-brand-blue to-brand-pink flex items-center justify-center glow-blue">
+                        <i class="ph-fill ph-gift text-white text-xl"></i>
+                    </div>
+                    <div
+                        class="absolute -inset-1 bg-gradient-to-br from-brand-blue to-brand-pink rounded-xl opacity-30 blur-lg">
+                    </div>
+                </div>
+                <span
+                    class="font-display font-bold text-xl tracking-wide text-white hidden sm:block">GiftOnScreen</span>
+            </div>
+
+            <!-- Desktop Navigation -->
+            <div class="hidden md:flex items-center gap-8">
+                <a href="#about"
+                    class="nav-link text-sm font-medium text-gray-300 hover:text-white transition-colors">About</a>
+                <a href="#features"
+                    class="nav-link text-sm font-medium text-gray-300 hover:text-white transition-colors">Features</a>
+                <a href="#vision"
+                    class="nav-link text-sm font-medium text-gray-300 hover:text-white transition-colors">Vision</a>
+                <a href="#contact"
+                    class="nav-link text-sm font-medium text-gray-300 hover:text-white transition-colors">Contact</a>
+            </div>
+
+            <!-- CTA & Mobile Menu Button -->
+            <div class="flex items-center gap-4">
+                <button id="nav-track-btn"
+                    class="hidden sm:flex items-center gap-2 text-sm font-semibold text-gray-400 hover:text-white transition-colors px-4">
+                    <i class="ph ph-magnifying-glass"></i>
+                    <span>Track</span>
+                </button>
+                <button onclick="openApp()"
+                    class="hidden sm:flex items-center gap-2 text-sm font-semibold bg-white/10 hover:bg-white/20 px-5 py-2.5 rounded-full transition-all border border-white/10 hover:border-white/20">
+                    <span>Get Started</span>
+                    <i class="ph ph-arrow-right"></i>
+                </button>
+                <button id="mobile-menu-btn" class="md:hidden p-2 text-white" onclick="toggleMobileMenu()">
+                    <i class="ph ph-list text-2xl"></i>
+                </button>
+            </div>
         </div>
-        <button id="nav-track-btn" class="flex items-center gap-2 text-sm font-semibold bg-white/10 hover:bg-white/20 px-4 py-2 rounded-full transition-colors border border-white/10">
-            <i class="ph ph-magnifying-glass"></i> Track My Gift
-        </button>
     </nav>
 
-    <!-- MAIN APP CONTAINER -->
-    <main id="app-container" class="pt-28 pb-32 px-4 md:px-8 max-w-7xl mx-auto relative z-10 min-h-screen"></main>
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="fixed inset-0 z-40 glass-light mobile-menu" style="padding-top: 80px;">
+        <div class="flex flex-col items-center gap-8 pt-12">
+            <a href="#about" onclick="toggleMobileMenu()" class="text-2xl font-medium text-white">About</a>
+            <a href="#features" onclick="toggleMobileMenu()" class="text-2xl font-medium text-white">Features</a>
+            <a href="#vision" onclick="toggleMobileMenu()" class="text-2xl font-medium text-white">Vision</a>
+            <a href="#contact" onclick="toggleMobileMenu()" class="text-2xl font-medium text-white">Contact</a>
+            <button onclick="openApp()" class="mt-8 btn-primary text-white px-8 py-3 rounded-full font-semibold">
+                Get Started <i class="ph ph-arrow-right ml-2"></i>
+            </button>
+        </div>
+    </div>
 
-    <!-- STATE 1: CATEGORY GALLERY (Template inside HTML for JS extraction) -->
+    <!-- MAIN CONTENT -->
+    <main class="relative z-10">
+
+        <!-- HERO SECTION -->
+        <section class="min-h-screen flex items-center justify-center px-4 md:px-8 pt-20" id="hero">
+            <div class="max-w-6xl mx-auto text-center">
+                <!-- Badge -->
+                <div class="reveal inline-flex items-center gap-2 glass-light px-4 py-2 rounded-full mb-8">
+                    <span class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
+                    <span class="text-sm text-gray-300">Now with AI-powered personalization</span>
+                </div>
+
+                <!-- Main Headline -->
+                <h1
+                    class="reveal font-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-6 leading-tight">
+                    Gift-giving, <br />
+                    <span class="text-gradient">Reimagined</span>
+                </h1>
+
+                <!-- Tagline -->
+                <p class="reveal delay-100 text-lg md:text-xl text-gray-400 max-w-2xl mx-auto mb-10 leading-relaxed">
+                    Transform your heartfelt messages into immersive digital experiences.
+                    Create stunning, personalized gift moments that last forever.
+                </p>
+
+                <!-- CTA Buttons -->
+                <div class="reveal delay-200 flex flex-col sm:flex-row items-center justify-center gap-4">
+                    <button onclick="openApp()"
+                        class="btn-primary px-8 py-4 rounded-full font-bold text-white text-lg flex items-center gap-3">
+                        <i class="ph ph-magic-wand"></i>
+                        Create Your Gift
+                    </button>
+                    <button onclick="scrollToSection('about')"
+                        class="btn-secondary px-8 py-4 rounded-full font-semibold text-white text-lg">
+                        Learn More
+                    </button>
+                </div>
+
+                <!-- Stats / Social Proof -->
+                <div class="reveal delay-300 mt-16 flex flex-wrap items-center justify-center gap-8 md:gap-16">
+                    <div class="text-center">
+                        <div class="text-3xl md:text-4xl font-bold text-white mb-1">10K+</div>
+                        <div class="text-sm text-gray-500">Gifts Created</div>
+                    </div>
+                    <div class="w-px h-12 bg-white/10 hidden sm:block"></div>
+                    <div class="text-center">
+                        <div class="text-3xl md:text-4xl font-bold text-white mb-1">50+</div>
+                        <div class="text-sm text-gray-500">Themes</div>
+                    </div>
+                    <div class="w-px h-12 bg-white/10 hidden sm:block"></div>
+                    <div class="text-center">
+                        <div class="text-3xl md:text-4xl font-bold text-white mb-1">4.9</div>
+                        <div class="text-sm text-gray-500">Rating</div>
+                    </div>
+                </div>
+
+                <!-- Scroll Indicator -->
+                <div class="reveal delay-500 absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce">
+                    <div class="flex flex-col items-center gap-2 text-gray-500">
+                        <span class="text-xs uppercase tracking-widest">Scroll</span>
+                        <i class="ph ph-caret-down"></i>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ABOUT SECTION -->
+        <section id="about" class="py-24 md:py-32 px-4 md:px-8">
+            <div class="max-w-6xl mx-auto">
+                <div class="grid md:grid-cols-2 gap-12 md:gap-20 items-center">
+                    <div class="reveal">
+                        <div
+                            class="inline-block px-4 py-1 rounded-full glass-light text-brand-pink text-sm font-semibold mb-4">
+                            About GiftOnScreen
+                        </div>
+                        <h2 class="font-display text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-6">
+                            Where Emotions Meet <span class="text-gradient-subtle">Innovation</span>
+                        </h2>
+                        <p class="text-gray-400 text-lg mb-6 leading-relaxed">
+                            We believe that gifts should be more than just objects—they should be experiences.
+                            GiftOnScreen combines cutting-edge technology with heartfelt emotions to create
+                            digital gift experiences that touch hearts and create lasting memories.
+                        </p>
+                        <p class="text-gray-500 leading-relaxed">
+                            Our platform transforms ordinary messages into stunning visual narratives,
+                            making every occasion truly unforgettable. From birthdays to anniversaries,
+                            we help you express what words sometimes cannot.
+                        </p>
+                    </div>
+
+                    <div class="reveal delay-200 relative">
+                        <div class="glass rounded-3xl p-8 relative overflow-hidden">
+                            <!-- Decorative Elements -->
+                            <div
+                                class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-brand-blue to-brand-pink opacity-20 rounded-full blur-3xl">
+                            </div>
+                            <div
+                                class="absolute bottom-0 left-0 w-24 h-24 bg-brand-purple opacity-20 rounded-full blur-2xl">
+                            </div>
+
+                            <div class="relative z-10">
+                                <div class="flex items-center gap-4 mb-6">
+                                    <div
+                                        class="w-14 h-14 rounded-2xl bg-gradient-to-br from-brand-blue to-brand-pink flex items-center justify-center">
+                                        <i class="ph-fill ph-heart text-2xl text-white"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="text-white font-semibold text-lg">Made with Love</h3>
+                                        <p class="text-gray-400 text-sm">Every gift tells a story</p>
+                                    </div>
+                                </div>
+
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div class="glass-light rounded-2xl p-4">
+                                        <i class="ph-fill ph-star text-brand-pink text-2xl mb-2"></i>
+                                        <div class="text-white font-semibold">Premium</div>
+                                        <div class="text-gray-500 text-sm">Quality themes</div>
+                                    </div>
+                                    <div class="glass-light rounded-2xl p-4">
+                                        <i class="ph-fill ph-lightning text-brand-blue text-2xl mb-2"></i>
+                                        <div class="text-white font-semibold">Instant</div>
+                                        <div class="text-gray-500 text-sm">Share in seconds</div>
+                                    </div>
+                                    <div class="glass-light rounded-2xl p-4">
+                                        <i class="ph-fill ph-lock-key text-brand-purple text-2xl mb-2"></i>
+                                        <div class="text-white font-semibold">Private</div>
+                                        <div class="text-gray-500 text-sm">Secure & discreet</div>
+                                    </div>
+                                    <div class="glass-light rounded-2xl p-4">
+                                        <i class="ph-fill ph-infinity text-brand-cyan text-2xl mb-2"></i>
+                                        <div class="text-white font-semibold">Forever</div>
+                                        <div class="text-gray-500 text-sm">Lasts forever</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FEATURES SECTION -->
+        <section id="features" class="py-24 md:py-32 px-4 md:px-8 relative">
+            <!-- Section Background Glow -->
+            <div
+                class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-brand-blue/10 rounded-full blur-3xl pointer-events-none">
+            </div>
+
+            <div class="max-w-6xl mx-auto relative z-10">
+                <div class="text-center mb-16">
+                    <div
+                        class="reveal inline-block px-4 py-1 rounded-full glass-light text-brand-blue text-sm font-semibold mb-4">
+                        Why Choose Us
+                    </div>
+                    <h2 class="reveal font-display text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4">
+                        Premium Features
+                    </h2>
+                    <p class="reveal delay-100 text-gray-400 max-w-2xl mx-auto">
+                        Everything you need to create the perfect digital gift experience
+                    </p>
+                </div>
+
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Feature 1 -->
+                    <div class="reveal feature-card glass rounded-3xl p-8">
+                        <div
+                            class="w-14 h-14 rounded-2xl bg-gradient-to-br from-brand-blue/20 to-brand-blue/5 flex items-center justify-center mb-6">
+                            <i class="ph-fill ph-paint-brush text-brand-blue text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-3">Beautiful Themes</h3>
+                        <p class="text-gray-400 leading-relaxed">
+                            Choose from over 50 stunning, professionally designed themes for every occasion and
+                            personality.
+                        </p>
+                    </div>
+
+                    <!-- Feature 2 -->
+                    <div class="reveal delay-100 feature-card glass rounded-3xl p-8">
+                        <div
+                            class="w-14 h-14 rounded-2xl bg-gradient-to-br from-brand-pink/20 to-brand-pink/5 flex items-center justify-center mb-6">
+                            <i class="ph-fill ph-images text-brand-pink text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-3">Photo Integration</h3>
+                        <p class="text-gray-400 leading-relaxed">
+                            Add your favorite photos to create deeply personal and meaningful gift experiences.
+                        </p>
+                    </div>
+
+                    <!-- Feature 3 -->
+                    <div class="reveal delay-200 feature-card glass rounded-3xl p-8">
+                        <div
+                            class="w-14 h-14 rounded-2xl bg-gradient-to-br from-brand-purple/20 to-brand-purple/5 flex items-center justify-center mb-6">
+                            <i class="ph-fill ph-share-network text-brand-purple text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-3">Easy Sharing</h3>
+                        <p class="text-gray-400 leading-relaxed">
+                            Share instantly via WhatsApp, SMS, email, or any social platform. No app needed.
+                        </p>
+                    </div>
+
+                    <!-- Feature 4 -->
+                    <div class="reveal delay-300 feature-card glass rounded-3xl p-8">
+                        <div
+                            class="w-14 h-14 rounded-2xl bg-gradient-to-br from-brand-cyan/20 to-brand-cyan/5 flex items-center justify-center mb-6">
+                            <i class="ph-fill ph-lock-key text-brand-cyan text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-3">Private & Secure</h3>
+                        <p class="text-gray-400 leading-relaxed">
+                            Your messages are encrypted and only accessible to who you choose. Complete privacy
+                            guaranteed.
+                        </p>
+                    </div>
+
+                    <!-- Feature 5 -->
+                    <div class="reveal delay-400 feature-card glass rounded-3xl p-8">
+                        <div
+                            class="w-14 h-14 rounded-2xl bg-gradient-to-br from-orange-500/20 to-orange-500/5 flex items-center justify-center mb-6">
+                            <i class="ph-fill ph-device-mobile text-orange-400 text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-3">Mobile First</h3>
+                        <p class="text-gray-400 leading-relaxed">
+                            Works beautifully on any device. Create and view gifts on your phone, tablet, or computer.
+                        </p>
+                    </div>
+
+                    <!-- Feature 6 -->
+                    <div class="reveal delay-500 feature-card glass rounded-3xl p-8">
+                        <div
+                            class="w-14 h-14 rounded-2xl bg-gradient-to-br from-green-500/20 to-green-500/5 flex items-center justify-center mb-6">
+                            <i class="ph-fill ph-infinity text-green-400 text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-3">Lasts Forever</h3>
+                        <p class="text-gray-400 leading-relaxed">
+                            Unlike physical gifts, your digital creation will be preserved forever. A timeless memory.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- VISION SECTION -->
+        <section id="vision" class="py-24 md:py-32 px-4 md:px-8">
+            <div class="max-w-4xl mx-auto text-center">
+                <div class="reveal glass rounded-3xl p-12 md:p-16 relative overflow-hidden">
+                    <!-- Background Decorations -->
+                    <div
+                        class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-brand-blue via-brand-purple to-brand-pink">
+                    </div>
+                    <div class="absolute -top-24 -right-24 w-48 h-48 bg-brand-pink/20 rounded-full blur-3xl"></div>
+                    <div class="absolute -bottom-24 -left-24 w-48 h-48 bg-brand-blue/20 rounded-full blur-3xl"></div>
+
+                    <div class="relative z-10">
+                        <div
+                            class="reveal inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-br from-brand-blue to-brand-pink mb-8 glow-pink">
+                            <i class="ph-fill ph-eye text-3xl text-white"></i>
+                        </div>
+
+                        <h2 class="reveal font-display text-3xl md:text-4xl font-bold text-white mb-6">
+                            Our Vision
+                        </h2>
+
+                        <p class="reveal delay-100 text-xl md:text-2xl text-gray-300 leading-relaxed mb-8">
+                            "To transform the way people express love and appreciation,
+                            making every moment memorable through the power of digital storytelling."
+                        </p>
+
+                        <div class="reveal delay-200 flex flex-wrap items-center justify-center gap-8">
+                            <div class="flex items-center gap-3">
+                                <div class="w-3 h-3 rounded-full bg-brand-pink"></div>
+                                <span class="text-gray-400">Innovation</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <div class="w-3 h-3 rounded-full bg-brand-blue"></div>
+                                <span class="text-gray-400">Authenticity</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <div class="w-3 h-3 rounded-full bg-brand-purple"></div>
+                                <span class="text-gray-400">Excellence</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TESTIMONIAL / HOW IT WORKS -->
+        <section class="py-24 md:py-32 px-4 md:px-8">
+            <div class="max-w-6xl mx-auto">
+                <div class="text-center mb-16">
+                    <div
+                        class="reveal inline-block px-4 py-1 rounded-full glass-light text-brand-pink text-sm font-semibold mb-4">
+                        Simple Process
+                    </div>
+                    <h2 class="reveal font-display text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4">
+                        How It Works
+                    </h2>
+                </div>
+
+                <div class="grid md:grid-cols-3 gap-8">
+                    <!-- Step 1 -->
+                    <div class="reveal text-center">
+                        <div class="relative inline-block mb-6">
+                            <div class="w-20 h-20 rounded-2xl glass flex items-center justify-center">
+                                <i class="ph-fill ph-hand-pointing text-3xl text-brand-blue"></i>
+                            </div>
+                            <div
+                                class="absolute -top-2 -right-2 w-8 h-8 rounded-full bg-brand-blue text-white font-bold flex items-center justify-center text-sm">
+                                1</div>
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-3">Choose Occasion</h3>
+                        <p class="text-gray-400">
+                            Select from birthdays, anniversaries, holidays, or special moments.
+                        </p>
+                    </div>
+
+                    <!-- Step 2 -->
+                    <div class="reveal delay-200 text-center">
+                        <div class="relative inline-block mb-6">
+                            <div class="w-20 h-20 rounded-2xl glass flex items-center justify-center">
+                                <i class="ph-fill ph-magic-wand text-3xl text-brand-pink"></i>
+                            </div>
+                            <div
+                                class="absolute -top-2 -right-2 w-8 h-8 rounded-full bg-brand-pink text-white font-bold flex items-center justify-center text-sm">
+                                2</div>
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-3">Personalize</h3>
+                        <p class="text-gray-400">
+                            Add names, photos, and write your heartfelt message.
+                        </p>
+                    </div>
+
+                    <!-- Step 3 -->
+                    <div class="reveal delay-400 text-center">
+                        <div class="relative inline-block mb-6">
+                            <div class="w-20 h-20 rounded-2xl glass flex items-center justify-center">
+                                <i class="ph-fill ph-whatsapp-logo text-3xl text-green-400"></i>
+                            </div>
+                            <div
+                                class="absolute -top-2 -right-2 w-8 h-8 rounded-full bg-green-400 text-white font-bold flex items-center justify-center text-sm">
+                                3</div>
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-3">Share Instantly</h3>
+                        <p class="text-gray-400">
+                            Send directly to your loved one via WhatsApp or any platform.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA SECTION -->
+        <section id="contact" class="py-24 md:py-32 px-4 md:px-8">
+            <div class="max-w-4xl mx-auto">
+                <div class="reveal glass rounded-3xl p-12 md:p-16 text-center relative overflow-hidden">
+                    <!-- Animated Background -->
+                    <div
+                        class="absolute inset-0 bg-gradient-to-br from-brand-blue/10 via-brand-purple/10 to-brand-pink/10">
+                    </div>
+                    <div
+                        class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-brand-pink/20 rounded-full blur-3xl animate-pulse">
+                    </div>
+
+                    <div class="relative z-10">
+                        <h2 class="font-display text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-6">
+                            Ready to Create <span class="text-gradient">Magic?</span>
+                        </h2>
+
+                        <p class="text-gray-400 text-lg mb-10 max-w-xl mx-auto">
+                            Join thousands who have already created unforgettable gift experiences.
+                            Your perfect gift is just a few clicks away.
+                        </p>
+
+                        <button onclick="openApp()"
+                            class="btn-primary px-10 py-5 rounded-full font-bold text-xl text-white inline-flex items-center gap-3">
+                            <i class="ph ph-plus"></i>
+                            Create Your First Gift
+                        </button>
+
+                        <p class="text-gray-500 text-sm mt-6">
+                            ✨ Free to start • No credit card required
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="relative z-10 glass border-t border-white/5 px-4 md:px-8 py-12">
+        <div class="max-w-6xl mx-auto">
+            <div class="grid md:grid-cols-4 gap-8 mb-12">
+                <!-- Brand -->
+                <div class="md:col-span-2">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div
+                            class="w-10 h-10 rounded-xl bg-gradient-to-br from-brand-blue to-brand-pink flex items-center justify-center">
+                            <i class="ph-fill ph-gift text-white text-xl"></i>
+                        </div>
+                        <span class="font-display font-bold text-xl text-white">GiftOnScreen</span>
+                    </div>
+                    <p class="text-gray-500 max-w-sm">
+                        Transforming heartfelt emotions into stunning digital gift experiences that last forever.
+                    </p>
+                </div>
+
+                <!-- Quick Links -->
+                <div>
+                    <h4 class="text-white font-semibold mb-4">Quick Links</h4>
+                    <ul class="space-y-3">
+                        <li><a href="#about" class="text-gray-500 hover:text-white transition-colors">About</a></li>
+                        <li><a href="#features" class="text-gray-500 hover:text-white transition-colors">Features</a>
+                        </li>
+                        <li><a href="#vision" class="text-gray-500 hover:text-white transition-colors">Vision</a></li>
+                        <li><a href="#" class="text-gray-500 hover:text-white transition-colors">Templates</a></li>
+                    </ul>
+                </div>
+
+                <!-- Support -->
+                <div>
+                    <h4 class="text-white font-semibold mb-4">Support</h4>
+                    <ul class="space-y-3">
+                        <li><a href="#" class="text-gray-500 hover:text-white transition-colors">Help Center</a></li>
+                        <li><a href="#" class="text-gray-500 hover:text-white transition-colors">Contact Us</a></li>
+                        <li><a href="#" class="text-gray-500 hover:text-white transition-colors">Privacy Policy</a></li>
+                        <li><a href="#" class="text-gray-500 hover:text-white transition-colors">Terms of Service</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Bottom Footer -->
+            <div class="pt-8 border-t border-white/5 flex flex-col md:flex-row items-center justify-between gap-4">
+                <p class="text-gray-600 text-sm">
+                    © 2024 GiftOnScreen. All rights reserved.
+                </p>
+
+                <!-- Social Links -->
+                <div class="flex items-center gap-4">
+                    <a href="#"
+                        class="w-10 h-10 rounded-full glass-light flex items-center justify-center text-gray-400 hover:text-white hover:border-white/30 transition-all">
+                        <i class="ph-fill ph-instagram-logo text-xl"></i>
+                    </a>
+                    <a href="#"
+                        class="w-10 h-10 rounded-full glass-light flex items-center justify-center text-gray-400 hover:text-white hover:border-white/30 transition-all">
+                        <i class="ph-fill ph-twitter-logo text-xl"></i>
+                    </a>
+                    <a href="#"
+                        class="w-10 h-10 rounded-full glass-light flex items-center justify-center text-gray-400 hover:text-white hover:border-white/30 transition-all">
+                        <i class="ph-fill ph-whatsapp-logo text-xl"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Floating WhatsApp Button -->
+    <a href="https://wa.me/916394460784?text=Hello" target="_blank"
+        class="fixed bottom-6 right-6 z-50 group flex items-center justify-center">
+        <span class="absolute inset-0 rounded-full bg-green-400 opacity-75 animate-ping group-hover:hidden"></span>
+        <div
+            class="relative bg-green-500 text-white p-4 rounded-full shadow-lg flex items-center justify-center hover:bg-green-600 transition-colors transform hover:scale-110">
+            <i class="ph-fill ph-whatsapp-logo text-3xl"></i>
+        </div>
+    </a>
+
+    <!-- Hidden App Container for SPA functionality -->
+    <main id="app-container" class="hidden pt-28 pb-32 px-4 md:px-8 max-w-7xl mx-auto relative z-10 min-h-screen">
+    </main>
+
+    <!-- TEMPLATES (Hidden - used by JavaScript) -->
     <template id="tpl-state-1">
         <div class="fade-enter flex flex-col items-center">
-            
             <div class="text-center mb-12 max-w-2xl mx-auto">
-                <h1 class="font-display text-4xl md:text-6xl font-bold text-white mb-6 leading-tight animate-float text-default-glow">
-                    A Private Expression <br/> <span class="text-gradient">of Emotion</span>
+                <h1 class="font-display text-4xl md:text-6xl font-bold text-white mb-6 leading-tight animate-float">
+                    A Private Expression <br /> <span class="text-gradient-subtle">of Emotion</span>
                 </h1>
-                
-                <!-- How It Works -->
-                <div class="glass-card rounded-2xl p-6 mt-8 mb-12 flex flex-col md:flex-row justify-center items-center gap-6 md:gap-12">
+                <div
+                    class="glass rounded-2xl p-6 mt-8 mb-12 flex flex-col md:flex-row justify-center items-center gap-6 md:gap-12">
                     <div class="flex flex-col items-center text-center">
-                        <div class="w-12 h-12 rounded-full bg-brand-blue/20 flex items-center justify-center mb-3 text-brand-blue">
+                        <div
+                            class="w-12 h-12 rounded-full bg-brand-blue/20 flex items-center justify-center mb-3 text-brand-blue">
                             <i class="ph ph-hand-pointing text-2xl"></i>
                         </div>
                         <span class="text-sm font-semibold text-gray-300">1. Select Occasion</span>
@@ -75,7 +954,8 @@
                     <i class="ph ph-arrow-right text-gray-500 hidden md:block"></i>
                     <i class="ph ph-arrow-down text-gray-500 md:hidden block"></i>
                     <div class="flex flex-col items-center text-center">
-                        <div class="w-12 h-12 rounded-full bg-brand-pink/20 flex items-center justify-center mb-3 text-brand-pink">
+                        <div
+                            class="w-12 h-12 rounded-full bg-brand-pink/20 flex items-center justify-center mb-3 text-brand-pink">
                             <i class="ph ph-magic-wand text-2xl"></i>
                         </div>
                         <span class="text-sm font-semibold text-gray-300">2. Customize Design</span>
@@ -83,147 +963,133 @@
                     <i class="ph ph-arrow-right text-gray-500 hidden md:block"></i>
                     <i class="ph ph-arrow-down text-gray-500 md:hidden block"></i>
                     <div class="flex flex-col items-center text-center">
-                        <div class="w-12 h-12 rounded-full bg-green-500/20 flex items-center justify-center mb-3 text-green-400">
+                        <div
+                            class="w-12 h-12 rounded-full bg-green-500/20 flex items-center justify-center mb-3 text-green-400">
                             <i class="ph ph-whatsapp-logo text-2xl"></i>
                         </div>
                         <span class="text-sm font-semibold text-gray-300">3. Activate</span>
                     </div>
                 </div>
-
                 <h2 class="text-2xl font-display font-medium text-white/90">Select an Occasion</h2>
             </div>
-
-            <!-- Occasions Grid -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-5xl">
-                <!-- Cards injected by JS -->
-            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-5xl"></div>
         </div>
     </template>
 
-    <!-- STATE 2: THEME SELECTION -->
     <template id="tpl-state-2">
         <div class="fade-enter w-full max-w-6xl mx-auto">
-            <button class="flex bg-transparent border-0 items-center gap-2 text-gray-400 hover:text-white mb-8 transition-colors" onclick="goHome()">
+            <button
+                class="flex bg-transparent border-0 items-center gap-2 text-gray-400 hover:text-white mb-8 transition-colors"
+                onclick="goHome()">
                 <i class="ph ph-arrow-left"></i> Back to Occasions
             </button>
-            
             <div class="mb-10">
-                <h2 class="font-display text-3xl md:text-5xl font-bold text-white mb-4">Choose a <span class="text-gradient" id="theme-category-name">Theme</span></h2>
+                <h2 class="font-display text-3xl md:text-5xl font-bold text-white mb-4">Choose a <span
+                        class="text-gradient-subtle" id="theme-category-name">Theme</span></h2>
                 <p class="text-gray-400">Select an aesthetic for your personalized gift experience.</p>
             </div>
-
-            <!-- Themes Grid -->
-            <div id="themes-grid" class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <!-- Theme cards injected by JS -->
-            </div>
+            <div id="themes-grid" class="grid grid-cols-1 md:grid-cols-3 gap-8"></div>
         </div>
     </template>
 
-    <!-- STATE 3: EDITOR -->
     <template id="tpl-state-3">
-        <div class="fade-enter w-full max-w-7xl mx-auto h-full grid grid-cols-1 lg:grid-cols-12 gap-8 editor-grid">
-            
-            <!-- Left: Form -->
+        <div class="fade-enter w-full max-w-7xl mx-auto h-full grid grid-cols-1 lg:grid-cols-12 gap-8">
             <div class="lg:col-span-7 flex flex-col">
                 <button class="flex items-center gap-2 text-gray-400 hover:text-white mb-6 w-fit" onclick="goState2()">
                     <i class="ph ph-arrow-left"></i> Change Theme
                 </button>
-                
-                <div class="glass-card rounded-3xl p-6 md:p-10 flex-1">
+                <div class="glass rounded-3xl p-6 md:p-10 flex-1">
                     <h2 class="font-display text-3xl font-bold text-white mb-2">Personalize It</h2>
-                    <p class="text-sm text-gray-400 mb-8">Currently editing: <span id="current-theme-label" class="text-brand-pink font-semibold">...</span></p>
-                    
+                    <p class="text-sm text-gray-400 mb-8">Currently editing: <span id="current-theme-label"
+                            class="text-brand-pink font-semibold">...</span></p>
                     <form id="editor-form" class="space-y-6">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
                                 <label class="block text-sm font-medium text-gray-300 mb-2">Receiver's Name</label>
-                                <input type="text" id="receiverName" class="glass-input w-full p-3 rounded-xl transition-all" placeholder="Who is this for?" required>
+                                <input type="text" id="receiverName"
+                                    class="glass-input w-full p-3 rounded-xl transition-all"
+                                    placeholder="Who is this for?" required>
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-300 mb-2">Sender's Name</label>
-                                <input type="text" id="senderName" class="glass-input w-full p-3 rounded-xl transition-all" placeholder="Who is from?" required>
+                                <input type="text" id="senderName"
+                                    class="glass-input w-full p-3 rounded-xl transition-all" placeholder="Who is from?"
+                                    required>
                             </div>
                         </div>
-
                         <div>
                             <label class="block text-sm font-medium text-gray-300 mb-2">Your Message</label>
-                            <textarea id="messageText" rows="4" class="glass-input w-full p-3 rounded-xl transition-all resize-none" placeholder="Write your heartfelt message..." required></textarea>
+                            <textarea id="messageText" rows="4"
+                                class="glass-input w-full p-3 rounded-xl transition-all resize-none"
+                                placeholder="Write your heartfelt message..." required></textarea>
                         </div>
-
                         <div class="glass-input p-4 rounded-xl border-dashed">
                             <label class="flex flex-col items-center justify-center cursor-pointer w-full h-24">
                                 <i class="ph ph-image text-3xl text-gray-400 mb-2"></i>
                                 <span class="text-sm text-gray-300">Upload a memorable photo (< 500kb)</span>
-                                <input type="file" id="photoUpload" class="hidden" accept="image/*">
+                                        <input type="file" id="photoUpload" class="hidden" accept="image/*">
                             </label>
                             <p id="photo-status" class="text-xs text-center mt-2 text-brand-pink hidden"></p>
                         </div>
-
-                        <button type="submit" class="w-full bg-gradient-to-r from-brand-blue to-brand-pink text-white font-bold text-lg py-4 rounded-xl hover:shadow-[0_0_20px_rgba(255,79,163,0.4)] transition-all transform hover:-translate-y-1">
+                        <button type="submit"
+                            class="w-full bg-gradient-to-r from-brand-blue to-brand-pink text-white font-bold text-lg py-4 rounded-xl hover:shadow-[0_0_20px_rgba(255,79,163,0.4)] transition-all transform hover:-translate-y-1">
                             Generate Private Link
                         </button>
                     </form>
                 </div>
             </div>
-
-            <!-- Right: Preview Container -->
-            <div class="lg:col-span-5 flex justify-center lg:justify-end items-center preview-container min-h-[600px] lg:min-h-0 relative">
-                 <div class="mock-device flex items-center justify-center relative">
-                     <!-- Live Preview Content -->
-                     <div id="live-preview" class="w-full h-full bg-black flex flex-col justify-center items-center text-center p-6 word-break-words overflow-auto relative">
-                         <div class="absolute inset-0 bg-gradient-to-br from-gray-900 to-black z-0"></div>
-                         <div class="z-10 w-full flex flex-col items-center">
-                             <h2 id="preview-receiver" class="font-display text-3xl text-white mb-4">Receiver</h2>
-                             <img id="preview-photo" src="" class="w-full max-w-[200px] rounded-xl border border-white/20 mb-4 hidden shadow-2xl">
-                             <p id="preview-message" class="text-gray-300 mb-4 italic">Message preview...</p>
-                             <p class="text-sm text-gray-500 uppercase tracking-widest mt-4">From: <span id="preview-sender" class="text-brand-pink font-bold">Sender</span></p>
-                         </div>
-                     </div>
-                 </div>
+            <div
+                class="lg:col-span-5 flex justify-center lg:justify-end items-center min-h-[600px] lg:min-h-0 relative">
+                <div class="mock-device flex items-center justify-center relative">
+                    <div id="live-preview"
+                        class="w-full h-full bg-black flex flex-col justify-center items-center text-center p-6 word-break-words overflow-auto relative">
+                        <div class="absolute inset-0 bg-gradient-to-br from-gray-900 to-black z-0"></div>
+                        <div class="z-10 w-full flex flex-col items-center">
+                            <h2 id="preview-receiver" class="font-display text-3xl text-white mb-4">Receiver</h2>
+                            <img id="preview-photo" src=""
+                                class="w-full max-w-[200px] rounded-xl border border-white/20 mb-4 hidden shadow-2xl">
+                            <p id="preview-message" class="text-gray-300 mb-4 italic">Message preview...</p>
+                            <p class="text-sm text-gray-500 uppercase tracking-widest mt-4">From: <span
+                                    id="preview-sender" class="text-brand-pink font-bold">Sender</span></p>
+                        </div>
+                    </div>
+                </div>
             </div>
-            
         </div>
     </template>
 
-    <!-- FLOATING WHATSAPP BUTTON -->
-    <a href="https://wa.me/916394460784?text=Hello" target="_blank" class="fixed bottom-6 right-6 z-50 group flex items-center justify-center">
-        <!-- Ping effect -->
-        <span class="absolute inset-0 rounded-full bg-green-400 opacity-75 animate-ping group-hover:hidden"></span>
-        <div class="relative bg-green-500 text-white p-4 rounded-full shadow-lg flex items-center justify-center hover:bg-green-600 transition-colors transform hover:scale-110">
-            <i class="ph-fill ph-whatsapp-logo text-3xl"></i>
-        </div>
-    </a>
-
-    <!-- TRACK MODAL -->
-    <div id="track-modal" class="fixed inset-0 z-[100] hidden items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-        <div class="glass-card w-full max-w-md p-8 rounded-3xl relative fade-enter">
+    <!-- Track Modal -->
+    <div id="track-modal"
+        class="fixed inset-0 z-[100] hidden items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+        <div class="glass w-full max-w-md p-8 rounded-3xl relative fade-enter">
             <button id="close-modal" class="absolute top-4 right-4 text-gray-400 hover:text-white">
                 <i class="ph ph-x text-2xl"></i>
             </button>
             <h3 class="font-display text-2xl font-bold text-white mb-2">Track Your Gift</h3>
-            <p class="text-gray-400 text-sm mb-6">Enter your securely generated GIFT-ID to check its activation status.</p>
-            
+            <p class="text-gray-400 text-sm mb-6">Enter your securely generated GIFT-ID to check its activation status.
+            </p>
             <div class="flex gap-2">
-                <input type="text" id="track-id" class="glass-input flex-1 p-3 rounded-xl uppercase font-mono" placeholder="GIFT-XXXXX">
-                <button id="track-submit" class="bg-brand-blue text-white px-6 py-3 rounded-xl font-bold hover:bg-blue-600 transition-colors">Check</button>
+                <input type="text" id="track-id" class="glass-input flex-1 p-3 rounded-xl uppercase font-mono"
+                    placeholder="GIFT-XXXXX">
+                <button id="track-submit"
+                    class="bg-brand-blue text-white px-6 py-3 rounded-xl font-bold hover:bg-blue-600 transition-colors">Check</button>
             </div>
-            
-            <div id="track-result" class="mt-6 hidden p-4 rounded-xl border border-white/10 bg-black/30 text-center"></div>
+            <div id="track-result" class="mt-6 hidden p-4 rounded-xl border border-white/10 bg-black/30 text-center">
+            </div>
         </div>
     </div>
-    
-    <!-- LOADING OVERLAY -->
-    <div id="loading-overlay" class="fixed inset-0 z-[200] hidden flex flex-col items-center justify-center bg-black/90 backdrop-blur-md">
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay"
+        class="fixed inset-0 z-[200] hidden flex flex-col items-center justify-center bg-black/90 backdrop-blur-md">
         <div class="spinner mb-4"></div>
         <p id="loading-text" class="text-brand-pink font-semibold tracking-wide animate-pulse">Processing...</p>
     </div>
 
-    <!-- VIEWER MODE CONTAINER -->
-    <div id="viewer-container" class="hidden fixed inset-0 z-[300] bg-black text-white overflow-auto">
-        <!-- Injected via JS -->
-    </div>
+    <!-- Viewer Mode Container -->
+    <div id="viewer-container" class="hidden fixed inset-0 z-[300] bg-black text-white overflow-hidden flex items-center justify-center"></div>
 
-    <!-- Firebase Compat for Local Execution without HTTP Server (No CORS block) -->
+    <!-- Firebase -->
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage-compat.js"></script>
@@ -231,5 +1097,80 @@
 
     <script src="firebase-config.js?v=1.2"></script>
     <script src="app.js?v=1.2"></script>
+
+    <!-- Landing Page JavaScript -->
+    <script>
+        // Scroll reveal animation
+        function reveal() {
+            const reveals = document.querySelectorAll('.reveal');
+            reveals.forEach((el, index) => {
+                const windowHeight = window.innerHeight;
+                const elementTop = el.getBoundingClientRect().top;
+                const elementVisible = 150;
+
+                if (elementTop < windowHeight - elementVisible) {
+                    setTimeout(() => {
+                        el.classList.add('active');
+                    }, index * 100);
+                }
+            });
+        }
+
+        // Initial reveal
+        window.addEventListener('scroll', reveal);
+        window.addEventListener('load', reveal);
+
+        // Smooth scroll to section
+        function scrollToSection(id) {
+            const element = document.getElementById(id);
+            if (element) {
+                element.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        // Scroll to top
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Mobile menu toggle
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('active');
+        }
+
+        // Navbar background on scroll
+        window.addEventListener('scroll', () => {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('glass');
+            } else {
+                navbar.classList.remove('glass');
+            }
+        });
+
+        // Initialize app - show landing page
+        let appInitialized = false;
+
+        function openApp() {
+            if (appInitialized) return;
+            appInitialized = true;
+
+            // Hide landing page sections and show app container
+            document.querySelector('main:not(#app-container)').style.display = 'none';
+            document.querySelector('nav').style.display = 'none';
+            document.querySelector('footer').style.display = 'none';
+            document.querySelector('.bg-mesh').style.display = 'none';
+
+            const appContainer = document.getElementById('app-container');
+            appContainer.classList.remove('hidden');
+
+            // Initialize the app by loading state 1
+            if (typeof goHome === 'function') {
+                goHome();
+            }
+        }
+    </script>
 </body>
+
 </html>

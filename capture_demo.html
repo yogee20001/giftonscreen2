@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instagram Story Share Feature | GiftOnScreen ✨</title>
+    <!-- html2canvas CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --lux-gold: #D4AF37;
+            --lux-gold-glow: rgba(212, 175, 55, 0.4);
+            --cocoa-dark: #1A0F0A;
+            --cream-silk: #F8F4E3;
+            --accent: #E8C49A;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background: #0F0907;
+            font-family: 'Inter', sans-serif;
+            color: var(--cream-silk);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        /* Container for the 9:16 card */
+        .preview-wrapper {
+            position: relative;
+            width: 100%;
+            max-width: 360px; /* Fits nicely on desktop preview */
+            margin-bottom: 24px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        }
+
+        /* THE CARD (This is what will be captured) */
+        #birthday-card {
+            width: 1080px; /* Target Resolution Width */
+            height: 1920px; /* Target Resolution Height (Instagram Story) */
+            position: relative;
+            background: var(--cocoa-dark);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 80px;
+            z-index: 1;
+            /* Scale down for CSS preview only */
+            transform-origin: top center;
+            /* Calculate Scale: 360/1080 = 0.333 */
+        }
+
+        /* Scale handle for desktop preview */
+        .preview-scaler {
+            width: 360px;
+            height: 640px;
+            overflow: hidden;
+            border-radius: 20px;
+            border: 2px solid var(--lux-gold);
+        }
+
+        #birthday-card.capture-mode {
+            /* Reset transformations during capture */
+            transform: none !important;
+        }
+
+        /* Card Content Styling */
+        .card-bg {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, #1A0F0A 0%, #2C1B12 100%);
+            z-index: -1;
+        }
+
+        .card-texture {
+            position: absolute;
+            inset: 0;
+            background-image: url('https://www.transparenttextures.com/patterns/dark-leather.png');
+            opacity: 0.3;
+            z-index: -1;
+        }
+
+        .gold-border {
+            position: absolute;
+            inset: 40px;
+            border: 4px solid var(--lux-gold);
+            pointer-events: none;
+        }
+
+        .card-photo-wrapper {
+            width: 500px;
+            height: 500px;
+            border-radius: 50%;
+            border: 10px solid var(--lux-gold);
+            overflow: hidden;
+            margin-bottom: 60px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.6);
+        }
+
+        .card-photo {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .birthday-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 110px;
+            color: var(--lux-gold);
+            margin-bottom: 30px;
+            text-shadow: 0 10px 20px rgba(0,0,0,0.5);
+        }
+
+        .birthday-msg {
+            font-size: 48px;
+            line-height: 1.6;
+            max-width: 800px;
+            margin-bottom: 60px;
+            opacity: 0.9;
+        }
+
+        .card-footer {
+            font-size: 36px;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 10px;
+        }
+
+        /* Controls Section */
+        .controls {
+            width: 100%;
+            max-width: 360px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .btn {
+            padding: 18px 24px;
+            border-radius: 12px;
+            border: none;
+            font-family: 'Inter', sans-serif;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-save {
+            background: var(--cream-silk);
+            color: var(--cocoa-dark);
+        }
+
+        .btn-share {
+            background: linear-gradient(135deg, #D4AF37 0%, #B8860B 100%);
+            color: var(--cocoa-dark);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.1);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        /* Loading Overlay */
+        #loading-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.8);
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            backdrop-filter: blur(10px);
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(212, 175, 55, 0.1);
+            border-top: 4px solid var(--lux-gold);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Responsive preview scaling */
+        @media (max-width: 400px) {
+            .preview-scaler {
+                width: 300px;
+                height: 533px;
+            }
+            #birthday-card {
+                transform: scale(0.277); /* 300/1080 */
+            }
+        }
+
+        @media (min-width: 401px) {
+            #birthday-card {
+                transform: scale(0.333); /* 360/1080 */
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="preview-wrapper">
+        <div class="preview-scaler">
+            <!-- The Card -->
+            <div id="birthday-card">
+                <div class="card-bg"></div>
+                <div class="card-texture"></div>
+                <div class="gold-border"></div>
+                
+                <div class="card-photo-wrapper">
+                    <img src="https://images.unsplash.com/photo-1530103043960-ef38714abb15?q=80&w=500&auto=format&fit=crop" crossorigin="anonymous" class="card-photo" alt="Birthday Person">
+                </div>
+
+                <h1 class="birthday-title">HAPPY<br>BIRTHDAY</h1>
+                <p class="birthday-msg">Wishing you a day as decadent and wonderful as you are. May your year be filled with golden moments.</p>
+                
+                <div class="card-footer">Gift On Screen</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="controls">
+        <button id="saveBtn" class="btn btn-save">
+            <span>💾</span> Save Card
+        </button>
+        <button id="shareBtn" class="btn btn-share">
+            <span>📸</span> Share to Instagram Story
+        </button>
+    </div>
+
+    <div id="loading-overlay">
+        <div class="spinner"></div>
+        <p>Crafting your surprise...</p>
+    </div>
+
+    <script>
+        const card = document.getElementById('birthday-card');
+        const saveBtn = document.getElementById('saveBtn');
+        const shareBtn = document.getElementById('shareBtn');
+        const loading = document.getElementById('loading-overlay');
+
+        /**
+         * Core Capture Function using html2canvas
+         */
+        async function captureCard() {
+            loading.style.display = 'flex';
+            
+            try {
+                // Wait for all images and fonts to be ready
+                await document.fonts.ready;
+                
+                // Temporary CSS adjustment for clean capture
+                card.classList.add('capture-mode');
+                
+                const canvas = await html2canvas(card, {
+                    scale: 1, // Already set to 1080x1920
+                    useCORS: true, 
+                    allowTaint: false,
+                    backgroundColor: '#1A0F0A',
+                    width: 1080,
+                    height: 1920,
+                    logging: false,
+                    onclone: (clonedDoc) => {
+                        // Ensure cloned element is visible and not transformed
+                        const clonedCard = clonedDoc.getElementById('birthday-card');
+                        clonedCard.style.transform = 'none';
+                    }
+                });
+
+                card.classList.remove('capture-mode');
+                return canvas;
+            } catch (error) {
+                console.error('Capture failed:', error);
+                alert('Failed to generate image. Please try again.');
+            } finally {
+                loading.style.display = 'none';
+            }
+        }
+
+        /**
+         * Logic for "Save Card"
+         */
+        saveBtn.addEventListener('click', async () => {
+            const canvas = await captureCard();
+            if (!canvas) return;
+
+            const dataUrl = canvas.toDataURL('image/png', 1.0);
+            const link = document.createElement('a');
+            link.download = 'birthday-card.png';
+            link.href = dataUrl;
+            link.click();
+        });
+
+        /**
+         * Logic for "Share to Instagram Story"
+         */
+        shareBtn.addEventListener('click', async () => {
+            const canvas = await captureCard();
+            if (!canvas) return;
+
+            canvas.toBlob(async (blob) => {
+                const file = new File([blob], 'birthday-card.png', { type: 'image/png' });
+
+                // Check if Web Share API supports file sharing
+                if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                    try {
+                        await navigator.share({
+                            files: [file],
+                            title: 'My Birthday Card',
+                            text: 'Check out this birthday card from GiftOnScreen!'
+                        });
+                    } catch (error) {
+                        if (error.name !== 'AbortError') {
+                            console.error('Sharing failed:', error);
+                            fallbackDownload();
+                        }
+                    }
+                } else {
+                    fallbackDownload();
+                }
+            }, 'image/png');
+        });
+
+        function fallbackDownload() {
+            saveBtn.click();
+            alert('Image saved to gallery! \n\nTo share to Instagram Story:\n1. Open Instagram\n2. Create a Story\n3. Choose this image from your gallery.');
+        }
+
+        // Handle window resize for preview scaling
+        window.addEventListener('resize', () => {
+            const width = window.innerWidth;
+            if (width < 400) {
+                card.style.transform = `scale(${width * 0.9 / 1080})`;
+            } else {
+                card.style.transform = 'scale(0.333)';
+            }
+        });
+    </script>
+</body>
+</html>

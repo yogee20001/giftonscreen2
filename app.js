@@ -12,9 +12,29 @@ const occasions = [
 // Mock Stitch AI specific templates available per occasion
 const themeTemplates = {
     'birthday': [
-        { id: 'bday/candle', name: 'Premium Candle', desc: 'An ultra-premium cinematic birthday experience with interactive candle and cake.' }
+        { id: 'bday/candle', name: 'Premium Candle', desc: 'An ultra-premium cinematic birthday experience with interactive candle and cake.' },
+        { id: 'bday/chocolate-break', name: 'Chocolate Break', desc: 'A decadent chocolate-themed surprise experience with interactive unwrapping.' },
+        { id: 'bday/cosmic-birthday', name: 'Cosmic Birthday', desc: 'A magical cosmic journey through the universe with interactive star awakening.' },
+        { id: 'bday/svg-cake', name: 'SVG Cake', desc: 'An elegant animated cake experience with floating candles and premium typography.' }
     ],
-    'anniversary': [],
+    'anniversary': [
+        { id: 'bday/candle', name: 'Premium Candle', desc: 'An ultra-premium cinematic experience with interactive candle and cake.' },
+        { id: 'bday/chocolate-break', name: 'Chocolate Break', desc: 'A decadent chocolate-themed surprise experience.' },
+        { id: 'bday/cosmic-birthday', name: 'Cosmic Celebration', desc: 'A magical cosmic journey celebration.' },
+        { id: 'bday/svg-cake', name: 'SVG Elegance', desc: 'An elegant animated experience.' }
+    ],
+    'justbecause': [
+        { id: 'bday/candle', name: 'Premium Candle', desc: 'An ultra-premium cinematic experience.' },
+        { id: 'bday/chocolate-break', name: 'Chocolate Break', desc: 'A sweet surprise experience.' },
+        { id: 'bday/cosmic-birthday', name: 'Cosmic Magic', desc: 'A magical cosmic experience.' },
+        { id: 'bday/svg-cake', name: 'SVG Elegance', desc: 'An elegant animated experience.' }
+    ],
+    'celebrate': [
+        { id: 'bday/candle', name: 'Premium Candle', desc: 'An ultra-premium celebration experience.' },
+        { id: 'bday/chocolate-break', name: 'Chocolate Break', desc: 'A celebratory chocolate surprise.' },
+        { id: 'bday/cosmic-birthday', name: 'Cosmic Celebration', desc: 'A spectacular cosmic celebration.' },
+        { id: 'bday/svg-cake', name: 'SVG Cake', desc: 'An elegant celebration animation.' }
+    ],
     'default': []
 };
 
@@ -479,7 +499,21 @@ function setupTrackModal() {
    VIEWER MODE
 ========================================================= */
 async function loadViewerMode(id) {
-    document.querySelector('nav').style.display = 'none'; // hide nav
+    // Hide all landing page elements
+    const landingMain = document.querySelector('main:not(#app-container)');
+    const landingNav = document.querySelector('nav');
+    const landingFooter = document.querySelector('footer');
+    const bgMesh = document.querySelector('.bg-mesh');
+    const particles = document.querySelectorAll('.particle');
+    const whatsappBtn = document.querySelector('a[href*="wa.me"]');
+
+    if (landingMain) landingMain.style.display = 'none';
+    if (landingNav) landingNav.style.display = 'none';
+    if (landingFooter) landingFooter.style.display = 'none';
+    if (bgMesh) bgMesh.style.display = 'none';
+    if (whatsappBtn) whatsappBtn.style.display = 'none';
+    particles.forEach(p => p.style.display = 'none');
+
     showLoading("Unwrapping secure gift...");
 
     try {
@@ -490,6 +524,7 @@ async function loadViewerMode(id) {
 
         if (snapshot.empty) {
             hideLoading();
+            appContainer.classList.remove('hidden');
             appContainer.innerHTML = `
                 <div class="pt-20 text-center flex flex-col items-center px-6">
                     <div class="w-20 h-20 rounded-full bg-red-500/20 text-red-400 flex items-center justify-center mb-6">
@@ -506,6 +541,7 @@ async function loadViewerMode(id) {
 
         if (giftData.status !== 'active') {
             hideLoading();
+            appContainer.classList.remove('hidden');
             appContainer.innerHTML = `
                 <div class="pt-20 text-center flex flex-col items-center px-6">
                     <div class="w-20 h-20 rounded-full bg-yellow-500/20 text-yellow-400 flex items-center justify-center mb-6">
@@ -533,12 +569,10 @@ async function loadViewerMode(id) {
 
         const runInline = () => {
             // Set global data object for templates that need it (like candle)
-            // IMPORTANT: Set this BEFORE inline scripts run so template can access it
             window.GOS_DATA = {
                 receiver: giftData.receiver || 'Friend',
                 sender: giftData.sender || 'Your Friend',
                 message: giftData.message || 'Wishing you a wonderful day!',
-                // Normalize photo URL - check both cases for compatibility
                 photoUrl: giftData.photoUrl || giftData.photoURL || null
             };
 
@@ -548,8 +582,7 @@ async function loadViewerMode(id) {
                 oldScript.parentNode.replaceChild(newScript, oldScript);
             });
 
-            // Inject data directly into elements - this is the PRIMARY injection method
-            // These selectors target elements by data-* attributes in the template
+            // Inject data directly into elements
             viewerContainer.querySelectorAll('[data-receiver]').forEach(el => {
                 el.textContent = window.GOS_DATA.receiver;
             });
@@ -560,7 +593,7 @@ async function loadViewerMode(id) {
                 el.textContent = window.GOS_DATA.message;
             });
 
-            // Handle Photo if provided
+            // Handle Photo
             const finalPhotoUrl = window.GOS_DATA.photoUrl;
             if (finalPhotoUrl) {
                 viewerContainer.querySelectorAll('[data-photo]').forEach(el => {
@@ -574,21 +607,17 @@ async function loadViewerMode(id) {
                     el.classList.remove('hidden');
                 });
             } else {
-                // If no photo, ensure data-photo elements are hidden
                 viewerContainer.querySelectorAll('[data-photo]').forEach(el => {
                     el.classList.add('hidden');
                     el.style.display = 'none';
                 });
             }
 
-            // If the template has a specific init function, call it after data injection
             if (typeof window.initRitual === 'function') {
                 window.initRitual();
             }
 
-            // If the template has its own displayFirebaseData function, call it to ensure data is shown
             if (typeof window.displayFirebaseData === 'function') {
-                // Small delay to ensure DOM is ready
                 setTimeout(() => {
                     window.displayFirebaseData();
                 }, 100);
@@ -614,8 +643,16 @@ async function loadViewerMode(id) {
     } catch (err) {
         console.error("Viewer Error:", err);
         hideLoading();
-        alert("Critial Error: " + err.message);
-        window.location.search = '';
+        appContainer.classList.remove('hidden');
+        appContainer.innerHTML = `
+            <div class="pt-20 text-center flex flex-col items-center px-6">
+                <div class="w-20 h-20 rounded-full bg-red-500/20 text-red-400 flex items-center justify-center mb-6">
+                    <i class="ph ph-x-circle text-4xl"></i>
+                </div>
+                <h1 class="text-3xl text-white font-bold mb-4">Critical Error</h1>
+                <p class="text-gray-400 max-w-sm mb-8">${err.message}</p>
+                <button onclick="window.location.search = ''" class="bg-white/10 text-white px-8 py-3 rounded-xl border border-white/20 hover:bg-white/20 transition-all">Go Back</button>
+            </div>`;
     }
 }
 
