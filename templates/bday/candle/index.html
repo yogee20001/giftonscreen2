@@ -496,24 +496,10 @@
         </div>
     </div>
 
-    <!-- Firebase -->
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
     <script>
-        // Firebase Config
-        const firebaseConfig = {
-            apiKey: "AIzaSyDDnD8UUvRJnjwU9-Ee2-5uh0ybG7pkutE",
-            authDomain: "giftonscreen.firebaseapp.com",
-            projectId: "giftonscreen",
-            storageBucket: "giftonscreen.firebasestorage.app",
-            messagingSenderId: "984262120605",
-            appId: "1:984262120605:web:df7aa8c601c2f7f10bf074"
-        };
-
-        if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
+        // Database is handled by parent app - templates receive data via window.GOS_DATA
 
         // DOM Elements
         const scene1 = document.getElementById('scene-1');
@@ -565,29 +551,8 @@
             });
         }
 
-        // Fetch from Firestore if ID present
-        async function fetchFromFirestore() {
-            const params = new URLSearchParams(window.location.search);
-            const giftId = params.get('id');
-            if (!giftId) return;
-
-            try {
-                const doc = await db.collection('gifts').doc(giftId).get();
-                if (doc.exists) {
-                    const d = doc.data();
-                    window.GOS_DATA = {
-                        receiver: d.receiver || d.receiverName,
-                        sender: d.sender || d.senderName,
-                        message: d.message,
-                        photoUrl: d.photoUrl || d.photoURL
-                    };
-                    displayData();
-                }
-            } catch (e) {
-                console.log('Firestore fetch failed, using defaults');
-                displayData();
-            }
-        }
+        // Note: Data is now provided via window.GOS_DATA by the parent app
+        // No direct Firestore access needed - parent app handles data fetching
 
         // === SCENE 1: LIGHT CANDLE ===
         lightBtn.addEventListener('click', () => {
@@ -687,7 +652,6 @@
         // === INIT ===
         window.addEventListener('load', () => {
             displayData();
-            fetchFromFirestore();
         });
     </script>
 </body>

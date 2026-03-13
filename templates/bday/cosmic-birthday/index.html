@@ -402,27 +402,13 @@
         </div>
     </div>
 
-    <!-- Firebase -->
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-
     <script>
         // ============================================
         // COSMIC BIRTHDAY - Main Script
         // ============================================
 
-        // Firebase Config
-        const firebaseConfig = {
-            apiKey: "AIzaSyDDnD8UUvRJnjwU9-Ee2-5uh0ybG7pkutE",
-            authDomain: "giftonscreen.firebaseapp.com",
-            projectId: "giftonscreen",
-            storageBucket: "giftonscreen.firebasestorage.app",
-            messagingSenderId: "984262120605",
-            appId: "1:984262120605:web:df7aa8c601c2f7f10bf074"
-        };
-
-        if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
+        // Data is provided via window.GOS_DATA by the parent app
+        // Database is handled by parent app - templates receive data via window.GOS_DATA
 
         // Canvas Setup
         const canvasIds = [
@@ -1434,8 +1420,7 @@
         // Initialize
         // ============================================
 
-        window.addEventListener('load', async () => {
-            await fetchFromFirestore();
+        window.addEventListener('load', () => {
             displayData();
             resizeCanvases();
             initStars();
