@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday!</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Montserrat:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+    <style>
+        /* Reset & Base */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-dark: #0d0c13;
+            --gold: #d4af37;
+            --text: #ffffff;
+        }
+
+        body {
+            background: var(--bg-dark);
+            overflow: hidden;
+            width: 100vw;
+            height: 100vh;
+            font-family: 'Montserrat', sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Game Wrapper - Centers the frame */
+        #game-wrapper {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            background: #030005;
+        }
+
+        /* Game Frame - Fixed 1920x1080 Coordinate System */
+        #game-frame {
+            width: 1920px;
+            height: 1080px;
+            position: relative;
+            background: linear-gradient(180deg, #0d0c13 0%, #1a1525 50%, #0d0c13 100%);
+            overflow: hidden;
+        }
+
+        /* All child elements use absolute positioning */
+        .scene {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.5s ease;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .fade-out {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        /* === SCENE 1: CANDLE === */
+        #scene-1 {
+            z-index: 10;
+        }
+
+        .candle-area {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+
+        .candle {
+            width: 120px;
+            height: 300px;
+            position: relative;
+        }
+
+        .candle-body {
+            width: 50px;
+            height: 200px;
+            background: linear-gradient(90deg, #fff5f5, #ffffff, #ffebeb);
+            border-radius: 8px;
+            margin: 0 auto;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .candle-wick {
+            width: 4px;
+            height: 20px;
+            background: #222;
+            margin: 0 auto;
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .candle-flame {
+            width: 30px;
+            height: 50px;
+            background: radial-gradient(ellipse at bottom, #fff700, #ff6600, transparent);
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            margin: 0 auto;
+            position: absolute;
+            top: -55px;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            filter: blur(2px);
+        }
+
+        .candle-flame.lit {
+            opacity: 1;
+        }
+
+        .candle-glow {
+            position: absolute;
+            top: 20%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 400px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 200, 50, 0.4) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 1s ease;
+            pointer-events: none;
+        }
+
+        .candle-glow.lit {
+            opacity: 1;
+        }
+
+        .candle-plate {
+            width: 100px;
+            height: 20px;
+            background: var(--gold);
+            border-radius: 50%;
+            margin: 0 auto;
+        }
+
+        .tap-hint {
+            position: absolute;
+            bottom: -80px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 12px 30px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 30px;
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 14px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: transform 0.2s ease, background 0.2s ease;
+        }
+
+        .tap-hint:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateX(-50%) scale(1.05);
+        }
+
+        /* === SCENE 2: CAKE === */
+        #scene-2 {
+            z-index: 20;
+        }
+
+        .cake-area {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+
+        .cake {
+            width: 400px;
+            height: 280px;
+            position: relative;
+        }
+
+        .cake-layer {
+            width: 300px;
+            height: 120px;
+            background: linear-gradient(180deg, #a88679 0%, #8b6a60 100%);
+            border-radius: 10px 10px 5px 5px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .cake-cream {
+            width: 280px;
+            height: 30px;
+            background: #fefae9;
+            border-radius: 10px 10px 0 0;
+            margin: -30px auto 0;
+        }
+
+        .cake-stand {
+            width: 350px;
+            height: 30px;
+            background: linear-gradient(180deg, #d4af37, #aa8a2e);
+            border-radius: 0 0 50% 50%;
+            margin: 20px auto 0;
+        }
+
+        .knife {
+            width: 30px;
+            height: 200px;
+            position: absolute;
+            right: -80px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .knife:hover {
+            transform: translateY(-50%) scale(1.05);
+        }
+
+        .knife-handle {
+            width: 20px;
+            height: 80px;
+            background: #111;
+            border-radius: 4px;
+            margin: 0 auto;
+        }
+
+        .knife-blade {
+            width: 25px;
+            height: 120px;
+            background: linear-gradient(90deg, #888, #ccc, #888);
+            clip-path: polygon(20% 0%, 80% 0%, 100% 100%, 0% 100%);
+        }
+
+        .slice-hint {
+            position: absolute;
+            bottom: -60px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 12px 30px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 30px;
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 14px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+
+        .cake-halves {
+            display: flex;
+            justify-content: center;
+            gap: 0;
+            transition: gap 0.8s ease;
+        }
+
+        .cake-halves.split {
+            gap: 120px;
+        }
+
+        .cake-half {
+            width: 150px;
+            height: 120px;
+            transition: transform 0.8s ease;
+        }
+
+        .cake-halves.split .cake-half:first-child {
+            transform: translateX(-60px) rotate(-3deg);
+        }
+
+        .cake-halves.split .cake-half:last-child {
+            transform: translateX(60px) rotate(3deg);
+        }
+
+        /* === SCENE 3: MESSAGE === */
+        #scene-3 {
+            z-index: 30;
+            flex-direction: column;
+        }
+
+        .message-card {
+            text-align: center;
+            padding: 60px 80px;
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+            max-width: 600px;
+        }
+
+        .receiver-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 56px;
+            font-style: italic;
+            font-weight: 700;
+            color: var(--gold);
+            margin-bottom: 30px;
+            line-height: 1.2;
+        }
+
+        .photo-frame {
+            width: 200px;
+            height: 200px;
+            border-radius: 16px;
+            overflow: hidden;
+            margin: 0 auto 30px;
+            border: 4px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .photo-frame img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .photo-placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 18px;
+        }
+
+        .message-text {
+            font-family: 'Playfair Display', serif;
+            font-size: 24px;
+            color: #fff;
+            margin-bottom: 24px;
+            line-height: 1.6;
+        }
+
+        .sender-name {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 18px;
+            color: rgba(255, 255, 255, 0.7);
+            font-style: italic;
+        }
+
+        .share-btn {
+            margin-top: 40px;
+            padding: 14px 36px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 14px;
+            font-weight: 500;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: #fff;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--gold);
+            border-radius: 40px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .share-btn:hover {
+            background: rgba(212, 175, 55, 0.2);
+            transform: scale(1.05);
+        }
+
+        /* Vignette overlay */
+        .vignette {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            background: radial-gradient(ellipse at center, transparent 50%, rgba(0, 0, 0, 0.5) 100%);
+            z-index: 100;
+        }
+
+        /* Hidden capture scene for image generation */
+        #capture-scene {
+            position: fixed;
+            top: -3000px;
+            left: -3000px;
+            width: 1080px;
+            height: 1920px;
+            background: #0d0c13;
+            padding: 100px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Scaling */
+        @media (max-width: 1920px),
+        (max-height: 1080px) {
+            #game-frame {
+                transform: scale(min(calc(100vw / 1920), calc(100vh / 1080)));
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="game-wrapper">
+        <div id="game-frame">
+
+            <!-- Scene 1: Candle -->
+            <div id="scene-1" class="scene">
+                <div class="candle-area">
+                    <div class="candle-glow" id="candle-glow"></div>
+                    <div class="candle">
+                        <div class="candle-body">
+                            <div class="candle-wick"></div>
+                            <div class="candle-flame" id="candle-flame"></div>
+                        </div>
+                        <div class="candle-plate"></div>
+                    </div>
+                    <div class="tap-hint" id="light-btn">Tap to Light</div>
+                </div>
+            </div>
+
+            <!-- Scene 2: Cake -->
+            <div id="scene-2" class="scene hidden">
+                <div class="cake-area">
+                    <div class="cake-halves" id="cake-halves">
+                        <div class="cake-half">
+                            <div class="cake-layer"></div>
+                            <div class="cake-cream"></div>
+                        </div>
+                        <div class="cake-half">
+                            <div class="cake-layer"></div>
+                            <div class="cake-cream"></div>
+                        </div>
+                    </div>
+                    <div class="cake-stand"></div>
+                    <div class="knife" id="knife">
+                        <div class="knife-blade"></div>
+                        <div class="knife-handle"></div>
+                    </div>
+                    <div class="slice-hint">Drag knife down to cut</div>
+                </div>
+            </div>
+
+            <!-- Scene 3: Message -->
+            <div id="scene-3" class="scene hidden">
+                <div class="message-card">
+                    <h1 class="receiver-name">Happy Birthday {Receiver Name}!</h1>
+                    <div class="photo-frame">
+                        <img src="logo.png" alt="Photo">
+                    </div>
+                    <p class="message-text">{Your Message}</p>
+                    <p class="sender-name">— {Sender Name}</p>
+                </div>
+            </div>
+
+            <!-- Vignette -->
+            <div class="vignette"></div>
+        </div>
+    </div>
+
+    <!-- Hidden capture scene -->
+    <div id="capture-scene">
+        <div class="message-card" style="max-width: 800px;">
+            <h1 class="receiver-name">Happy Birthday {Receiver Name}!</h1>
+            <div class="photo-frame" style="width: 300px; height: 300px;">
+                <img src="logo.png" alt="Photo">
+            </div>
+            <p class="message-text">{Your Message}</p>
+            <p class="sender-name">— {Sender Name}</p>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+    <script>
+        // Database is handled by parent app - templates receive data via window.GOS_DATA
+
+        // DOM Elements
+        const scene1 = document.getElementById('scene-1');
+        const scene2 = document.getElementById('scene-2');
+        const scene3 = document.getElementById('scene-3');
+        const lightBtn = document.getElementById('light-btn');
+        const candleFlame = document.getElementById('candle-flame');
+        const candleGlow = document.getElementById('candle-glow');
+        const knife = document.getElementById('knife');
+        const cakeHalves = document.getElementById('cake-halves');
+
+        // State
+        let isLit = false;
+        let isCut = false;
+
+        // === SCENE 1: LIGHT CANDLE ===
+        lightBtn.addEventListener('click', () => {
+            if (isLit) return;
+            isLit = true;
+
+            lightBtn.style.opacity = '0';
+            candleFlame.classList.add('lit');
+            candleGlow.classList.add('lit');
+
+            // Transition to scene 2
+            setTimeout(() => {
+                scene1.classList.add('fade-out');
+                setTimeout(() => {
+                    scene1.classList.add('hidden');
+                    scene2.classList.remove('hidden');
+                }, 500);
+            }, 1500);
+        });
+
+        // === SCENE 2: CUT CAKE ===
+        let startY = 0;
+        let isDragging = false;
+
+        knife.addEventListener('mousedown', startDrag);
+        knife.addEventListener('touchstart', startDrag);
+        document.addEventListener('mousemove', drag);
+        document.addEventListener('touchmove', drag);
+        document.addEventListener('mouseup', endDrag);
+        document.addEventListener('touchend', endDrag);
+
+        function startDrag(e) {
+            if (isCut) return;
+            isDragging = true;
+            startY = e.touches ? e.touches[0].clientY : e.clientY;
+        }
+
+        function drag(e) {
+            if (!isDragging || isCut) return;
+            const y = e.touches ? e.touches[0].clientY : e.clientY;
+            const delta = y - startY;
+
+            if (delta > 100) {
+                cutCake();
+            }
+        }
+
+        function endDrag() {
+            if (!isDragging || isCut) return;
+            isDragging = false;
+        }
+
+        function cutCake() {
+            if (isCut) return;
+            isCut = true;
+
+            // Animate cake split
+            cakeHalves.classList.add('split');
+
+            // Fade out scene 2, show scene 3
+            setTimeout(() => {
+                scene2.classList.add('fade-out');
+                setTimeout(() => {
+                    scene2.classList.add('hidden');
+                    scene3.classList.remove('hidden');
+                    scene3.style.opacity = '1';
+                }, 500);
+            }, 1200);
+        }
+
+        // === INIT ===
+        window.addEventListener('load', () => {
+            // Preview mode - static placeholder data is already in HTML
+        });
+    </script>
+</body>
+
+</html>

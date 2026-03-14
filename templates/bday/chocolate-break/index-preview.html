@@ -372,10 +372,10 @@
             position: absolute;
             width: 6px;
             height: 6px;
-            background: var(--chocolate-medium);
+            background: var(--cocoa-medium);
             border-radius: 50%;
             pointer-events: none;
-            z-index: var(--z4-cracks);
+            z-index: var(--z-content);
         }
 
         /* Luxury Golden Nugget */
@@ -462,7 +462,7 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            z-index: var(--z3-chocolate);
+            z-index: var(--z-content);
             opacity: 0;
             visibility: hidden;
         }
@@ -476,10 +476,10 @@
             position: absolute;
             width: 10px;
             height: 10px;
-            background: var(--chocolate-medium);
+            background: var(--cocoa-medium);
             border-radius: 50%;
             pointer-events: none;
-            z-index: var(--z3-chocolate);
+            z-index: var(--z-content);
         }
 
         /* Scene 5: Luxury Celebration */
@@ -850,13 +850,13 @@
         .ambient-particle {
             position: absolute;
             pointer-events: none;
-            z-index: var(--z2-particles);
+            z-index: var(--z-ambient);
         }
 
         .floating-sparkle {
             width: 6px;
             height: 6px;
-            background: var(--sparkle-white);
+            background: white;
             border-radius: 50%;
             animation: floatSparkle 3s ease-in-out infinite;
         }
@@ -881,7 +881,7 @@
             width: 10px;
             height: 10px;
             pointer-events: none;
-            z-index: var(--z6-celebration);
+            z-index: var(--z-celebration);
             animation: confettiFall 3s ease-in-out infinite;
         }
 
@@ -901,7 +901,7 @@
             position: absolute;
             font-size: clamp(24px, 8vw, 36px);
             pointer-events: none;
-            z-index: var(--z6-celebration);
+            z-index: var(--z-celebration);
             animation: balloonFloat 4s ease-in-out infinite;
         }
 
@@ -921,7 +921,7 @@
             position: absolute;
             font-size: clamp(20px, 6vw, 28px);
             pointer-events: none;
-            z-index: var(--z6-celebration);
+            z-index: var(--z-celebration);
             animation: donutDrift 5s ease-in-out infinite;
         }
 
@@ -967,7 +967,7 @@
             background: rgba(0, 0, 0, 0.3);
             opacity: 0;
             transition: opacity 0.5s ease;
-            z-index: var(--z1-bg);
+            z-index: var(--z-bg);
             pointer-events: none;
         }
 
@@ -980,7 +980,7 @@
             position: absolute;
             font-size: 12px;
             pointer-events: none;
-            z-index: var(--z5-text);
+            z-index: var(--z-message);
             animation: textSparkle 1.5s ease-in-out infinite;
         }
 
@@ -1018,8 +1018,6 @@
             opacity: 0;
             animation: textReveal 1.2s ease-out 0.3s forwards;
         }
-
-
 
         /* Candy Photo Frame */
         .candy-photo-frame {
@@ -1241,8 +1239,6 @@
             }
         }
 
-        /* Removed photo animations as requested */
-
         /* Tap interaction state */
         .candy-photo-frame.tapped {
             transform: scale(1.05);
@@ -1256,6 +1252,7 @@
             z-index: 15;
         }
     </style>
+</head>
 
 <body>
     <div class="gift-container" id="giftContainer">
@@ -1351,9 +1348,9 @@
             </div>
         </div>
     </div>
-    </div>
 
     <script>
+        // Preview Mode - Full game logic with placeholder data
         // State management
         const state = {
             currentScene: 1,
@@ -1362,9 +1359,9 @@
             goldenCandyTapped: false,
             allSquaresBroken: false,
             animationInProgress: false,
-            recipientName: 'Friend',
-            senderName: 'Your Friend',
-            message: 'A decadent surprise awaits from your friend...'
+            recipientName: '{Receiver Name}',
+            senderName: '{Sender Name}',
+            message: '{Your Message}'
         };
 
         // Surprise items
@@ -1660,9 +1657,6 @@
         // PHOTO REVEAL FUNCTIONS
         // ========================================
 
-        // Trigger the photo reveal animation sequence
-
-
         // Create floating particles around the photo
         function createPhotoParticles() {
             const container = elements.photoEffectsContainer;
@@ -1894,9 +1888,10 @@
             }, 600);
         }
 
-        // Function to display data from Firebase (called by parent app or internally)
+        // Function to display data - can be called by parent app
+        // Preview mode: uses placeholder data
         window.displayFirebaseData = function () {
-            console.log("Chocolate Template: Displaying Firebase Data", window.GOS_DATA);
+            console.log("Chocolate Preview: Displaying data with placeholders");
 
             const data = window.GOS_DATA || {};
 
@@ -1933,7 +1928,6 @@
             if (data.photoUrl || data.photo) {
                 sPhoto.src = data.photoUrl || data.photo;
             } else {
-                // Use a default emoji or placeholder if needed, but usually photo is provided
                 sPhoto.style.display = 'none';
             }
         };
@@ -1941,11 +1935,6 @@
         // Initialize
         function init() {
             createAmbientParticles();
-
-            // Check for pre-injected data
-            if (window.GOS_DATA) {
-                window.displayFirebaseData();
-            }
 
             // 3D Tilt Effect
             elements.giftContainer.addEventListener('mousemove', (e) => {
@@ -1993,77 +1982,9 @@
                 }
             });
 
-            // Capture & Share Logic
-            const captureOverlay = document.getElementById('captureLoading');
-            const staticCaptureContainer = document.getElementById('staticCaptureContainer');
-
-            async function captureExperience() {
-                // Pause animations
-                elements.giftContainer.classList.add('animations-paused');
-
-                captureOverlay.style.display = 'flex';
-
-                // Wait 2 seconds as requested
-                await new Promise(resolve => setTimeout(resolve, 2000));
-
-                await document.fonts.ready;
-
-                try {
-                    // Capture the HIDDEN STATIC card
-                    const canvas = await html2canvas(staticCaptureContainer, {
-                        width: 1080,
-                        height: 1920,
-                        scale: 1,
-                        useCORS: true,
-                        allowTaint: false,
-                        backgroundColor: '#0A0705',
-                        logging: false
-                    });
-
-                    // Resume animations
-                    elements.giftContainer.classList.remove('animations-paused');
-                    captureOverlay.style.display = 'none';
-                    return canvas;
-                } catch (err) {
-                    console.error("Capture Error:", err);
-                    elements.giftContainer.classList.remove('animations-paused');
-                    captureOverlay.style.display = 'none';
-                    alert("Could not generate image. Please try again.");
-                }
-            }
-
-            document.getElementById('shareStoryBtn').addEventListener('click', async () => {
-                const canvas = await captureExperience();
-                if (!canvas) return;
-
-                canvas.toBlob(async (blob) => {
-                    const file = new File([blob], `birthday-story-${state.recipientName}.png`, { type: 'image/png' });
-
-                    // Always try to save/download first or alongside sharing
-                    const link = document.createElement('a');
-                    link.download = `birthday-story-${state.recipientName}.png`;
-                    link.href = canvas.toDataURL('image/png', 1.0);
-
-                    if (navigator.canShare && navigator.canShare({ files: [file] })) {
-                        try {
-                            // Trigger download in background if possible, or just share
-                            await navigator.share({
-                                files: [file],
-                                title: 'My Birthday Card',
-                                text: 'Check out my birthday surprise from GiftOnScreen!'
-                            });
-                        } catch (err) {
-                            if (err.name !== 'AbortError') {
-                                link.click();
-                                alert("Image saved! Upload it to your Instagram Story from your gallery.");
-                            }
-                        }
-                    } else {
-                        link.click();
-                        alert("Image saved! Open Instagram Story and select this image from your gallery.");
-                    }
-                }, 'image/png');
-            });
+            // Photo tap event listener
+            elements.candyPhotoFrame.addEventListener('click', handlePhotoTap);
+            elements.candyPhotoFrame.addEventListener('touchend', handlePhotoTap);
         }
 
         // Listen for content updates from parent app (via postMessage)
@@ -2078,10 +1999,6 @@
                 window.displayFirebaseData();
             }
         });
-
-        // Add photo tap event listener
-        elements.candyPhotoFrame.addEventListener('click', handlePhotoTap);
-        elements.candyPhotoFrame.addEventListener('touchend', handlePhotoTap);
 
         // Start
         init();

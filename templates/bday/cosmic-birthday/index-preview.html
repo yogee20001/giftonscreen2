@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Cosmic Birthday</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Outfit:wght@300;400;600&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap"
+        rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        :root {
+            --deep-space: #050510;
+            --midnight-purple: #1a0a2e;
+            --nebula-pink: #ff1493;
+            --nebula-cyan: #00ffff;
+            --star-white: #ffffff;
+            --star-blue: #87ceeb;
+            --gold: #ffd700;
+        }
+
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: var(--deep-space);
+            font-family: 'Outfit', sans-serif;
+        }
+
+        #game-wrapper {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            background: #030005;
+        }
+
+        #game-frame {
+            width: 100%;
+            height: 100%;
+            max-width: 450px;
+            max-height: 800px;
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(180deg, #050510 0%, #0a0520 30%, #150830 60%, #050510 100%);
+        }
+
+        @media (min-width: 800px) {
+            #game-frame {
+                max-width: 450px;
+                max-height: 800px;
+                border-radius: 20px;
+                box-shadow: 0 0 60px rgba(138, 43, 226, 0.3), 0 0 120px rgba(0, 255, 255, 0.1);
+            }
+        }
+
+        /* Canvas Layers */
+        .canvas-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        #background-canvas {
+            z-index: 1;
+        }
+
+        #nebula-canvas {
+            z-index: 2;
+        }
+
+        #stars-far-canvas {
+            z-index: 3;
+        }
+
+        #stars-mid-canvas {
+            z-index: 4;
+        }
+
+        #stars-near-canvas {
+            z-index: 5;
+        }
+
+        #vortex-canvas {
+            z-index: 6;
+        }
+
+        #interaction-canvas {
+            z-index: 7;
+        }
+
+        #portrait-canvas {
+            z-index: 8;
+        }
+
+        #effects-canvas {
+            z-index: 9;
+        }
+
+        #bloom-layer {
+            z-index: 10;
+            mix-blend-mode: screen;
+            filter: blur(8px) brightness(1.5);
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        #ui-canvas {
+            z-index: 11;
+        }
+
+        /* Interactive Layer */
+        #interaction-layer {
+            position: absolute;
+            top: 18%;
+            left: 4%;
+            width: 92%;
+            height: 64%;
+            z-index: 10;
+            cursor: grab;
+            touch-action: none;
+        }
+
+        #interaction-layer:active {
+            cursor: grabbing;
+        }
+
+        /* UI Elements */
+        .ui-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 50;
+            pointer-events: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Intro Text */
+        .intro-text {
+            position: absolute;
+            top: 14%;
+            width: 70%;
+            text-align: center;
+            opacity: 1;
+        }
+
+        .intro-text.visible {
+            opacity: 1;
+        }
+
+        .intro-text p {
+            font-family: 'Playfair Display', serif;
+            font-size: 18px;
+            font-style: italic;
+            color: rgba(255, 255, 255, 0.85);
+            text-shadow: 0 0 20px rgba(135, 206, 235, 0.5);
+            line-height: 1.6;
+        }
+
+        /* Instruction Text */
+        .instruction-text {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 80%;
+            text-align: center;
+            opacity: 0;
+            transition: opacity 0.8s ease;
+        }
+
+        .instruction-text.visible {
+            opacity: 1;
+        }
+
+        .instruction-text p {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 16px;
+            font-weight: 300;
+            color: rgba(255, 255, 255, 0.7);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        .swipe-icon {
+            width: 60px;
+            height: 60px;
+            margin: 20px auto 0;
+            animation: swipeHint 2s ease-in-out infinite;
+        }
+
+        .swipe-icon svg {
+            width: 100%;
+            height: 100%;
+            fill: rgba(255, 255, 255, 0.5);
+        }
+
+        @keyframes swipeHint {
+
+            0%,
+            100% {
+                transform: translateX(-10px);
+                opacity: 0.5;
+            }
+
+            50% {
+                transform: translateX(10px);
+                opacity: 1;
+            }
+        }
+
+        /* Birthday Message */
+        .birthday-message {
+            position: absolute;
+            bottom: 18%;
+            width: 80%;
+            text-align: center;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .birthday-message.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .birthday-message h1 {
+            font-family: 'Cinzel', serif;
+            font-size: 32px;
+            font-weight: 600;
+            color: #fff;
+            text-shadow: 0 0 30px rgba(255, 215, 0, 0.8), 0 0 60px rgba(255, 215, 0, 0.4);
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+        }
+
+        /* Final Message */
+        .final-message {
+            position: absolute;
+            bottom: 28%;
+            width: 85%;
+            text-align: center;
+            opacity: 1;
+        }
+
+        .final-message.visible {
+            opacity: 1;
+        }
+
+        .final-message p {
+            font-family: 'Playfair Display', serif;
+            font-size: 16px;
+            font-style: italic;
+            color: rgba(255, 255, 255, 0.9);
+            text-shadow: 0 0 15px rgba(138, 43, 226, 0.6);
+            line-height: 1.5;
+        }
+
+        /* Sender Name */
+        .sender-name {
+            position: absolute;
+            bottom: 8%;
+            width: 100%;
+            text-align: center;
+            opacity: 1;
+        }
+
+        .sender-name.visible {
+            opacity: 1;
+        }
+
+        .sender-name p {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 14px;
+            font-weight: 300;
+            color: rgba(255, 255, 255, 0.6);
+            letter-spacing: 2px;
+        }
+
+        /* Progress Indicator */
+        .progress-bar {
+            position: absolute;
+            bottom: 3%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60%;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, var(--nebula-cyan), var(--nebula-pink));
+            border-radius: 2px;
+        }
+
+        /* Scene visibility */
+        .scene {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            pointer-events: none;
+        }
+
+        .scene.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="game-wrapper">
+        <div id="game-frame">
+            <!-- Canvas Layers -->
+            <canvas id="background-canvas" class="canvas-layer"></canvas>
+            <canvas id="nebula-canvas" class="canvas-layer"></canvas>
+            <canvas id="stars-far-canvas" class="canvas-layer"></canvas>
+            <canvas id="stars-mid-canvas" class="canvas-layer"></canvas>
+            <canvas id="stars-near-canvas" class="canvas-layer"></canvas>
+            <canvas id="vortex-canvas" class="canvas-layer"></canvas>
+            <canvas id="interaction-canvas" class="canvas-layer"></canvas>
+            <canvas id="portrait-canvas" class="canvas-layer"></canvas>
+            <canvas id="effects-canvas" class="canvas-layer"></canvas>
+            <canvas id="bloom-layer" class="canvas-layer"></canvas>
+            <canvas id="ui-canvas" class="canvas-layer"></canvas>
+
+            <!-- Interaction Zone -->
+            <div id="interaction-layer"></div>
+
+            <!-- UI Layer -->
+            <div class="ui-layer">
+                <!-- Intro Text -->
+                <div class="intro-text visible" id="intro-text">
+                    <p>Every star holds a birthday wish...</p>
+                </div>
+
+                <!-- Instruction -->
+                <div class="instruction-text" id="instruction-text">
+                    <p>Swipe to awaken the stars</p>
+                    <div class="swipe-icon">
+                        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M9 5v2h6.59L4 18.59 5.41 20 17 8.41V15h2V5z" />
+                        </svg>
+                    </div>
+                </div>
+
+                <!-- Birthday Message -->
+                <div class="birthday-message visible" id="birthday-message">
+                    <h1>Happy Birthday, {Receiver Name}!</h1>
+                </div>
+
+                <!-- Final Message -->
+                <div class="final-message visible" id="final-message">
+                    <p>{Your Message}</p>
+                </div>
+
+                <!-- Sender -->
+                <div class="sender-name visible" id="sender-name">
+                    <p>— {Sender Name}</p>
+                </div>
+
+                <!-- Progress -->
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ============================================
+        // COSMIC BIRTHDAY - Preview Mode
+        // ============================================
+
+        // Static preview data
+        const previewData = {
+            receiver: '{Receiver Name}',
+            sender: '{Sender Name}',
+            message: '{Your Message}'
+        };
+
+        // Canvas Setup
+        const canvasIds = [
+            'background-canvas', 'nebula-canvas',
+            'stars-far-canvas', 'stars-mid-canvas', 'stars-near-canvas',
+            'vortex-canvas', 'interaction-canvas', 'portrait-canvas',
+            'effects-canvas', 'bloom-layer', 'ui-canvas'
+        ];
+        const canvases = {};
+        const ctxs = {};
+
+        canvasIds.forEach(id => {
+            canvases[id] = document.getElementById(id);
+            ctxs[id] = canvases[id].getContext('2d', { alpha: id !== 'background-canvas' });
+        });
+
+        let width, height;
+        let dpr = window.devicePixelRatio || 1;
+
+        function resizeCanvases() {
+            const frame = document.getElementById('game-frame');
+            width = frame.clientWidth;
+            height = frame.clientHeight;
+
+            canvasIds.forEach(id => {
+                canvases[id].width = width * dpr;
+                canvases[id].height = height * dpr;
+                canvases[id].style.width = `${width}px`;
+                canvases[id].style.height = `${height}px`;
+                ctxs[id].setTransform(dpr, 0, 0, dpr, 0, 0);
+            });
+        }
+
+        window.addEventListener('resize', resizeCanvases);
+        resizeCanvases();
+
+        // ============================================
+        // Preview Mode - Show final scene directly
+        // ============================================
+
+        // Star Classes
+        class Star {
+            constructor(layer) {
+                this.x = Math.random() * width;
+                this.y = Math.random() * height;
+                this.layer = layer;
+
+                if (layer === 0) {
+                    this.baseSize = 0.5 + Math.random() * 0.5;
+                    this.speed = 0.2;
+                    this.alpha = 0.2 + Math.random() * 0.3;
+                    this.glow = false;
+                } else if (layer === 1) {
+                    this.baseSize = 1 + Math.random() * 1;
+                    this.speed = 0.5;
+                    this.alpha = 0.4 + Math.random() * 0.4;
+                    this.glow = true;
+                } else {
+                    this.baseSize = 1.5 + Math.random() * 1.5;
+                    this.speed = 0.8;
+                    this.alpha = 0.6 + Math.random() * 0.4;
+                    this.glow = true;
+                }
+
+                this.size = this.baseSize;
+                this.twinkleSpeed = 0.01 + Math.random() * 0.03;
+                this.twinkleOffset = Math.random() * Math.PI * 2;
+                this.activated = true; // All stars activated in preview
+                this.activationTime = Date.now();
+            }
+
+            update(time) {
+                const twinkle = Math.sin(time * this.twinkleSpeed + this.twinkleOffset);
+                this.currentAlpha = this.alpha * (0.7 + twinkle * 0.3);
+
+                const elapsed = Date.now() - this.activationTime;
+                const burst = Math.max(0, 1 - elapsed / 500);
+                this.size = this.baseSize + burst * 5 + (this.layer === 2 ? 1 : 0);
+                this.currentAlpha = Math.min(1, this.currentAlpha + burst);
+            }
+
+            draw(ctx) {
+                ctx.globalAlpha = this.currentAlpha;
+                ctx.fillStyle = this.activated ? '#87ceeb' : '#ffffff';
+
+                if (this.glow || this.activated) {
+                    ctx.shadowBlur = this.activated ? 20 : this.size * 3;
+                    ctx.shadowColor = this.activated ? '#00ffff' : '#ffffff';
+                }
+
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+
+                if (this.layer === 2 && this.alpha > 0.8) {
+                    ctx.lineWidth = 1;
+                    ctx.strokeStyle = `rgba(255, 255, 255, ${this.currentAlpha * 0.5})`;
+                    const flair = this.size * 3;
+                    ctx.beginPath();
+                    ctx.moveTo(this.x - flair, this.y);
+                    ctx.lineTo(this.x + flair, this.y);
+                    ctx.moveTo(this.x, this.y - flair);
+                    ctx.lineTo(this.x, this.y + flair);
+                    ctx.stroke();
+                }
+
+                ctx.shadowBlur = 0;
+            }
+        }
+
+        // Particle class
+        class Particle {
+            constructor(x, y, options = {}) {
+                this.x = x;
+                this.y = y;
+                this.vx = options.vx || 0;
+                this.vy = options.vy || 0;
+                this.size = options.size || 2;
+                this.color = options.color || '#ffffff';
+                this.alpha = options.alpha || 1;
+                this.decay = options.decay || 0.02;
+                this.life = options.life || 1;
+                this.glow = options.glow || false;
+            }
+
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+                this.life -= this.decay;
+                this.alpha = Math.max(0, this.life);
+                return this.life > 0;
+            }
+
+            draw(ctx) {
+                ctx.save();
+                ctx.globalAlpha = this.alpha;
+                ctx.fillStyle = this.color;
+
+                if (this.glow) {
+                    ctx.shadowBlur = this.size * 3;
+                    ctx.shadowColor = this.color;
+                }
+
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+            }
+        }
+
+        let stars = [];
+        let celebrationParticles = [];
+
+        function initStars() {
+            stars = [[], [], []];
+
+            for (let i = 0; i < 400; i++) stars[0].push(new Star(0));
+            for (let i = 0; i < 150; i++) stars[1].push(new Star(1));
+            for (let i = 0; i < 50; i++) stars[2].push(new Star(2));
+        }
+
+        function drawBackground() {
+            const ctx = ctxs['background-canvas'];
+            ctx.clearRect(0, 0, width, height);
+
+            const gradient = ctx.createLinearGradient(0, 0, 0, height);
+            gradient.addColorStop(0, '#020205');
+            gradient.addColorStop(0.5, '#050510');
+            gradient.addColorStop(1, '#020205');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, width, height);
+
+            ctx.globalAlpha = 0.03;
+            for (let i = 0; i < 1000; i++) {
+                ctx.fillStyle = Math.random() > 0.5 ? '#fff' : '#000';
+                ctx.fillRect(Math.random() * width, Math.random() * height, 1, 1);
+            }
+            ctx.globalAlpha = 1.0;
+        }
+
+        function drawNebula(time) {
+            const ctx = ctxs['nebula-canvas'];
+            ctx.clearRect(0, 0, width, height);
+
+            ctx.globalCompositeOperation = 'screen';
+
+            const driftX = Math.sin(time * 0.0002) * 40;
+            const driftY = Math.cos(time * 0.0003) * 30;
+
+            const grad1 = ctx.createRadialGradient(
+                width * 0.3 + driftX, height * 0.4 + driftY, 0,
+                width * 0.3 + driftX, height * 0.4 + driftY, width * 0.8
+            );
+            grad1.addColorStop(0, 'rgba(100, 30, 200, 0.25)');
+            grad1.addColorStop(0.5, 'rgba(80, 20, 160, 0.12)');
+            grad1.addColorStop(1, 'transparent');
+            ctx.fillStyle = grad1;
+            ctx.fillRect(0, 0, width, height);
+
+            const grad2 = ctx.createRadialGradient(
+                width * 0.7 - driftX, height * 0.6 - driftY, 0,
+                width * 0.7 - driftX, height * 0.6 - driftY, width * 0.7
+            );
+            grad2.addColorStop(0, 'rgba(0, 200, 255, 0.15)');
+            grad2.addColorStop(0.5, 'rgba(0, 150, 200, 0.08)');
+            grad2.addColorStop(1, 'transparent');
+            ctx.fillStyle = grad2;
+            ctx.fillRect(0, 0, width, height);
+
+            const centerGlow = ctx.createRadialGradient(width / 2, height / 2, 0, width / 2, height / 2, width);
+            centerGlow.addColorStop(0, 'rgba(138, 43, 226, 0.05)');
+            centerGlow.addColorStop(1, 'transparent');
+            ctx.fillStyle = centerGlow;
+            ctx.fillRect(0, 0, width, height);
+
+            ctx.globalCompositeOperation = 'source-over';
+        }
+
+        function drawStars(time) {
+            const layerIds = ['stars-far-canvas', 'stars-mid-canvas', 'stars-near-canvas'];
+            const parallaxLevels = [0.2, 0.5, 1.2];
+
+            layerIds.forEach((id, idx) => {
+                const ctx = ctxs[id];
+                ctx.clearRect(0, 0, width, height);
+
+                stars[idx].forEach(star => {
+                    star.update(time);
+                    star.draw(ctx);
+                });
+            });
+        }
+
+        function updateCelebration(time) {
+            // Spawn meteors
+            if (Math.random() > 0.95) {
+                const side = Math.random() > 0.5 ? 1 : -1;
+                celebrationParticles.push({
+                    type: 'meteor',
+                    x: side > 0 ? -100 : width + 100,
+                    y: Math.random() * height * 0.4,
+                    vx: side * (10 + Math.random() * 10),
+                    vy: 2 + Math.random() * 5,
+                    size: 2,
+                    color: '#fff',
+                    trail: [],
+                    alpha: 1
+                });
+            }
+
+            // Spawn star rain
+            if (Math.random() > 0.7) {
+                celebrationParticles.push({
+                    type: 'rain',
+                    x: Math.random() * width,
+                    y: -50,
+                    vx: (Math.random() - 0.5) * 2,
+                    vy: 3 + Math.random() * 4,
+                    size: 1 + Math.random() * 2,
+                    color: Math.random() > 0.5 ? '#ffd700' : '#00ffff',
+                    alpha: 1,
+                    wobble: Math.random() * Math.PI * 2
+                });
+            }
+
+            celebrationParticles.forEach(p => {
+                p.x += p.vx || 0;
+                p.y += p.vy || 0;
+
+                if (p.type === 'meteor') {
+                    p.trail.push({ x: p.x, y: p.y });
+                    if (p.trail.length > 20) p.trail.shift();
+                }
+
+                if (p.type === 'rain') {
+                    p.wobble += 0.1;
+                    p.x += Math.sin(p.wobble) * 1;
+                }
+
+                p.alpha -= 0.005;
+            });
+
+            celebrationParticles = celebrationParticles.filter(p => p.alpha > 0 && p.y < height + 100);
+        }
+
+        function drawCelebration(ctx) {
+            ctx.clearRect(0, 0, width, height);
+            ctx.globalCompositeOperation = 'lighter';
+
+            celebrationParticles.forEach(p => {
+                ctx.globalAlpha = p.alpha;
+                ctx.fillStyle = p.color;
+
+                if (p.type === 'meteor') {
+                    ctx.beginPath();
+                    ctx.moveTo(p.x, p.y);
+                    p.trail.forEach((t, i) => {
+                        ctx.lineTo(t.x, t.y);
+                        ctx.globalAlpha = p.alpha * (i / p.trail.length);
+                        ctx.lineWidth = p.size * (i / p.trail.length);
+                        ctx.strokeStyle = '#87ceeb';
+                        ctx.stroke();
+                    });
+
+                    ctx.globalAlpha = p.alpha;
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.size * 2, 0, Math.PI * 2);
+                    ctx.fill();
+                } else {
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            });
+
+            ctx.globalCompositeOperation = 'source-over';
+        }
+
+        let lastTime = 0;
+
+        function animate(timestamp) {
+            const deltaTime = timestamp - lastTime;
+            lastTime = timestamp;
+
+            // Always show final scene in preview
+            drawBackground();
+            drawNebula(timestamp);
+            drawStars(timestamp);
+            updateCelebration(timestamp);
+            drawCelebration(ctxs['effects-canvas']);
+
+            animationId = requestAnimationFrame(animate);
+        }
+
+        // Initialize
+        window.addEventListener('load', () => {
+            resizeCanvases();
+            initStars();
+            animate(0);
+        });
+    </script>
+</body>
+
+</html>
