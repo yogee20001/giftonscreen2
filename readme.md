@@ -1,334 +1,227 @@
-# 🎁 GiftOnScreen | Project Manifest & Technical Standards
+# GiftOnScreen ✨
 
-This document is the "Source of Truth" for the **GiftOnScreen** platform. All development, whether manual or AI-generated (via Antigravity), must strictly adhere to these architectural and design rules.
+Premium Digital Gift Expression Platform
 
----
+## Overview
 
-## 🏗️ 1. System Architecture (The 4-Step Flow)
+GiftOnScreen transforms heartfelt messages into immersive digital gift experiences. Create stunning, personalized gift moments that last forever and share them instantly via WhatsApp, SMS, email, or any social platform.
 
-### Step 1: The Gallery (Entry State)
-- **Logic:** The root `index.html` checks for a URL parameter `?id=`.
-- **Empty State:** If NO ID is present, render the **Occasion Gallery**.
-- **User Path:** Select Occasion (e.g., Birthday) → Select Template Theme (e.g., "Neon" or "Soft").
+## Features
 
-### Step 2: The Editor (Selection State)
-- **UI:** Hide Gallery, reveal the **Split-Screen Editor**.
-- **Left Side (Form):** Inputs for Receiver Name, Sender Name, Message, Photo, and Audio selection.
-- **Right Side (Preview):** An **Ultra-Lite Static Preview** mirroring the chosen template's CSS.
-- **Real-time Sync:** JavaScript must mirror form inputs into the Preview instantly.
-- **Mandatory Compression:** Use Browser Canvas API to shrink photos to **<500KB** before Firestore upload.
+### 🎁 Core Platform
+- **Beautiful Themes** - 50+ professionally designed templates for every occasion
+- **Photo Integration** - Add personal photos to create meaningful experiences  
+- **Easy Sharing** - Share instantly via WhatsApp, SMS, email, or social platforms
+- **Private & Secure** - Encrypted messages with complete privacy
+- **Mobile First** - Works beautifully on any device
+- **Lasts Forever** - Digital creations preserved as timeless memories
 
-### Step 3: The Renderer (Viewer Mode)
-- **Validation:** If URL has `?id=GIFT-XXXXXXXX`, bypass Gallery/Editor. Check format: `GIFT-[Alphanumeric]`.
-- **Status Check (Firestore):**
-    - If `status == "pending"`: Show "Activation Required" + WhatsApp link.
-    - If `status == "active"`: Fetch HTML from `/templates/[path]/index.html`.
-- **Data Injection:** Find elements with `[data-receiver]`, `[data-sender]`, `[data-message]`, and `<img data-photo>` to inject user content dynamically.
+### 🎂 Birthday Templates
+1. **Premium Candle** - Ultra-premium cinematic experience with interactive candle and cake
+2. **Chocolate Break** - Decadent chocolate-themed surprise with interactive unwrapping
+3. **Cosmic Birthday** - Magical cosmic journey through the universe
+4. **SVG Cake** - Elegant animated cake with floating candles
 
-### Step 4: Admin Activation
-- **Location:** `/admin.html` (Firebase Auth Protected).
-- **Function:** List "pending" documents and provide a "Switch to Active" button to update Firestore status.
+### 🛠 Admin Dashboard
+- Gift activation management
+- Real-time status tracking
+- Asset upload hub with Cloudinary integration
+- Gift database management
 
----
+## Tech Stack
 
-## 📐 2. Premium Design Guidelines
+| Layer | Technology |
+|-------|------------|
+| Frontend | HTML5, Tailwind CSS, Vanilla JavaScript |
+| Backend | Firebase (Firestore, Auth, Storage) |
+| Image Storage | Cloudinary |
+| Animations | CSS Keyframes, Web Animations API |
+| Icons | Phosphor Icons |
+| Fonts | Google Fonts (Playfair Display, Manrope, Great Vibes, Cormorant Garamond) |
 
-### Visual Philosophy ("The Atmosphere")
-* **Negative Space:** Minimalist aesthetic; prioritize "dark space" to let central messages shine.
-* **Immersive Effects:** Use subtle motion (floating SVGs/soft bokeh) for a "living" canvas.
-* **Micro-interactions:** Buttons/cards must have tactile responses (soft glows or $1.05\times$ scaling).
-
-### The "Unboxing" Sequence
-Templates must follow a **Three-Act Storyboard**:
-1.  **Act I (The Hook):** "Tap to Open" cover (e.g., an animated envelope or unlit candle).
-2.  **Act II (The Engagement):** A game-like gesture (Drag/Slide/Rotate) to "unlock" the gift.
-3.  **Act III (The Reveal):** Cinematic display of personalized content with audio fade-in.
-
----
-
-## 🛠️ 3. Development & File Structure (Antigravity Protocol)
-
-To ensure high performance and portability, all templates must follow these strict rules:
-
-### Single-File Architecture
-- **Portable HTML:** Every template must be a **single `index.html`** file.
-- **Embedded Assets:** - Include all CSS within a `<style>` tag in the `<head>`.
-    - Include all JS logic within a `<script>` tag at the end of the `<body>`.
-- **No System Logic:** Templates must NOT contain Firebase calls. They are "dumb shells" that accept data via the Renderer.
-
-### Asset Localization
-- **Folder Scoping:** Each template resides in its own folder: `/templates/[template-name]/`.
-- **Self-Contained:** All images/audio/lottie files must be placed in that same folder.
-- **Relative Paths:** Always use `./asset-name.webp` for assets.
-
-### Technical Geometry
-- **Fixed Aspect Ratio:** Strictly **9:16 (Vertical)** view.
-- **Safe Zones:** Keep interactive triggers **15%** away from top/bottom edges.
-- **No Scrolling:** Use `touch-action: none` and `overflow: hidden` on the main container.
-
----
-
-## 🎨 4. Global CSS Boilerplate
-Use these variables in every template for cross-platform consistency:
-
-```css
-:root {
-  --canvas-ratio: 9/16;
-  --safe-area-padding: 20px;
-  --primary-accent: #FFD700; /* Gold */
-  --transition-speed: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  --glass-bg: rgba(255, 255, 255, 0.2);
-}
-
-.gift-container {
-  aspect-ratio: var(--canvas-ratio);
-  width: 100%;
-  max-width: 450px;
-  margin: 0 auto;
-  position: relative;
-  overflow: hidden;
-  touch-action: none;
-}
-
----
-
-## 📐 5. Fixed Frame Layout Guidelines (Game-Style UI)
-
-### Purpose
-
-This project uses a **game-style fixed frame layout**. The UI must behave like a **single locked scene** where all elements maintain their relative positions. The layout **must never reflow or rearrange based on screen size**. Instead, the **entire interface scales uniformly** to fit the screen.
-
-This ensures consistent visual structure across all devices.
-
----
-
-### Core Principle
-
-The UI is designed using a **single fixed resolution coordinate system**.
-
-Example base resolution:
+## Project Structure
 
 ```
-1920 × 1080
+├── index.html           # Main landing page
+├── app.js               # Core application logic
+├── admin.html           # Admin dashboard
+├── admin.js             # Admin functionality
+├── firebase-config.js   # Firebase configuration
+├── style.css            # Global styles
+├── package.json         # Dependencies
+├── firebase.json        # Firebase config
+├── firestore.rules      # Firestore security rules
+├── storage.rules        # Storage security rules
+├── templates/           # Gift templates
+│   └── bday/
+│       ├── candle/
+│       ├── chocolate-break/
+│       ├── cosmic-birthday/
+│       └── svg-cake/
+├── assets-upload.html    # Asset upload page
+├── branding-test.html   # Branding test page
+├── qr-code.html         # QR code generator
+└── logo.png/webp        # Brand logos
 ```
 
-All UI components must be positioned relative to this coordinate system.
+## Getting Started
 
-When the screen size changes:
+### Prerequisites
+- Node.js 18+
+- Firebase project with Firestore enabled
+- Cloudinary account
 
-```
-UI elements DO NOT move
-UI elements DO NOT wrap
-UI elements DO NOT resize independently
-```
+### Installation
 
-Only the **entire frame scales proportionally**.
-
----
-
-### Layout Architecture
-
-The interface must follow this structure:
-
-```
-Viewport
-└── Game Wrapper (centers frame)
-    └── Game Frame (fixed resolution)
-        ├── UI Element
-        ├── UI Element
-        └── UI Element
+1. Clone the repository:
+```bash
+git clone https://github.com/yogee20001/giftonscreen2.git
+cd giftonscreen2
 ```
 
-#### Required DOM Structure
-
-```html
-<body>
-  <div id="game-wrapper">
-    <div id="game-frame">
-
-      <!-- All UI elements must exist inside this frame -->
-
-    </div>
-  </div>
-</body>
+2. Install dependencies:
+```bash
+npm install
 ```
 
----
+3. Configure Firebase:
+   - Create a Firebase project at [console.firebase.google.com](https://console.firebase.google.com)
+   - Enable Firestore, Authentication, and Storage
+   - Copy your config to `firebase-config.js`
 
-### Game Frame Rules
+4. Configure Cloudinary:
+   - Create a Cloudinary account
+   - Create an upload preset named `gift_photos`
+   - Update `CLOUDINARY_CLOUD_NAME` in `app.js`
 
-The game frame defines the **design coordinate space**.
-
-Example:
-
-```css
-#game-frame {
-  width: 1920px;
-  height: 1080px;
-  position: relative;
-}
+5. Deploy to Firebase Hosting:
+```bash
+npx firebase deploy
 ```
 
-All child elements must use:
-
-```
-position: absolute
-```
-
-Example:
-
-```css
-.score-panel {
-  position: absolute;
-  top: 40px;
-  right: 60px;
-}
+### Development Server
+Serve locally using any static server:
+```bash
+npx serve .
+# or
+npx http-server -p 8080
 ```
 
-This ensures elements remain **locked to their designed coordinates**.
+## User Flow
 
----
+### Creating a Gift
+1. Visit the website and click "Create Your Gift"
+2. Select occasion (Birthday, Anniversary, Just Because, Celebrate)
+3. Choose a theme/template
+4. Enter recipient name, sender name, and message
+5. Optionally upload a photo
+6. Generate private link
+7. Activate via WhatsApp notification
 
-### Scaling Behavior
+### Viewing a Gift
+1. Receive gift link via sharing
+2. Click link to open experience
+3. Interact with the animated gift
+4. Optionally capture and share to Instagram Story
 
-The entire frame must scale using a **uniform transform**.
+## Template System
 
-```
-scale = min(screenWidth / baseWidth, screenHeight / baseHeight)
-```
+Each template is a self-contained HTML/CSS/JS experience with:
 
-Example implementation:
+- **Interactive Scenes** - Multi-step reveals and animations
+- **Personalization** - Dynamic data injection (names, photos, messages)
+- **Capture Mode** - Generate static images for sharing
+- **Responsive Design** - Mobile-first 9:16 aspect ratio
 
+### Template Data Structure
 ```javascript
-function scaleGame() {
-  const frame = document.getElementById("game-frame");
-
-  const scaleX = window.innerWidth / 1920;
-  const scaleY = window.innerHeight / 1080;
-
-  const scale = Math.min(scaleX, scaleY);
-
-  frame.style.transform = `scale(${scale})`;
-}
-
-window.addEventListener("resize", scaleGame);
-scaleGame();
-```
-
-This guarantees:
-
-* Correct aspect ratio
-* Consistent UI placement
-* No element drift
-
----
-
-### Wrapper Responsibilities
-
-The wrapper centers the scaled frame inside the viewport.
-
-```css
-#game-wrapper {
-  width: 100vw;
-  height: 100vh;
-
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  overflow: hidden;
+{
+  receiver: "Recipient Name",
+  sender: "Sender Name", 
+  message: "Your heartfelt message",
+  photoUrl: "https://..." // Optional photo
 }
 ```
 
+## Firebase Collections
+
+### `gifts`
+| Field | Type | Description |
+|-------|------|-------------|
+| id | string | Unique gift ID (GIFT-XXXXX) |
+| receiver | string | Recipient's name |
+| sender | string | Sender's name |
+| message | string | Personal message |
+| photoUrl | string | Cloudinary image URL |
+| template | string | Template ID |
+| occasionId | string | Occasion category |
+| status | string | pending/active |
+| createdAt | timestamp | Creation time |
+
+## API Integrations
+
+### Cloudinary
+- Image compression and optimization
+- Automatic WebP conversion
+- CDN delivery
+
+### WhatsApp
+- Share links directly
+- Admin notification for activations
+
+## Security Rules
+
+### Firestore Rules
+- Read: Anyone with valid gift ID
+- Write: Admin only
+- User data: Owner only
+
+### Storage Rules
+- Authenticated uploads only
+- Image files only
+- Size limit: 5MB
+
+## Browser Support
+
+| Browser | Version |
+|---------|---------|
+| Chrome | 90+ |
+| Firefox | 88+ |
+| Safari | 14+ |
+| Edge | 90+ |
+
+## Performance
+
+- Lazy-loaded templates
+- Compressed images (<500KB)
+- CSS animations (GPU accelerated)
+- Service worker ready
+
+## Contributing
+
+1. Fork the repository
+2. Create feature branch
+3. Commit changes
+4. Push to branch
+5. Open Pull Request
+
+## License
+
+MIT License - See LICENSE file
+
+## Support
+
+- Email: hello@giftonscreen.com
+- WhatsApp: +91 6394460784
+- Website: https://giftonscreen.com
+
+## Credits
+
+- Built with ❤️
+- Powered by Firebase & Cloudinary
+- Icons by Phosphor Icons
+- Fonts by Google Fonts
+
 ---
 
-### Prohibited Layout Techniques
-
-The following techniques **must not be used inside the game frame** because they break positional consistency.
-
-❌ Responsive breakpoints for UI positioning
-❌ Flexbox layout for primary UI placement
-❌ Grid layout for main structure
-❌ Percentage-based positioning
-❌ Dynamic element scaling independent of frame
-
-Only the **frame itself may scale**.
-
----
-
-### Allowed Usage of Flex/Grid
-
-Flexbox or grid can be used **inside components**, for example:
-
-```
-inventory panel
-dialog box
-menu list
-```
-
-But **never for overall UI placement inside the frame**.
-
----
-
-### Aspect Ratio Behavior
-
-The application preserves the base aspect ratio.
-
-If the screen does not match the ratio, **letterboxing occurs**.
-
-Example:
-
-```
-Ultrawide monitor → side padding
-Mobile device → top/bottom padding
-```
-
-The frame must **never stretch** to fill the viewport.
-
----
-
-### Coordinate System Guidelines
-
-Design positions using the frame coordinate space.
-
-Example positions:
-
-```
-Top Left:     (0,0)
-Top Right:    (1920,0)
-Bottom Left:  (0,1080)
-Bottom Right: (1920,1080)
-Center:       (960,540)
-```
-
-This allows consistent layout planning.
-
----
-
-### Design Philosophy
-
-The interface should behave like a **game scene**, not a responsive webpage.
-
-Key characteristics:
-
-* Stable layout
-* Deterministic positioning
-* Device-independent scaling
-* No layout drift
-
-The visual hierarchy must remain identical across all screen sizes.
-
----
-
-### Summary
-
-UI behavior rules:
-
-```
-Elements stay fixed relative to each other
-The frame scales uniformly
-Aspect ratio is preserved
-No responsive reflow occurs
-```
-
-Think of the interface as a **camera zooming in/out of a game scene** rather than a webpage rearranging itself.
+© 2024 GiftOnScreen. All rights reserved.

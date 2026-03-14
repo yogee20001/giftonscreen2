@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -18,24 +19,92 @@
     <link rel="stylesheet" href="style.css">
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <style>
-        .sidebar-item.active { background: rgba(58, 108, 255, 0.1); color: #3a6cff; border-right: 3px solid #3a6cff; }
-        .tab-content { display: none; animation: fadeIn 0.3s ease; }
-        .tab-content.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        .sidebar-item.active {
+            background: rgba(58, 108, 255, 0.1);
+            color: #3a6cff;
+            border-right: 3px solid #3a6cff;
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(5px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
 
         /* Premium Toggle Switch */
-        .switch { position: relative; display: inline-block; width: 44px; height: 24px; }
-        .switch input { opacity: 0; width: 0; height: 0; }
-        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(255,255,255,0.1); transition: .4s; border-radius: 24px; border: 1px solid rgba(255,255,255,0.1); }
-        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 2px; bottom: 2px; background-color: white; transition: .4s; border-radius: 50%; box-shadow: 0 2px 4px rgba(0,0,0,0.3); }
-        input:checked + .slider { background-color: #22c55e; border-color: #22c55e; }
-        input:checked + .slider:before { transform: translateX(20px); }
-        
-        .admin-glass { background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.05); }
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 44px;
+            height: 24px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(255, 255, 255, 0.1);
+            transition: .4s;
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 2px;
+            bottom: 2px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        input:checked+.slider {
+            background-color: #22c55e;
+            border-color: #22c55e;
+        }
+
+        input:checked+.slider:before {
+            transform: translateX(20px);
+        }
+
+        .admin-glass {
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
     </style>
 </head>
+
 <body class="bg-[#06060c] text-slate-200 font-sans min-h-screen flex">
-    
+
     <!-- LOGIN OVERLAY -->
     <div id="admin-login" class="fixed inset-0 z-[100] bg-brand-dark flex items-center justify-center p-6">
         <div class="glass-card w-full max-w-md p-8 rounded-3xl">
@@ -43,7 +112,8 @@
             <form id="login-form" class="space-y-6">
                 <div>
                     <label class="block text-xs uppercase tracking-widest text-gray-500 font-bold mb-2">Email</label>
-                    <input type="email" id="admin-email" class="glass-input w-full p-4 rounded-xl" placeholder="admin@giftonscreen.com" required>
+                    <input type="email" id="admin-email" class="glass-input w-full p-4 rounded-xl"
+                        placeholder="admin@giftonscreen.com" required>
                 </div>
                 <div>
                     <label class="block text-xs uppercase tracking-widest text-gray-500 font-bold mb-2">Password</label>
@@ -57,7 +127,7 @@
 
     <!-- MAIN DASHBOARD LAYOUT -->
     <div id="admin-dashboard" class="hidden flex w-full h-screen overflow-hidden">
-        
+
         <!-- SIDEBAR -->
         <aside class="w-64 bg-slate-950 border-r border-white/5 flex flex-col pt-8">
             <div class="px-6 mb-12 flex items-center gap-2">
@@ -66,19 +136,31 @@
             </div>
 
             <nav class="flex-1 space-y-2">
-                <button data-tab="activation" class="sidebar-item active w-full flex items-center gap-3 px-6 py-4 text-sm font-semibold transition-all">
+                <button data-tab="dashboard"
+                    class="sidebar-item active w-full flex items-center gap-3 px-6 py-4 text-sm font-semibold transition-all">
+                    <i class="ph ph-squares-four text-lg"></i> Dashboard
+                </button>
+                <button data-tab="activation"
+                    class="sidebar-item w-full flex items-center gap-3 px-6 py-4 text-sm font-semibold transition-all">
                     <i class="ph ph-lightning text-lg"></i> Activation
                 </button>
-                <button data-tab="all-gifts" class="sidebar-item w-full flex items-center gap-3 px-6 py-4 text-sm font-semibold transition-all">
+                <button data-tab="all-gifts"
+                    class="sidebar-item w-full flex items-center gap-3 px-6 py-4 text-sm font-semibold transition-all">
                     <i class="ph ph-list-bullets text-lg"></i> All Gifts
                 </button>
-                <button data-tab="assets" class="sidebar-item w-full flex items-center gap-3 px-6 py-4 text-sm font-semibold transition-all">
+                <button data-tab="assets"
+                    class="sidebar-item w-full flex items-center gap-3 px-6 py-4 text-sm font-semibold transition-all">
                     <i class="ph ph-image-square text-lg"></i> Assets Hub
                 </button>
+                <a href="qr-code.html" target="_blank"
+                    class="sidebar-item w-full flex items-center gap-3 px-6 py-4 text-sm font-semibold transition-all text-gray-400 hover:text-white">
+                    <i class="ph ph-qr-code text-lg"></i> QR Generator
+                </a>
             </nav>
 
             <div class="p-6 border-t border-white/5">
-                <button id="logout-btn" class="flex items-center gap-2 text-gray-500 hover:text-white transition-colors text-sm font-semibold">
+                <button id="logout-btn"
+                    class="flex items-center gap-2 text-gray-500 hover:text-white transition-colors text-sm font-semibold">
                     <i class="ph ph-sign-out text-lg"></i> Logout
                 </button>
             </div>
@@ -94,16 +176,140 @@
                         Connecting...
                     </p>
                 </div>
-                
+
                 <!-- Quick Search -->
                 <div class="relative w-64">
                     <i class="ph ph-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-gray-500"></i>
-                    <input type="text" id="global-search" class="w-full bg-white/5 border border-white/10 rounded-full py-2 pl-10 pr-4 text-sm" placeholder="Search Gift ID or Recipient...">
+                    <input type="text" id="global-search"
+                        class="w-full bg-white/5 border border-white/10 rounded-full py-2 pl-10 pr-4 text-sm"
+                        placeholder="Search Gift ID or Recipient...">
                 </div>
             </header>
 
+            <!-- TAB: DASHBOARD -->
+            <section id="tab-dashboard" class="tab-content active space-y-8">
+                <!-- Stats Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div class="glass-card p-6 rounded-2xl border-l-4 border-l-brand-blue">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-xs font-bold text-gray-500 uppercase tracking-widest mb-1">Total Gifts
+                                </p>
+                                <h3 id="stat-total" class="text-4xl font-display font-bold counter" data-target="0">0
+                                </h3>
+                            </div>
+                            <div class="w-12 h-12 rounded-xl bg-brand-blue/10 flex items-center justify-center">
+                                <i class="ph ph-gift text-2xl text-brand-blue"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="glass-card p-6 rounded-2xl border-l-4 border-l-yellow-500">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-xs font-bold text-gray-500 uppercase tracking-widest mb-1">Pending</p>
+                                <h3 id="stat-pending" class="text-4xl font-display font-bold counter" data-target="0">0
+                                </h3>
+                            </div>
+                            <div class="w-12 h-12 rounded-xl bg-yellow-500/10 flex items-center justify-center">
+                                <i class="ph ph-clock text-2xl text-yellow-500"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="glass-card p-6 rounded-2xl border-l-4 border-l-green-500">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-xs font-bold text-gray-500 uppercase tracking-widest mb-1">Active</p>
+                                <h3 id="stat-active" class="text-4xl font-display font-bold counter" data-target="0">0
+                                </h3>
+                            </div>
+                            <div class="w-12 h-12 rounded-xl bg-green-500/10 flex items-center justify-center">
+                                <i class="ph ph-check-circle text-2xl text-green-500"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="glass-card p-6 rounded-2xl border-l-4 border-l-pink-500">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-xs font-bold text-gray-500 uppercase tracking-widest mb-1">Today</p>
+                                <h3 id="stat-today" class="text-4xl font-display font-bold counter" data-target="0">0
+                                </h3>
+                            </div>
+                            <div class="w-12 h-12 rounded-xl bg-pink-500/10 flex items-center justify-center">
+                                <i class="ph ph-calendar text-2xl text-pink-500"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Filters -->
+                <div class="glass-card p-4 rounded-2xl flex flex-wrap items-center gap-4">
+                    <span class="text-xs font-bold text-gray-500 uppercase tracking-widest">Filters:</span>
+                    <select id="filter-status" class="bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm">
+                        <option value="">All Status</option>
+                        <option value="pending">Pending</option>
+                        <option value="active">Active</option>
+                    </select>
+                    <select id="filter-template" class="bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm">
+                        <option value="">All Templates</option>
+                        <option value="candle">Candle</option>
+                        <option value="chocolate-break">Chocolate Break</option>
+                        <option value="cosmic-birthday">Cosmic Birthday</option>
+                        <option value="svg-cake">SVG Cake</option>
+                    </select>
+                    <select id="filter-occasion" class="bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm">
+                        <option value="">All Occasions</option>
+                        <option value="birthday">Birthday</option>
+                        <option value="anniversary">Anniversary</option>
+                        <option value="celebration">Celebration</option>
+                    </select>
+                    <button id="clear-filters" class="text-xs text-brand-blue hover:text-white transition-colors">
+                        Clear Filters
+                    </button>
+                    <div class="ml-auto">
+                        <button id="export-csv"
+                            class="flex items-center gap-2 text-xs bg-green-600 hover:bg-green-500 px-3 py-2 rounded-lg transition-colors">
+                            <i class="ph ph-download-simple"></i> Export CSV
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Recent Gifts Table -->
+                <div class="admin-glass rounded-2xl overflow-hidden">
+                    <table class="w-full text-left text-sm">
+                        <thead class="bg-white/5">
+                            <tr>
+                                <th class="p-4 uppercase text-[10px] tracking-widest font-bold text-gray-500">Gift ID
+                                </th>
+                                <th class="p-4 uppercase text-[10px] tracking-widest font-bold text-gray-500">Receiver
+                                </th>
+                                <th class="p-4 uppercase text-[10px] tracking-widest font-bold text-gray-500">Sender
+                                </th>
+                                <th class="p-4 uppercase text-[10px] tracking-widest font-bold text-gray-500">Template
+                                </th>
+                                <th class="p-4 uppercase text-[10px] tracking-widest font-bold text-gray-500">Occasion
+                                </th>
+                                <th class="p-4 uppercase text-[10px] tracking-widest font-bold text-gray-500">Status
+                                </th>
+                                <th class="p-4 uppercase text-[10px] tracking-widest font-bold text-gray-500">Created
+                                </th>
+                                <th
+                                    class="p-4 uppercase text-[10px] tracking-widest font-bold text-gray-500 text-right">
+                                    Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="dashboard-gifts-list">
+                            <!-- Injected by JS -->
+                        </tbody>
+                    </table>
+                    <div id="no-gifts" class="p-12 text-center text-gray-500 hidden">
+                        <i class="ph ph-gift text-4xl mb-4 opacity-20 block mx-auto"></i>
+                        No gifts found.
+                    </div>
+                </div>
+            </section>
+
             <!-- TAB: ACTIVATION -->
-            <section id="tab-activation" class="tab-content active space-y-8">
+            <section id="tab-activation" class="tab-content space-y-8">
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div class="glass-card p-6 rounded-2xl border-l-4 border-l-yellow-500">
                         <p class="text-xs font-bold text-gray-500 uppercase tracking-widest mb-1">Waiting</p>
@@ -117,11 +323,15 @@
                         <thead class="bg-white/5">
                             <tr>
                                 <th class="p-4 uppercase text-[10px] tracking-widest font-bold text-gray-500">ID</th>
-                                <th class="p-4 uppercase text-[10px] tracking-widest font-bold text-gray-500">Recipient</th>
-                                <th class="p-4 uppercase text-[10px] tracking-widest font-bold text-gray-500">Template</th>
+                                <th class="p-4 uppercase text-[10px] tracking-widest font-bold text-gray-500">Recipient
+                                </th>
+                                <th class="p-4 uppercase text-[10px] tracking-widest font-bold text-gray-500">Template
+                                </th>
                                 <th class="p-4 uppercase text-[10px] tracking-widest font-bold text-gray-500">Photo</th>
                                 <th class="p-4 uppercase text-[10px] tracking-widest font-bold text-gray-500">Date</th>
-                                <th class="p-4 uppercase text-[10px] tracking-widest font-bold text-gray-500 text-right">Status Toggle</th>
+                                <th
+                                    class="p-4 uppercase text-[10px] tracking-widest font-bold text-gray-500 text-right">
+                                    Status Toggle</th>
                             </tr>
                         </thead>
                         <tbody id="activation-list">
@@ -142,12 +352,17 @@
                         <thead class="bg-white/5">
                             <tr>
                                 <th class="p-4 text-[10px] uppercase tracking-widest font-bold text-gray-500">ID</th>
-                                <th class="p-4 text-[10px] uppercase tracking-widest font-bold text-gray-500">Sender / Receiver</th>
-                                <th class="p-4 text-[10px] uppercase tracking-widest font-bold text-gray-500">Template</th>
+                                <th class="p-4 text-[10px] uppercase tracking-widest font-bold text-gray-500">Sender /
+                                    Receiver</th>
+                                <th class="p-4 text-[10px] uppercase tracking-widest font-bold text-gray-500">Template
+                                </th>
                                 <th class="p-4 text-[10px] uppercase tracking-widest font-bold text-gray-500">Photo</th>
                                 <th class="p-4 text-[10px] uppercase tracking-widest font-bold text-gray-500">Date</th>
-                                <th class="p-4 text-[10px] uppercase tracking-widest font-bold text-gray-500">Status</th>
-                                <th class="p-4 text-[10px] uppercase tracking-widest font-bold text-gray-500 text-right">Toggle</th>
+                                <th class="p-4 text-[10px] uppercase tracking-widest font-bold text-gray-500">Status
+                                </th>
+                                <th
+                                    class="p-4 text-[10px] uppercase tracking-widest font-bold text-gray-500 text-right">
+                                    Toggle</th>
                             </tr>
                         </thead>
                         <tbody id="all-gifts-list">
@@ -165,7 +380,8 @@
                         <h2 class="text-2xl font-bold">Integrated Asset Hub</h2>
                         <p class="text-gray-500 text-xs mt-1">Directly optimized for Cloudinary upload.</p>
                     </div>
-                    <a href="assets-upload.html" target="_blank" class="flex items-center gap-2 text-[10px] text-brand-blue hover:text-white transition-colors bg-white/5 px-3 py-1.5 rounded-full border border-white/10 uppercase font-bold tracking-widest">
+                    <a href="assets-upload.html" target="_blank"
+                        class="flex items-center gap-2 text-[10px] text-brand-blue hover:text-white transition-colors bg-white/5 px-3 py-1.5 rounded-full border border-white/10 uppercase font-bold tracking-widest">
                         <i class="ph ph-arrow-square-out"></i> Standalone Page
                     </a>
                 </div>
@@ -173,7 +389,8 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <!-- Upload Box -->
                     <div class="glass-card p-8 rounded-3xl">
-                        <div id="drop-zone" class="border-2 border-dashed border-white/10 rounded-2xl p-12 text-center cursor-pointer hover:bg-white/5 transition-all">
+                        <div id="drop-zone"
+                            class="border-2 border-dashed border-white/10 rounded-2xl p-12 text-center cursor-pointer hover:bg-white/5 transition-all">
                             <input type="file" id="asset-input" class="hidden" accept="image/*" multiple>
                             <i class="ph ph-cloud-arrow-up text-4xl text-brand-blue mb-4"></i>
                             <h3 class="font-bold">Drop Asset Here</h3>
@@ -181,14 +398,17 @@
                         </div>
                         <div id="upload-status-container" class="mt-6 space-y-3"></div>
                     </div>
-                    
+
                     <!-- Instructions -->
                     <div class="p-8">
                         <h3 class="text-xl font-bold mb-4">Asset Guidelines</h3>
                         <ul class="space-y-4 text-sm text-gray-400">
-                            <li class="flex gap-3"><i class="ph ph-check-circle text-green-400 mt-1"></i> Use 16:9 for landscape or 9:16 for portrait assets.</li>
-                            <li class="flex gap-3"><i class="ph ph-check-circle text-green-400 mt-1"></i> Backgrounds are optimized to 1920px width.</li>
-                            <li class="flex gap-3"><i class="ph ph-check-circle text-green-400 mt-1"></i> Copy URL instantly after upload completes.</li>
+                            <li class="flex gap-3"><i class="ph ph-check-circle text-green-400 mt-1"></i> Use 16:9 for
+                                landscape or 9:16 for portrait assets.</li>
+                            <li class="flex gap-3"><i class="ph ph-check-circle text-green-400 mt-1"></i> Backgrounds
+                                are optimized to 1920px width.</li>
+                            <li class="flex gap-3"><i class="ph ph-check-circle text-green-400 mt-1"></i> Copy URL
+                                instantly after upload completes.</li>
                         </ul>
                     </div>
                 </div>
@@ -202,8 +422,130 @@
     </div>
 
     <!-- Toast -->
-    <div id="toast" class="fixed bottom-8 right-8 glass-card border-brand-blue/30 px-6 py-4 rounded-2xl shadow-2xl transition-all duration-500 opacity-0 translate-y-10 z-[200]">
+    <div id="toast"
+        class="fixed bottom-8 right-8 glass-card border-brand-blue/30 px-6 py-4 rounded-2xl shadow-2xl transition-all duration-500 opacity-0 translate-y-10 z-[200]">
         <span id="toast-message" class="text-sm font-semibold flex items-center gap-2"></span>
+    </div>
+
+    <!-- GIFT DETAIL MODAL -->
+    <div id="gift-detail-modal"
+        class="fixed inset-0 z-[150] bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="admin-glass rounded-3xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+            <div class="p-6 border-b border-white/10 flex items-center justify-between">
+                <h3 class="text-xl font-bold">Gift Details</h3>
+                <button onclick="closeGiftModal()" class="text-gray-400 hover:text-white transition-colors">
+                    <i class="ph ph-x text-2xl"></i>
+                </button>
+            </div>
+            <div class="p-6 space-y-6">
+                <!-- Photo Preview -->
+                <div id="modal-photo-container" class="hidden">
+                    <img id="modal-photo" src="" alt="Gift Photo"
+                        class="w-full h-64 object-cover rounded-xl cursor-pointer" onclick="window.open(this.src)">
+                </div>
+
+                <!-- Gift Info -->
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="space-y-1">
+                        <p class="text-[10px] uppercase tracking-widest text-gray-500 font-bold">Gift ID</p>
+                        <p id="modal-gift-id" class="font-mono text-brand-blue text-sm"></p>
+                    </div>
+                    <div class="space-y-1">
+                        <p class="text-[10px] uppercase tracking-widest text-gray-500 font-bold">Status</p>
+                        <span id="modal-status" class="px-2 py-1 rounded-full text-[10px] font-bold"></span>
+                    </div>
+                    <div class="space-y-1">
+                        <p class="text-[10px] uppercase tracking-widest text-gray-500 font-bold">Receiver</p>
+                        <p id="modal-receiver" class="font-semibold"></p>
+                    </div>
+                    <div class="space-y-1">
+                        <p class="text-[10px] uppercase tracking-widest text-gray-500 font-bold">Sender</p>
+                        <p id="modal-sender" class="font-semibold"></p>
+                    </div>
+                    <div class="space-y-1">
+                        <p class="text-[10px] uppercase tracking-widest text-gray-500 font-bold">Template</p>
+                        <p id="modal-template" class="text-sm"></p>
+                    </div>
+                    <div class="space-y-1">
+                        <p class="text-[10px] uppercase tracking-widest text-gray-500 font-bold">Occasion</p>
+                        <p id="modal-occasion" class="text-sm"></p>
+                    </div>
+                    <div class="col-span-2 space-y-1">
+                        <p class="text-[10px] uppercase tracking-widest text-gray-500 font-bold">Message</p>
+                        <p id="modal-message" class="text-sm text-gray-300 bg-white/5 p-3 rounded-lg"></p>
+                    </div>
+                    <div class="col-span-2 space-y-1">
+                        <p class="text-[10px] uppercase tracking-widest text-gray-500 font-bold">Created</p>
+                        <p id="modal-created" class="text-sm"></p>
+                    </div>
+                    <div class="col-span-2 space-y-1">
+                        <p class="text-[10px] uppercase tracking-widest text-gray-500 font-bold">Gift Link</p>
+                        <div class="flex items-center gap-2">
+                            <input type="text" id="modal-gift-link" readonly
+                                class="flex-1 bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm font-mono">
+                            <button onclick="copyGiftLink()"
+                                class="bg-brand-blue hover:bg-blue-600 px-3 py-2 rounded-lg transition-colors">
+                                <i class="ph ph-copy"></i>
+                            </button>
+                            <a id="modal-open-link" href="" target="_blank"
+                                class="bg-green-600 hover:bg-green-500 px-3 py-2 rounded-lg transition-colors">
+                                <i class="ph ph-arrow-square-out"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex items-center gap-3 pt-4 border-t border-white/10">
+                    <button id="modal-activate-btn" onclick="activateFromModal()"
+                        class="flex-1 bg-green-600 hover:bg-green-500 py-3 rounded-xl font-bold transition-colors flex items-center justify-center gap-2">
+                        <i class="ph ph-check-circle"></i> Activate Gift
+                    </button>
+                    <button onclick="openWhatsAppShare()"
+                        class="bg-green-500/20 hover:bg-green-500/30 border border-green-500/30 text-green-400 px-4 py-3 rounded-xl transition-colors">
+                        <i class="ph ph-whatsapp-logo text-xl"></i>
+                    </button>
+                    <button onclick="confirmDeleteGift()"
+                        class="bg-red-500/20 hover:bg-red-500/30 border border-red-500/30 text-red-400 px-4 py-3 rounded-xl transition-colors">
+                        <i class="ph ph-trash text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CONFIRMATION MODAL -->
+    <div id="confirm-modal"
+        class="fixed inset-0 z-[200] bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="admin-glass rounded-3xl w-full max-w-md p-6">
+            <div class="text-center">
+                <div id="confirm-icon"
+                    class="w-16 h-16 rounded-full bg-yellow-500/20 flex items-center justify-center mx-auto mb-4">
+                    <i class="ph ph-warning text-3xl text-yellow-500"></i>
+                </div>
+                <h3 id="confirm-title" class="text-xl font-bold mb-2">Confirm Action</h3>
+                <p id="confirm-message" class="text-gray-400 text-sm mb-6">Are you sure you want to proceed?</p>
+                <div class="flex items-center gap-3">
+                    <button onclick="closeConfirmModal()"
+                        class="flex-1 bg-white/10 hover:bg-white/20 py-3 rounded-xl font-bold transition-colors">
+                        Cancel
+                    </button>
+                    <button id="confirm-action-btn"
+                        class="flex-1 bg-red-600 hover:bg-red-500 py-3 rounded-xl font-bold transition-colors">
+                        Confirm
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PHOTO PREVIEW MODAL -->
+    <div id="photo-preview-modal" class="fixed inset-0 z-[200] bg-black/95 hidden flex items-center justify-center p-4"
+        onclick="this.classList.add('hidden')">
+        <button class="absolute top-4 right-4 text-white hover:text-gray-300">
+            <i class="ph ph-x text-3xl"></i>
+        </button>
+        <img id="preview-image" src="" alt="Preview" class="max-w-full max-h-full object-contain rounded-lg">
     </div>
 
     <!-- Firebase Compat -->
@@ -215,5 +557,5 @@
     <!-- We will reuse logic but in one place -->
     <script src="admin.js?v=1.4"></script>
 </body>
-</html>
 
+</html>
